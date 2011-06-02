@@ -1,6 +1,6 @@
 % \def\filename{skrapport.dtx}
-% \def\fileversion{0.02}
-% \def\filedate{2011/05/22}
+% \def\fileversion{0.04}
+% \def\filedate{2011/06/02}
 % \iffalse meta-comment
 %
 % Copyright (C) 2011 by Simon Sigurdhsson
@@ -19,7 +19,7 @@
 % \iffalse
 %class\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %class\ProvidesClass{skrapport}
-%class   [2011/05/22 v0.02 Skånings rapportklass]
+%class   [2011/06/02 v0.04 Skånings rapportklass]
 %<*driver>
 \documentclass{ltxdoc}
 \EnableCrossrefs
@@ -34,6 +34,7 @@
 % \changes{v0.01}{2011/05/21}{Initial version.}
 % \changes{v0.02}{2011/05/22}{Added option of indented paragraphs.}
 % \changes{v0.03}{2011/05/23}{Removed \rd and \id}
+% \changes{v0.04}{2011/06/02}{Added microtype}
 %
 % \title{The \textsf{skrapport} document class\thanks{This document corresponds to \textsf{skrapport}~\fileversion, dated~\filedate.}}
 % \author{Simon Sigurdhsson \\ \texttt{ssimon@student.chalmers.se}}
@@ -74,7 +75,7 @@
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<*class>
-\ProvidesClass{skrapport}[2011/05/22 v0.02 Skånings rapportklass]
+\ProvidesClass{skrapport}[2011/06/02 v0.04 Skånings rapportklass]
 
 \newcommand\@ptsize{}
 \newif\if@english\@englishfalse
@@ -127,6 +128,7 @@
 \fi
 
 \AtBeginDocument{
+  \RequirePackage{microtype}
 	\RequirePackage{icomma}
   \RequirePackage{textcomp}
 	\RequirePackage{amsmath}
