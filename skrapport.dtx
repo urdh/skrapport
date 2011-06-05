@@ -1,25 +1,30 @@
-% \def\filename{skrapport.dtx}
-% \def\fileversion{0.04}
-% \def\filedate{2011/06/02}
 % \iffalse meta-comment
 %
-% Copyright (C) 2011 by Simon Sigurdhsson
-%
+% Copyright (C) 2011 by Simon Sigurdhsson <ssimon@student.chalmers.se>
+% -------------------------------------------------------
+% 
 % This file may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either
-% version 1.2 of this license or (at your option) any later
-% version. The latest version of this license is in:
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
 %
 %    http://www.latex-project.org/lppl.txt
 %
-% and version 1.2 or later is part of all distributions of
-% LaTeX version 1999/12/01 or later.
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
 %
 % \fi
+%
 % \iffalse
-%class\NeedsTeXFormat{LaTeX2e}[1995/12/01]
-%class\ProvidesClass{skrapport}
-%class   [2011/06/02 v0.04 Skånings rapportklass]
+%<*driver>
+\ProvidesFile{skrapport.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<class>\ProvidesClass{skrapport}
+%<*class>
+    [2011/06/05 v0.05 Skånings rapportklass]
+%</class>
+%
 %<*driver>
 \documentclass{ltxdoc}
 \EnableCrossrefs
@@ -31,102 +36,163 @@
 %</driver>
 % \fi
 %
-% \changes{v0.01}{2011/05/21}{Initial version.}
-% \changes{v0.02}{2011/05/22}{Added option of indented paragraphs.}
-% \changes{v0.03}{2011/05/23}{Removed \rd and \id}
-% \changes{v0.04}{2011/06/02}{Added microtype}
+% \CheckSum{0}
 %
-% \title{The \textsf{skrapport} document class\thanks{This document corresponds to \textsf{skrapport}~\fileversion, dated~\filedate.}}
+%
+% \changes{v0.01}{2011/05/21}{Initial version}
+% \changes{v0.02}{2011/05/22}{Added option of indented paragraphs}
+% \changes{v0.03}{2011/05/23}{Removed \texttt{\\rd} and \texttt{\\id}}
+% \changes{v0.04}{2011/06/02}{Added \textsf{microtype} package}
+% \changes{v0.05}{2011/06/05}{Improved documentation}
+%
+% \GetFileInfo{skrapport.dtx}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+% 
+%
+% \title{The \textsf{skrapport} class\thanks{This document
+%   corresponds to \textsf{skrapport}~\fileversion, dated \filedate.}}
 % \author{Simon Sigurdhsson \\ \texttt{ssimon@student.chalmers.se}}
 %
 % \maketitle
 %
 % \section{Introduction}
+%
 % This document class is intended for simple reports submitted by the
 % author at Chalmers University of Technology. It is small,
 % straightforward and basically a restyling of the standard \LaTeX\ 
 % \textsf{article} class. It does, however, offer a different set of
 % options.
 %
-% \section{Options}
+% \section{Usage}
+%	\subsection{Options}
 % \begin{description}
-%		\item[\texttt{a4paper},\texttt{a5paper}] Paper size. Only these two are available; use the \textsf{geometry} package to utilize american or otherwise esoteric paper sizes. Default is \texttt{a4paper}.
-%		\item[\texttt{10pt},\texttt{11pt},\texttt{12pt}] Font size, exactly like the standard \textsf{article} document class. Default is \texttt{11pt}.
-%   \item[\texttt{draft},\texttt{final}] Trigger (or untrigger) draft mode, like the standard \textsf{article} class. Default is \texttt{final}.
-%		\item[\texttt{fleqn},\texttt{leqno}] Included for compatibility with \textsf{article}.
-%   \item[\texttt{bftitles},\texttt{rmtitles}] Decides wether to typeset titles using bold fonts or regular ones. Default is \texttt{rmtitles} (i.e.~non-bold titles).
-%   \item[\texttt{swe},\texttt{eng}] Tells \textsf{babel} what language to load as the primary one. Both languages are loaded regardless. Default is \texttt{swe}.
-%   \item[\texttt{lmodern},\texttt{palatino}] Decides what font to use. Default is \texttt{lmodern}.
-%   \item[\texttt{indent},\texttt{noindent}] Decides wether to use paragraph indentation or \textsf{parskip}-style paragraphs. Default is \texttt{noindent}.
+%		\item[\texttt{a4paper},\texttt{a5paper}] Paper size. Only these two are
+%					available; use the \textsf{geometry} package to utilize american
+%					or otherwise esoteric paper sizes. Default is \texttt{a4paper}.
+%		\item[\texttt{10pt},\texttt{11pt},\texttt{12pt}] Font size, exactly like
+%					the standard \textsf{article} document class. Default is
+%					\texttt{11pt}.
+%   \item[\texttt{draft},\texttt{final}] Trigger (or untrigger) draft mode,
+%					like the standard \textsf{article} class. Default is \texttt{final}.
+%		\item[\texttt{fleqn},\texttt{leqno}] Included for compatibility with
+%					\textsf{article}.
+%   \item[\texttt{bftitles},\texttt{rmtitles}] Decides wether to typeset 
+%					titles using bold fonts or regular ones. Default is 
+%					\texttt{rmtitles} (i.e.~non-bold titles).
+%   \item[\texttt{swe},\texttt{eng}] Tells \textsf{babel} what language to 
+%					load as the primary one. Both languages are loaded regardless.
+%					Default is \texttt{swe}.
+%   \item[\texttt{lmodern},\texttt{palatino}] Decides what font to use.
+%					Default is \texttt{lmodern}.
+%   \item[\texttt{indent},\texttt{noindent}] Decides wether to use paragraph
+%					indentation or \textsf{parskip}-style paragraphs. Default is
+%					\texttt{noindent}.
 % \end{description}
 %
-% \section{Included packages}
-% The document class includes \textsf{babel}, \textsf{fontenc}, \textsf{icomma}, \textsf{amsmath}, \textsf{amssymb} and \textsf{hyperref} by default.
-%
-% \section{Useful macros}
+% \subsection{Useful macros}
 % In general, the class defines the same macros as the \textsf{article} class.
 %
-% \DescribeMacro{\regarding}The class does add a \verb|\regarding| macro, which is used like the standard \verb|\author| and \verb|\title| macros and should be given an accurate but short description of the purpose of the report (i.e.~course name or similar). This is printed along with the date on the top of the title/first page.
+% \DescribeMacro{\regarding}
+% The class does add a |\regarding| macro, which is used like the standard
+%	|\author| and |\title| macros and should be given an accurate but short
+%	description of the purpose of the report (i.e.~course name or similar). This
+%	is printed along with the date on the top of the title/first page.
 %
-% \StopEventually{}
+% \section{Additional information}
+% \subsection{Included packages}
+% The document class includes \textsf{babel}, \textsf{fontenc},
+% \textsf{icomma}, \textsf{amsmath}, \textsf{amssymb}, \textsf{microtype} and
+% \textsf{hyperref} by default.
+%
+% \StopEventually{\PrintChanges}
+%
 % \section{Implementation}
-% The document class is implemented as a completely uncommented mess for the time being. Sometime someone's going to clean that up.
-%
+% Start by defining some variables for future use.
 %    \begin{macrocode}
-\NeedsTeXFormat{LaTeX2e}[1995/12/01]
-%<*class>
-\ProvidesClass{skrapport}[2011/06/02 v0.04 Skånings rapportklass]
-
 \newcommand\@ptsize{}
 \newif\if@english\@englishfalse
 \newif\if@palatino\@palatinofalse
 \newif\if@indent\@indentfalse
-
+%    \end{macrocode}
+%
+% Declare the paper size options.
+%    \begin{macrocode}
 \DeclareOption{a4paper}
   {\setlength\paperheight {297mm}%
    \setlength\paperwidth  {210mm}}
 \DeclareOption{a5paper}
   {\setlength\paperheight {210mm}%
    \setlength\paperwidth  {148mm}}
-
+%    \end{macrocode}
+% 
+% Declare point size options.
+%    \begin{macrocode}
 \DeclareOption{10pt}{\renewcommand\@ptsize{0}}
 \DeclareOption{11pt}{\renewcommand\@ptsize{1}}
 \DeclareOption{12pt}{\renewcommand\@ptsize{2}}
-
+%    \end{macrocode}
+% 
+% Declare |draft| and |final| options.
+%    \begin{macrocode}
 \DeclareOption{draft}{\setlength\overfullrule{5pt}}
 \DeclareOption{final}{\setlength\overfullrule{0pt}}
-
+%    \end{macrocode}
+% 
+% Declare the |fleqn| and |leqno| options for compatibility with the 
+% \textsf{article} class.
+%    \begin{macrocode}
 \DeclareOption{leqno}{\input{leqno.clo}}
 \DeclareOption{fleqn}{\input{fleqn.clo}}
-
+%    \end{macrocode}
+% 
+% Declare options for bold/roman section titles.
+%    \begin{macrocode}
 \DeclareOption{bftitles}{\let\@titstyle\bfseries}
 \DeclareOption{rmtitles}{\let\@titstyle\relax}
-
+%    \end{macrocode}
+% 
+% Declare options for swedish/english \textsf{babel} support.
+%    \begin{macrocode}
 \DeclareOption{eng}{\@englishtrue}
 \DeclareOption{swe}{\@englishfalse}
-
+%    \end{macrocode}
+% 
+% Declare font options.
+%    \begin{macrocode}
 \DeclareOption{lmodern}{\@palatinofalse}
 \DeclareOption{palatino}{\@palatinotrue}
-
+%    \end{macrocode}
+% 
+% Declare indentation options.
+%    \begin{macrocode}
 \DeclareOption{indent}{\@indenttrue}
 \DeclareOption{noindent}{\@indentfalse}
-
+%    \end{macrocode}
+% 
+% Execute default options and process given options.
+%    \begin{macrocode}
 \ExecuteOptions{a4paper,11pt,final,rmtitles,swe,lmodern,noindent}
 \ProcessOptions
-
+%    \end{macrocode}
+% 
+% Require packages as per given options.
+%    \begin{macrocode}
 \if@english
 	\RequirePackage[swedish,english]{babel}
 \else
 	\RequirePackage[english,swedish]{babel}
 \fi
-
 \RequirePackage[T1]{fontenc}
 \if@palatino
 	\IfFileExists{tgpagella.sty}{\RequirePackage{tgpagella}}{\RequirePackage[sc]{mathpazo}}
 \else
 	\RequirePackage{lmodern}
-\fi
-
+\fi	
+%    \end{macrocode}
+% 
+% Include some essential packages per default.
+%    \begin{macrocode}
 \AtBeginDocument{
   \RequirePackage{microtype}
 	\RequirePackage{icomma}
@@ -135,17 +201,29 @@
 	\RequirePackage{amssymb}
 	\RequirePackage{hyperref}
 	\urlstyle{same}
-}
-
+}	
+%    \end{macrocode}
+% 
+% Include the correct point size |.clo| file from the \textsf{article} class.
+%    \begin{macrocode}
 \input{size1\@ptsize.clo}
+%    \end{macrocode}
+% 
+% Set some default measurements.
+%    \begin{macrocode}
 \addtolength\textwidth{0.5\oddsidemargin}
 \addtolength\textwidth{0.5\evensidemargin}
 \addtolength\oddsidemargin{-0.5\oddsidemargin}
 \addtolength\evensidemargin{-0.5\evensidemargin}
-
 \setlength\lineskip{1\p@}
 \setlength\normallineskip{1\p@}
 \renewcommand\baselinestretch{}
+%    \end{macrocode}
+% 
+% Indentation code. Undo the indentation set by the \textsf{article} class
+% if indentation was requested by the user. See the \textsf{parskip} package
+% for further information. Enable french spacing as well.
+%    \begin{macrocode}
 \if@indent\else
         \setlength\parskip{0.5\baselineskip \@plus 2pt}
 	\parindent=\z@
@@ -185,7 +263,10 @@
 	  \endgroup}
 \fi
 \frenchspacing
-
+%    \end{macrocode}
+% 
+% Penalties and float settings.
+%    \begin{macrocode}
 \@lowpenalty   51
 \@medpenalty  151
 \@highpenalty 301
@@ -199,10 +280,20 @@
 \renewcommand\floatpagefraction{.75}
 \renewcommand\dbltopfraction{.75}
 \renewcommand\dblfloatpagefraction{.75}
-
+%    \end{macrocode}
+% 
+% \begin{macro}{\regarding}
+% This macro is used by |\maketitle| to insert a simple text into the header
+% on the title page.
+%    \begin{macrocode}
 \def\@regarding{\relax}
 \newcommand{\regarding}[1]{\gdef\@regarding{#1}}
-
+%    \end{macrocode}
+% \end{macro}
+% 
+% The standard |\maketitle| command as taken from the \textsf{article} class
+% but with some basic restyling.
+%    \begin{macrocode}
 \newcommand\maketitle{\par%
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
@@ -245,8 +336,11 @@
     \vspace{.75cm}%
   \end{flushleft}%
   \par%
-}
-
+}	
+%    \end{macrocode}
+% 
+% Sectioning commands.
+%    \begin{macrocode}
 \setcounter{secnumdepth}{3}
 \newcounter{section}
 \newcounter{subsection}[section]
@@ -278,7 +372,10 @@
   {1ex \@plus .25ex \@minus -.25ex}%
   {-1em}%
   {\normalfont\normalsize\itseries}}
-
+%    \end{macrocode}
+% 
+% Itemization commands.
+%    \begin{macrocode}
 \setlength\leftmargini{2em}
 \leftmargin\leftmargini
 \setlength\leftmarginii{2em}
@@ -311,16 +408,32 @@
   {\list{}{\labelwidth\z@\itemindent-\leftmargin
     \let\makelabel\descriptionlabel}}{\endlist}
 \newcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\bfseries #1}
-
+%    \end{macrocode}
+% 
+% Standard restyled |abstract| environment from the \textsf{article} class.
+%    \begin{macrocode}
 \newenvironment{abstract}{\begin{minipage}[t]{.25\textwidth}\begin{flushright}\bfseries\abstractname\end{flushright}\end{minipage}\hspace{.025\textwidth}\begin{minipage}[t]{0.725\textwidth}}{\end{minipage}}
-
+%    \end{macrocode}
+% 
+% Quotation environments.
+%    \begin{macrocode}
 \newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item\relax}{\endlist}
 \newenvironment{quotation}{\begin{quote}}{\end{quote}}
 \newenvironment{verse}{\begin{quote}}{\end{quote}}
+%    \end{macrocode}
+% 
+%	Titlepage environment.
+%    \begin{macrocode}
 \newenvironment{titlepage}{\newpage\thispagestyle{empty}\setcounter{page}\@ne}{\newpage\setcounter{page}\@ne}
-
+%    \end{macrocode}
+% 
+% Appendix macro.
+%    \begin{macrocode}
 \newcommand\appendix{\par\setcounter{section}{0}\setcounter{subsection}{0}\gdef\thesection{\@Alph\c@section}}
-
+%    \end{macrocode}
+% 
+% Figure and table floats.
+%    \begin{macrocode}
 \setlength\arraycolsep{5\p@}
 \setlength\tabcolsep{6\p@}
 \setlength\arrayrulewidth{.4\p@}
@@ -344,6 +457,10 @@
 \def\fnum@table{\tablename\nobreakspace\thetable}
 \newenvironment{table}{\@float{table}}{\end@float}
 \newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat}
+%    \end{macrocode}
+% 
+% Captions.
+%    \begin{macrocode}
 \newlength\abovecaptionskip\setlength\abovecaptionskip{10\p@}
 \newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
 \long\def\@makecaption#1#2{%
@@ -356,7 +473,10 @@
 		\hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
 	\fi
 	\vskip\belowcaptionskip}
-
+%    \end{macrocode}
+% 
+% Bibliography code.
+%    \begin{macrocode}
 \newdimen\bibindent
 \setlength\bibindent{2em}
 \newenvironment{thebibliography}[1]
@@ -393,7 +513,10 @@
 \newcommand\subitem{\@idxitem \hspace*{20\p@}}
 \newcommand\subsubitem{\@idxitem \hspace*{30\p@}}
 \newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
-
+%    \end{macrocode}
+% 
+% Footnote code.
+%    \begin{macrocode}
 \renewcommand\footnoterule{%
 	\kern-3\p@
 	\hrule\@width.4\columnwidth
@@ -402,6 +525,10 @@
 	\parindent 1em%
 	\noindent
 	\hb@xt@1.8em{\hss\@makefnmark}#1}
+%    \end{macrocode}
+% 
+% Basic translatable texts.
+%    \begin{macrocode}
 \newcommand\contentsname{Innehåll}
 \newcommand\refname{Referenser}
 \newcommand\figurename{Figur}
@@ -409,14 +536,17 @@
 \newcommand\appendixname{Bilaga}
 \newcommand\abstractname{Sammanfattning}
 \def\today{\year--\month--\day}
+%    \end{macrocode}
+% 
+% Final page setup
+%    \begin{macrocode}
 \setlength\columnsep{10\p@}
 \setlength\columnseprule{0\p@}
 \pagestyle{plain}
 \pagenumbering{arabic}
 \raggedbottom
 \onecolumn
-
-\endinput
-%</class>
 %    \end{macrocode}
+%
 % \Finale
+\endinput
