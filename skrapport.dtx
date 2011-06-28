@@ -294,6 +294,15 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\license}
+% This macro is used by |\maketitle| to insert a license into the footer
+% on the titlepage.
+%    \begin{macrocode}
+\def\@copyright{\relax}
+\newcommand{\license}[1]{\gdef\@copyright{#1}}
+%    \end{macrocode}
+% \end{macro}
+% 
 % The standard |\maketitle| command as taken from the \textsf{article} class
 % but with some basic restyling.
 %    \begin{macrocode}
@@ -427,7 +436,8 @@
 % 
 %	Titlepage environment.
 %    \begin{macrocode}
-\newenvironment{titlepage}{\newpage\setcounter{page}\@ne}{\thispagestyle{empty}\newpage\setcounter{page}\@ne}
+\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\hfill\raggedleft\@copyright\par\global\let\@copyright\relax\global\let\license\relax}\let\@evenfoot=\@oddfoot}
+\newenvironment{titlepage}{\newpage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\newpage\setcounter{page}\@ne}
 %    \end{macrocode}
 % 
 % Appendix macro.
