@@ -436,7 +436,7 @@
 % 
 %	Titlepage environment.
 %    \begin{macrocode}
-\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\hfill\raggedleft\@copyright\par\global\let\@copyright\relax\global\let\license\relax}\let\@evenfoot=\@oddfoot}
+\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@copyright\end{minipage}\global\let\@copyright\relax\global\let\license\relax}\let\@evenfoot\@oddfoot}
 \newenvironment{titlepage}{\newpage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\newpage\setcounter{page}\@ne}
 %    \end{macrocode}
 % 
