@@ -424,7 +424,7 @@
 %	Titlepage environment.
 %    \begin{macrocode}
 \newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@copyright\end{minipage}}\let\@evenfoot\@oddfoot}
-\newenvironment{titlepage}{\newpage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\newpage\setcounter{page}\@ne}
+\newenvironment{titlepage}{\cleardoublepage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\cleardoublepage\setcounter{page}\@ne}
 %    \end{macrocode}
 % 
 % Appendix macro.
