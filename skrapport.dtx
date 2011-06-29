@@ -223,7 +223,9 @@
 % Include some essential packages per default.
 %    \begin{macrocode}
 \AtEndOfClass{
-  \RequirePackage{microtype}
+  \ifxetex\else
+    \RequirePackage{microtype}
+	\fi
 	\RequirePackage{icomma}
 	\RequirePackage{amsmath}
 	\ifxetex
