@@ -447,14 +447,14 @@
 \def\fps@figure{tb}
 \def\ftype@figure{1}
 \def\ext@figure{lof}
-\def\fnum@figure{\figurename\nobreakspace\thefigure}
+\def\fnum@figure{\figurename~\thefigure}
 \newenvironment{figure}{\@float{figure}}{\end@float}
 \newenvironment{figure*}{\@dblfloat{figure}}{\end@dblfloat}
 \newcounter{table}\renewcommand\thetable{\@arabic\c@table}
 \def\fps@table{tb}
 \def\ftype@table{2}
 \def\ext@table{lot}
-\def\fnum@table{\tablename\nobreakspace\thetable}
+\def\fnum@table{\tablename~\thetable}
 \newenvironment{table}{\@float{table}}{\end@float}
 \newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat}
 %    \end{macrocode}
@@ -504,6 +504,12 @@
 \newcommand*\l@subsubsection{\@dottedtocline{3}{3.3em}{3.15em}}
 \newcommand*\l@paragraph{\@dottedtocline{4}{6.45em}{4.15em}}
 \newcommand*\l@subparagraph{\@dottedtocline{5}{10.6em}{5.15em}}
+%    \end{macrocode}
+%
+% Fix for e.g.~\textsf{tocloft} package
+%    \begin{macrocode}
+\let\l@figure\@empty
+\let\l@table\@empty
 %    \end{macrocode}
 %
 % Bibliography code.
