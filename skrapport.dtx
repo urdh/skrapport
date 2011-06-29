@@ -117,6 +117,7 @@
 \newif\if@english\@englishfalse
 \newif\if@palatino\@palatinofalse
 \newif\if@indent\@indentfalse
+\RequirePackage{ifxetex}
 %    \end{macrocode}
 %
 % Declare the paper size options.
@@ -181,30 +182,51 @@
 % 
 % Require packages as per given options.
 %    \begin{macrocode}
-\if@english
-	\RequirePackage[swedish,english]{babel}
+\ifxetex
+  \RequirePackage{fontspec}
 \else
-	\RequirePackage[english,swedish]{babel}
+  \RequirePackage[T1]{fontenc}	
 \fi
-\RequirePackage[T1]{fontenc}
 \if@palatino
 	\IfFileExists{tgpagella.sty}{\RequirePackage{tgpagella}}{\RequirePackage[sc]{mathpazo}}
 \else
 	\RequirePackage{lmodern}
-\fi	
+\fi
+\if@english
+	\ifxetex
+		\RequirePackage{polyglossia}
+		\setmainlanguage{english}
+		\setotherlanguage{swedish}
+	\else
+		\RequirePackage[swedish,english]{babel}
+	\fi
+\else
+	\ifxetex
+		\RequirePackage{polyglossia}
+		\setmainlanguage{swedish}
+		\setotherlanguage{english}
+	\else
+	  \RequirePackage[english,swedish]{babel}
+	\fi
+\fi
 %    \end{macrocode}
 % 
 % Include some essential packages per default.
 %    \begin{macrocode}
-\AtBeginDocument{
+\AtEndOfClass{
   \RequirePackage{microtype}
 	\RequirePackage{icomma}
-  \RequirePackage{textcomp}
 	\RequirePackage{amsmath}
-	\RequirePackage{amssymb}
-	\RequirePackage{hyperref}
-	\urlstyle{same}
+	\ifxetex
+		\RequirePackage{unicode-math}
+	\else
+		\RequirePackage{amssymb}
+	\fi
+  \RequirePackage{textcomp}
 }	
+\AtBeginDocument{
+	\@ifundefined{urlstyle}{}{\urlstyle{same}}
+}
 %    \end{macrocode}
 % 
 % Include the correct point size |.clo| file from the \textsf{article} class.
