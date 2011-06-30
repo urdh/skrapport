@@ -185,7 +185,7 @@
 % Require packages as per given options.
 %    \begin{macrocode}
 \ifxetex
-  \RequirePackage{fontspec}
+  \RequirePackage[quiet]{fontspec}
 	\DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
 \else
   \RequirePackage[T1]{fontenc}	
@@ -228,9 +228,7 @@
 	\fi
 	\RequirePackage{icomma}
 	\RequirePackage{amsmath}
-	\ifxetex
-		\RequirePackage{unicode-math}
-	\else
+	\ifxetex\else
 		\RequirePackage{amssymb}
 	\fi
   \RequirePackage{textcomp}
@@ -614,7 +612,7 @@
 \setlength\columnseprule{0\p@}
 \pagestyle{plain}
 \pagenumbering{arabic}
-\raggedbottom
+\flushbottom
 \onecolumn
 %    \end{macrocode}
 %
