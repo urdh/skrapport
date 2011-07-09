@@ -447,8 +447,8 @@
 % 
 % Quotation environments.
 %    \begin{macrocode}
-\newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item\relax}{\endlist}
-\newenvironment{quotation}{\begin{quote}}{\end{quote}}
+\newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item\relax\itshape}{\endlist}
+\newenvironment{quotation}{\bigskip\begin{quote}}{\end{quote}\bigskip}
 \newenvironment{verse}{\begin{quote}}{\end{quote}}
 %    \end{macrocode}
 % 
@@ -517,6 +517,17 @@
 \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 %    \end{macrocode}
 %
+% Redefining the \verb|\emph| style to be bold when nested.
+%    \begin{macrocode}
+\DeclareRobustCommand\em{%
+	\@nomath\em%
+	\ifdim \fontdimen\@ne\font >\z@%
+		\itshape\bfseries%
+	\else%
+		\itshape%
+	\fi%
+}
+%    \end{macrocode}
 % Table of contents code.
 %    \begin{macrocode}
 \newcommand\@pnumwidth{1.55em}
