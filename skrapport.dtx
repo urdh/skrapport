@@ -222,6 +222,7 @@
 % 
 % Include some essential packages per default.
 %    \begin{macrocode}
+\RequirePackage{calc}
 \AtEndOfClass{
   \ifxetex\else
     \RequirePackage{microtype}
@@ -442,7 +443,7 @@
 % 
 % Standard restyled |abstract| environment from the \textsf{article} class.
 %    \begin{macrocode}
-\newenvironment{abstract}{\begin{minipage}[t]{.25\textwidth}\begin{flushright}\bfseries\abstractname\end{flushright}\end{minipage}\hspace{.025\textwidth}\begin{minipage}[t]{0.725\textwidth}}{\end{minipage}}
+\newenvironment{abstract}{\newlength\skrapport@abstract@tw\newlength\skrapport@abstract@aw\settowidth{\skrapport@abstract@tw}{\abstractname}\setlength{\skrapport@abstract@aw}{\the\textwidth - \the\skrapport@abstract@tw - 2em}\begin{minipage}[t]{\skrapport@abstract@tw}\begin{flushright}\bfseries\abstractname\end{flushright}\end{minipage}\hfill\begin{minipage}[t]{\skrapport@abstract@aw}}{\end{minipage}}
 %    \end{macrocode}
 % 
 % Quotation environments.
