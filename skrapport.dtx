@@ -224,12 +224,15 @@
 %    \begin{macrocode}
 \RequirePackage{calc}
 \AtEndOfClass{
-  \ifxetex\else
     \RequirePackage{microtype}
-	\fi
 	\RequirePackage{icomma}
 	\RequirePackage[intlimits]{amsmath}
 	\ifxetex\else
+		\let\Finv\relax
+		\let\Game\relax
+		\let\beth\relax
+		\let\gimel\relax
+		\let\daleth\relax
 		\RequirePackage{amssymb}
 	\fi
   \RequirePackage{textcomp}
