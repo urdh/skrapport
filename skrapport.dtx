@@ -118,7 +118,11 @@
 \newif\if@palatino\@palatinofalse
 \newif\if@indent\@indentfalse
 \newif\if@anyfont\@anyfonttrue
-\RequirePackage{ifxetex}
+\IfFileExists{file}{%
+  \RequirePackage{ifxetex}%
+}{%
+  \newif\ifxetex\xetexfalse%
+}
 %    \end{macrocode}
 %
 % Declare the paper size options.
