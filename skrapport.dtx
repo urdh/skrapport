@@ -118,7 +118,7 @@
 \newif\if@palatino\@palatinofalse
 \newif\if@indent\@indentfalse
 \newif\if@anyfont\@anyfonttrue
-\IfFileExists{file}{%
+\IfFileExists{ifxetex.sty}{%
   \RequirePackage{ifxetex}%
 }{%
   \newif\ifxetex\xetexfalse%
@@ -207,6 +207,7 @@
 \fi
 \if@english
 	\ifxetex
+		\RequirePackage{xkeyval}
 		\RequirePackage{polyglossia}
 		\setmainlanguage{english}
 		\setotherlanguage{swedish}
@@ -215,6 +216,7 @@
 	\fi
 \else
 	\ifxetex
+		\RequirePackage{xkeyval}
 		\RequirePackage{polyglossia}
 		\setmainlanguage{swedish}
 		\setotherlanguage{english}
