@@ -22,7 +22,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<class>\ProvidesClass{skrapport}
 %<*class>
-    [2011/09/18 v0.07 Skånings rapportklass]
+    [2011/09/18 v0.07a Skånings rapportklass]
 %</class>
 %
 %<*driver>
@@ -38,7 +38,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{966}
+% \CheckSum{975}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
@@ -55,6 +55,7 @@
 % \changes{v0.07}{2011/09/18}{Added command \cs{license}}
 % \changes{v0.07}{2011/09/18}{Added option \texttt{kpfonts}, set as default
 %                             option for fonts}
+% \changes{v0.07a}{2011/09/18}{Fixed \textsf{kpfonts} issues}
 % % \changes{v0.08}{???/??/??}{Fixed documentation}
 %
 % \GetFileInfo{skrapport.dtx}
@@ -207,7 +208,8 @@
 \fi
 \if@anyfont
   \if@kpfonts
-    \RequirePackage[fulloldstylenums,oldstylemath,easyscsl]{kpfonts}
+    \RequirePackage[fulloldstylenums,oldstylemath,easyscsl,%
+                    intlimits,sumlimits]{kpfonts}
   \else
 	  \if@palatino
 		  \IfFileExists{tgpagella.sty}{%
@@ -247,14 +249,14 @@
 \AtEndOfClass{
     \RequirePackage{microtype}
 	\RequirePackage{icomma}
-	\RequirePackage[intlimits]{amsmath}
+	\if@kpfonts\else\RequirePackage[intlimits]{amsmath}\fi
 	\let\Finv\relax
 	\let\Game\relax
 	\let\beth\relax
 	\let\gimel\relax
 	\let\daleth\relax
-	\RequirePackage{amssymb}
-  \RequirePackage{textcomp}
+	\if@kpfonts\else\RequirePackage{amssymb}\fi
+  \if@kpfonts\else\RequirePackage{textcomp}\fi
 }	
 \AtBeginDocument{
 	\@ifundefined{urlstyle}{}{\urlstyle{same}}
