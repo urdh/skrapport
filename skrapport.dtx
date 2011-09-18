@@ -22,11 +22,12 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<class>\ProvidesClass{skrapport}
 %<*class>
-    [2011/06/05 v0.06 Skånings rapportklass]
+    [2011/09/18 v0.07 Skånings rapportklass]
 %</class>
 %
 %<*driver>
 \documentclass{ltxdoc}
+\usepackage{hologo}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -37,16 +38,24 @@
 %</driver>
 % \fi
 %
-% \CheckSum{821}
+% \CheckSum{966}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
 % \changes{v0.02}{2011/05/22}{Added option of indented paragraphs}
-% \changes{v0.03}{2011/05/23}{Removed \texttt{\\rd} and \texttt{\\id}}
+% \changes{v0.03}{2011/05/23}{Removed \cs{rd} and \cs{id}}
 % \changes{v0.04}{2011/06/02}{Added \textsf{microtype} package}
 % \changes{v0.05}{2011/06/05}{Improved documentation}
 % \changes{v0.06}{2011/06/05}{Corrected cheksum, further improved
 %                             documentation}
+% \changes{v0.07}{2011/09/18}{Various bugfixes, \hologo{XeLaTeX} 
+%                             compatibility, better float settings, quote
+%                             style fix, \texttt{intlimits} option to 
+%                             \textsf{amsmath}}
+% \changes{v0.07}{2011/09/18}{Added command \cs{license}}
+% \changes{v0.07}{2011/09/18}{Added option \texttt{kpfonts}, set as default
+%                             option for fonts}
+% % \changes{v0.08}{???/??/??}{Fixed documentation}
 %
 % \GetFileInfo{skrapport.dtx}
 %
@@ -116,6 +125,7 @@
 \newcommand\@ptsize{}
 \newif\if@english\@englishfalse
 \newif\if@palatino\@palatinofalse
+\newif\if@kpfonts\@kpfontsfalse
 \newif\if@indent\@indentfalse
 \newif\if@anyfont\@anyfonttrue
 \IfFileExists{ifxetex.sty}{%
@@ -169,8 +179,9 @@
 % 
 % Declare font options.
 %    \begin{macrocode}
-\DeclareOption{lmodern}{\@palatinofalse\@anyfonttrue}
-\DeclareOption{palatino}{\@palatinotrue\@anyfonttrue}
+\DeclareOption{lmodern}{\@palatinofalse\@kpfontsfalse\@anyfonttrue}
+\DeclareOption{palatino}{\@palatinotrue\@kpfontsfalse\@anyfonttrue}
+\DeclareOption{kpfonts}{\@palatinofalse\@kpfontstrue\@anyfonttrue}
 \DeclareOption{nofont}{\@anyfontfalse}
 %    \end{macrocode}
 % 
@@ -182,7 +193,7 @@
 % 
 % Execute default options and process given options.
 %    \begin{macrocode}
-\ExecuteOptions{a4paper,11pt,final,rmtitles,swe,lmodern,noindent}
+\ExecuteOptions{a4paper,11pt,final,rmtitles,swe,kpfonts,noindent}
 \ProcessOptions
 %    \end{macrocode}
 % 
@@ -195,14 +206,18 @@
   \RequirePackage[T1]{fontenc}	
 \fi
 \if@anyfont
-  \if@palatino
-	  \IfFileExists{tgpagella.sty}{%
-	    \RequirePackage{tgpagella}
-	  }{%
-	    \RequirePackage[sc]{mathpazo}
-    }
+  \if@kpfonts
+    \RequirePackage[fulloldstylenums,oldstylemath,easyscsl]{kpfonts}
   \else
-	  \RequirePackage{lmodern}
+	  \if@palatino
+		  \IfFileExists{tgpagella.sty}{%
+		    \RequirePackage{tgpagella}
+		  }{%
+		    \RequirePackage[sc]{mathpazo}
+	    }
+	  \else
+		  \RequirePackage{lmodern}
+	  \fi
   \fi
 \fi
 \if@english
