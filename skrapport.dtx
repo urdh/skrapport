@@ -225,19 +225,19 @@
 	\ifxetex
 		\RequirePackage{xkeyval}
 		\RequirePackage{polyglossia}
-		\setmainlanguage{english}
+		\setmainlanguage[variant=british]{english}
 		\setotherlanguage{swedish}
 	\else
-		\RequirePackage[swedish,english]{babel}
+		\RequirePackage[swedish,british]{babel}
 	\fi
 \else
 	\ifxetex
 		\RequirePackage{xkeyval}
 		\RequirePackage{polyglossia}
 		\setmainlanguage{swedish}
-		\setotherlanguage{english}
+		\setotherlanguage[variant=british]{english}
 	\else
-	  \RequirePackage[english,swedish]{babel}
+	  \RequirePackage[british,swedish]{babel}
 	\fi
 \fi
 %    \end{macrocode}
