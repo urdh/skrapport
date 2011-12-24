@@ -22,7 +22,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<class>\ProvidesClass{skrapport}
 %<*class>
-    [2011/09/18 v0.07a Skånings rapportklass]
+    [2011/12/24 v0.08 Skånings rapportklass]
 %</class>
 %
 %<*driver>
@@ -38,7 +38,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{975}
+% \CheckSum{1135}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
@@ -56,7 +56,8 @@
 % \changes{v0.07}{2011/09/18}{Added option \texttt{kpfonts}, set as default
 %                             option for fonts}
 % \changes{v0.07a}{2011/09/18}{Fixed \textsf{kpfonts} issues}
-% % \changes{v0.08}{???/??/??}{Fixed documentation}
+% \changes{v0.08}{2011/12/24}{Added option \texttt{twocolumn}}
+% % \changes{v0.09}{???/??/??}{Fixed documentation}
 %
 % \GetFileInfo{skrapport.dtx}
 %
@@ -101,6 +102,9 @@
 %   \item[\texttt{indent},\texttt{noindent}] Decides wether to use paragraph
 %					indentation or \textsf{parskip}-style paragraphs. Default is
 %					\texttt{noindent}.
+%   \item[\texttt{onecolumn},\texttt{twocolumn}] Decides wether the document has one
+%                   column (default) or two (implemented using the excellend
+%                   \texttt{multicol} package).
 % \end{description}
 %
 % \subsection{Useful macros}
@@ -111,6 +115,12 @@
 %	|\author| and |\title| macros and should be given an accurate but short
 %	description of the purpose of the report (i.e.~course name or similar). This
 %	is printed along with the date on the top of the title/first page.
+%
+% \DescribeMacro{onecol}
+% In \texttt{twocolumn} mode, the package defines an environment \texttt{onecol}
+%   which typesets its contents in a single column. Additionally, it redefines
+%   \texttt{figure} and \texttt{table} as non-floats, leaving the starred versions
+%   intact.
 %
 % \section{Additional information}
 % \subsection{Included packages}
@@ -124,6 +134,7 @@
 % Start by defining some variables for future use.
 %    \begin{macrocode}
 \newcommand\@ptsize{}
+\newif\if@twocolumn\@twocolumnfalse
 \newif\if@english\@englishfalse
 \newif\if@palatino\@palatinofalse
 \newif\if@kpfonts\@kpfontsfalse
@@ -151,6 +162,12 @@
 \DeclareOption{10pt}{\renewcommand\@ptsize{0}}
 \DeclareOption{11pt}{\renewcommand\@ptsize{1}}
 \DeclareOption{12pt}{\renewcommand\@ptsize{2}}
+%    \end{macrocode}
+%
+% Declare column options.
+%    \begin{macrocode}
+\DeclareOption{onecolumn}{\@twocolumnfalse}
+\DeclareOption{twocolumn}{\@twocolumntrue}
 %    \end{macrocode}
 % 
 % Declare |draft| and |final| options.
@@ -194,7 +211,7 @@
 % 
 % Execute default options and process given options.
 %    \begin{macrocode}
-\ExecuteOptions{a4paper,11pt,final,rmtitles,swe,kpfonts,noindent}
+\ExecuteOptions{a4paper,11pt,final,rmtitles,swe,kpfonts,noindent,onecolumn}
 \ProcessOptions
 %    \end{macrocode}
 % 
@@ -240,6 +257,11 @@
 	  \RequirePackage[british,swedish]{babel}
 	\fi
 \fi
+\if@twocolumn
+	\RequirePackage{etoolbox}
+	\RequirePackage{xstring}
+	\RequirePackage{multicol}
+\fi
 %    \end{macrocode}
 % 
 % Include some essential packages per default.
@@ -255,7 +277,7 @@
 	\let\gimel\relax
 	\let\daleth\relax
 	\if@kpfonts\else\RequirePackage{amssymb}\fi
-  \if@kpfonts\else\RequirePackage{textcomp}\fi
+	\if@kpfonts\else\RequirePackage{textcomp}\fi
 }	
 \AtBeginDocument{
 	\@ifundefined{urlstyle}{}{\urlstyle{same}}
@@ -641,6 +663,102 @@
 \def\today{\year--\month--\day}
 %    \end{macrocode}
 % 
+% The twocolumn hacks implemented.
+%    \begin{macrocode}
+\if@twocolumn
+	\AtBeginDocument{
+		\IfEq{\@ptsize}{0}{
+			\RequirePackage[fontsize=10pt,baseline=12pt]{grid}
+		}{
+			\IfEq{\@ptsize}{1}{
+				\RequirePackage[fontsize=11pt,baseline=13.2pt]{grid}
+			}{
+				\RequirePackage[fontsize=12pt,baseline=14.4pt]{grid}
+			}	
+		}
+		% Patching \env{document} and \cs{maketitle}
+		\AfterEndPreamble{\begin{multicols}{2}}
+		\AtEndDocument{\end{multicols}}
+		\pretocmd{\maketitle}{\end{multicols}}{}{}
+		\apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
+		% Patching \env{equation}
+		\BeforeBeginEnvironment{equation}{\begin{gridenv}}
+		\AfterEndEnvironment{equation}{\end{gridenv}}
+		\BeforeBeginEnvironment{equation*}{\begin{gridenv}}
+		\AfterEndEnvironment{equation*}{\end{gridenv}}
+		% Patching \env{multline}
+		\BeforeBeginEnvironment{multline}{\begin{gridenv}}
+		\AfterEndEnvironment{multline}{\end{gridenv}}
+		\BeforeBeginEnvironment{multline*}{\begin{gridenv}}
+		\AfterEndEnvironment{multline*}{\end{gridenv}}
+		% Patching \env{gather}
+		\BeforeBeginEnvironment{gather}{\begin{gridenv}}
+		\AfterEndEnvironment{gather}{\end{gridenv}}
+		\BeforeBeginEnvironment{gather*}{\begin{gridenv}}
+		\AfterEndEnvironment{gather*}{\end{gridenv}}
+		% Patching \env{align}
+		\BeforeBeginEnvironment{align}{\begin{gridenv}}
+		\AfterEndEnvironment{align}{\end{gridenv}}
+		\BeforeBeginEnvironment{align*}{\begin{gridenv}}
+		\AfterEndEnvironment{align*}{\end{gridenv}}
+		% Patching \env{flalign}
+		\BeforeBeginEnvironment{flalign}{\begin{gridenv}}
+		\AfterEndEnvironment{flalign}{\end{gridenv}}
+		\BeforeBeginEnvironment{flalign*}{\begin{gridenv}}
+		\AfterEndEnvironment{flalign*}{\end{gridenv}}
+		% Patching \env{alignat}
+		\BeforeBeginEnvironment{alignat}{\begin{gridenv}}
+		\AfterEndEnvironment{alignat}{\end{gridenv}}
+		\BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
+		\AfterEndEnvironment{alignat*}{\end{gridenv}}
+		% Patching \env{figure}
+		\renewenvironment{figure}{%
+			\begin{gridenv}%
+			\vspace{\intextsep}%
+			\begin{minipage}{\linewidth}%
+			\def\@captype{figure}%
+		}{%
+			\end{minipage}%
+			\vspace{\intextsep}%
+			\end{gridenv}%
+		}
+		% Patching \env{table}
+		\renewenvironment{table}{%
+			\begin{gridenv}%
+			\vspace{\intextsep}%
+			\begin{minipage}{\linewidth}%
+			\def\@captype{table}%
+			\let\@old@caption\caption%
+			\renewcommand{\caption}[1]{%
+				\setlength{\@tempdima}{\abovecaptionskip}%
+				\setlength{\abovecaptionskip}{\belowcaptionskip}%
+				\setlength{\belowcaptionskip}{\@tempdima}%
+				\@old@caption{##1}%
+				\vspace{\belowcaptionskip}%
+			}%
+		}{%
+			\end{minipage}%
+			\vspace{\intextsep}%
+			\end{gridenv}%
+		}
+		\let\oldoldtablest\oldtablest
+		\renewcommand{\oldtablest}{%
+			\oldoldtablest%
+			\let\@old@caption\caption%
+			\renewcommand{\caption}[1]{%
+				\setlength{\@tempdima}{\abovecaptionskip}%
+				\setlength{\abovecaptionskip}{\belowcaptionskip}%
+				\setlength{\belowcaptionskip}{\@tempdima}%
+				\@old@caption{##1}%
+				\vspace{\belowcaptionskip}%
+			}%
+		}
+		% Providing \env{onecol}
+		\newenvironment{onecol}{\end{multicols}}{\begin{multicols}{3}}
+	}
+\fi
+%    \end{macrocode}
+%
 % Final page setup
 %    \begin{macrocode}
 \setlength\columnsep{10\p@}
