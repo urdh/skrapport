@@ -22,7 +22,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<class>\ProvidesClass{skrapport}
 %<*class>
-    [2011/12/24 v0.08 Skånings rapportklass]
+    [2012/01/09 v0.09 Skånings rapportklass]
 %</class>
 %
 %<*driver>
@@ -57,7 +57,9 @@
 %                             option for fonts}
 % \changes{v0.07a}{2011/09/18}{Fixed \textsf{kpfonts} issues}
 % \changes{v0.08}{2011/12/24}{Added option \texttt{twocolumn}}
-% % \changes{v0.09}{???/??/??}{Fixed documentation}
+% \changes{v0.09}{2012/01/09}{Introduced \textsf{kvoptions} and color schemes,
+%							  fixed abstract in twocolumn mode}
+% % \changes{v0.10}{???/??/??}{Fixed documentation}
 %
 % \GetFileInfo{skrapport.dtx}
 %
@@ -131,15 +133,12 @@
 % \StopEventually{}
 %
 % \section{Implementation}
-% Start by defining some variables for future use.
+% Start by including \textsf{kvoptions} and defining some variables for future use.
 %    \begin{macrocode}
+\RequirePackage{xstring}
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=skrapport,prefix=skrapport@}
 \newcommand\@ptsize{}
-\newif\if@twocolumn\@twocolumnfalse
-\newif\if@english\@englishfalse
-\newif\if@palatino\@palatinofalse
-\newif\if@kpfonts\@kpfontsfalse
-\newif\if@indent\@indentfalse
-\newif\if@anyfont\@anyfonttrue
 \IfFileExists{ifxetex.sty}{%
   \RequirePackage{ifxetex}%
 }{%
@@ -149,96 +148,153 @@
 %
 % Declare the paper size options.
 %    \begin{macrocode}
-\DeclareOption{a4paper}
-  {\setlength\paperheight {297mm}%
-   \setlength\paperwidth  {210mm}}
-\DeclareOption{a5paper}
-  {\setlength\paperheight {210mm}%
-   \setlength\paperwidth  {148mm}}
+\DeclareStringOption[a4paper]{paper}
+\DeclareVoidOption{a4paper}{\skrapport@SetupPaper}
+\DeclareVoidOption{a5paper}{\skrapport@SetupPaper}
+\newcommand*{\skrapport@SetupPaper}{\expandafter\@skrapport@SetupPaper\expandafter{\CurrentOption}}
+\newcommand*{\@skrapport@SetupPaper}[1]{\setkeys{skrapport}{paper={#1}}}
 %    \end{macrocode}
 % 
 % Declare point size options.
 %    \begin{macrocode}
-\DeclareOption{10pt}{\renewcommand\@ptsize{0}}
-\DeclareOption{11pt}{\renewcommand\@ptsize{1}}
-\DeclareOption{12pt}{\renewcommand\@ptsize{2}}
+\DeclareStringOption[11pt]{ptsize}
+\DeclareVoidOption{10pt}{\skrapport@SetupPtsize}
+\DeclareVoidOption{11pt}{\skrapport@SetupPtsize}
+\DeclareVoidOption{12pt}{\skrapport@SetupPtsize}
+\newcommand*{\skrapport@SetupPtsize}{\expandafter\@skrapport@SetupPtsize\expandafter{\CurrentOption}}
+\newcommand*{\@skrapport@SetupPtsize}[1]{\setkeys{skrapport}{ptsize={#1}}}
 %    \end{macrocode}
 %
 % Declare column options.
 %    \begin{macrocode}
-\DeclareOption{onecolumn}{\@twocolumnfalse}
-\DeclareOption{twocolumn}{\@twocolumntrue}
+\DeclareBoolOption[false]{twocolumn}
+\DeclareComplementaryOption{onecolumn}{twocolumn}
 %    \end{macrocode}
 % 
 % Declare |draft| and |final| options.
 %    \begin{macrocode}
-\DeclareOption{draft}{\setlength\overfullrule{5pt}}
-\DeclareOption{final}{\setlength\overfullrule{0pt}}
+\DeclareBoolOption[false]{draft}
+\DeclareComplementaryOption{final}{draft}
 %    \end{macrocode}
 % 
 % Declare the |fleqn| and |leqno| options for compatibility with the 
 % \textsf{article} class.
 %    \begin{macrocode}
-\DeclareOption{leqno}{\input{leqno.clo}}
-\DeclareOption{fleqn}{\input{fleqn.clo}}
+\DeclareBoolOption[false]{leqno}
+\DeclareBoolOption[false]{fleqn}
 %    \end{macrocode}
 % 
 % Declare options for bold/roman section titles.
 %    \begin{macrocode}
-\DeclareOption{bftitles}{\let\@titstyle\bfseries}
-\DeclareOption{rmtitles}{\let\@titstyle\relax}
+\DeclareBoolOption[false]{bftitles}
+\DeclareComplementaryOption{rmtitles}{bftitles}
 %    \end{macrocode}
 % 
 % Declare options for swedish/english \textsf{babel} support.
 %    \begin{macrocode}
-\DeclareOption{eng}{\@englishtrue}
-\DeclareOption{swe}{\@englishfalse}
+\DeclareBoolOption[false]{eng}
+\DeclareComplementaryOption{swe}{eng}
 %    \end{macrocode}
 % 
 % Declare font options.
 %    \begin{macrocode}
-\DeclareOption{lmodern}{\@palatinofalse\@kpfontsfalse\@anyfonttrue}
-\DeclareOption{palatino}{\@palatinotrue\@kpfontsfalse\@anyfonttrue}
-\DeclareOption{kpfonts}{\@palatinofalse\@kpfontstrue\@anyfonttrue}
-\DeclareOption{nofont}{\@anyfontfalse\@palatinofalse\@kpfontsfalse}
+\DeclareStringOption[kpfonts]{font}
+\DeclareVoidOption{kpfonts}{\skrapport@SetupFont}
+\DeclareVoidOption{lmodern}{\skrapport@SetupFont}
+\DeclareVoidOption{palatino}{\skrapport@SetupFont}
+\DeclareVoidOption{nofont}{\skrapport@SetupFont}
+\newcommand*{\skrapport@SetupFont}{\expandafter\@skrapport@SetupFont\expandafter{\CurrentOption}}
+\newcommand*{\@skrapport@SetupFont}[1]{\setkeys{skrapport}{font={#1}}}
 %    \end{macrocode}
 % 
 % Declare indentation options.
 %    \begin{macrocode}
-\DeclareOption{indent}{\@indenttrue}
-\DeclareOption{noindent}{\@indentfalse}
+\DeclareBoolOption[false]{indent}
+\DeclareComplementaryOption{noindent}{indent}
+%    \end{macrocode}
+% 
+% Declare coloring options.
+%    \begin{macrocode}
+\DeclareStringOption[none]{colors}[unscathed]
 %    \end{macrocode}
 % 
 % Execute default options and process given options.
 %    \begin{macrocode}
-\ExecuteOptions{a4paper,11pt,final,rmtitles,swe,kpfonts,noindent,onecolumn}
-\ProcessOptions
+\ProcessKeyvalOptions*
 %    \end{macrocode}
 % 
 % Require packages as per given options.
 %    \begin{macrocode}
+\IfStrEq{\skrapport@paper}{a4paper}{%
+	\setlength\paperheight {297mm}
+	\setlength\paperwidth  {210mm}
+}{\IfStrEq{\skrapport@paper}{a5paper}{%
+	\setlength\paperheight {210mm}
+	\setlength\paperwidth  {148mm}
+}{%
+	\ClassError{skrapport}{%
+		Option 'paper' has unknown value '\skrapport@paper'
+	}{}	
+}}
+\IfStrEq{\skrapport@ptsize}{10pt}{%
+	\renewcommand\@ptsize{0}
+}{%
+	\IfStrEq{\skrapport@ptsize}{11pt}{%
+		\renewcommand\@ptsize{1}
+	}{%
+		\IfStrEq{\skrapport@ptsize}{12pt}{%
+			\renewcommand\@ptsize{2}
+		}{%
+			\ClassError{skrapport}{%
+				Option 'ptsize' has unknown value '\skrapport@ptsize'
+			}{}
+		}
+	}
+}
+\ifskrapport@draft
+	\setlength\overfullrule{5pt}
+\else
+	\setlength\overfullrule{0pt}
+\fi
+\ifskrapport@leqno\input{leqno.clo}\fi
+\ifskrapport@fleqn\input{fleqn.clo}\fi
+\ifskrapport@bftitles
+	\let\@titstyle\bfseries
+\else
+	\let\@titstyle\relax
+\fi
 \ifxetex
   \RequirePackage[quiet]{fontspec}
 	\DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
 \else
   \RequirePackage[T1]{fontenc}	
 \fi
-\if@anyfont
-  \if@kpfonts
-    \RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
-  \else
-	  \if@palatino
-		  \IfFileExists{tgpagella.sty}{%
-		    \RequirePackage{tgpagella}
-		  }{%
-		    \RequirePackage[sc]{mathpazo}
-	    }
-	  \else
-		  \RequirePackage{lmodern}
-	  \fi
-  \fi
-\fi
-\if@english
+\IfStrEq{\skrapport@colors}{none}{}{%
+	\RequirePackage{etoolbox}
+	\RequirePackage{xcolor}
+}
+\IfStrEq{\skrapport@font}{nofont}{}{%
+	\IfStrEq{\skrapport@font}{kpfonts}{%
+		\RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
+	}{%
+		\IfStrEq{\skrapport@font}{palatino}{%
+			\IfFileExists{tgpagella.sty}{%
+				\RequirePackage{tgpagella}
+			}{%
+				\RequirePackage[sc]{mathpazo}
+			}
+		}{%
+			\IfStrEq{\skrapport@font}{lmodern}{%
+				\RequirePackage{lmodern}
+			}{%
+				\ClassError{skrapport}{%
+					Option 'font' has unknown value '\skrapport@font'
+				}{}
+			}
+		}
+	}
+}
+\ifskrapport@eng
 	\ifxetex
 		\RequirePackage{xkeyval}
 		\RequirePackage{polyglossia}
@@ -257,9 +313,8 @@
 	  \RequirePackage[british,swedish]{babel}
 	\fi
 \fi
-\if@twocolumn
+\ifskrapport@twocolumn
 	\RequirePackage{etoolbox}
-	\RequirePackage{xstring}
 	\RequirePackage{multicol}
 \fi
 %    \end{macrocode}
@@ -270,15 +325,15 @@
 \AtEndOfClass{
     \RequirePackage{microtype}
 	\RequirePackage{icomma}
-	\if@kpfonts\else\RequirePackage[intlimits]{amsmath}\fi
+	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage[intlimits]{amsmath}}
 	\let\Finv\relax
 	\let\Game\relax
 	\let\beth\relax
 	\let\gimel\relax
 	\let\daleth\relax
-	\if@kpfonts\else\RequirePackage{amssymb}\fi
-	\if@kpfonts\else\RequirePackage{textcomp}\fi
-}	
+	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
+	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
+}
 \AtBeginDocument{
 	\@ifundefined{urlstyle}{}{\urlstyle{same}}
 }
@@ -304,7 +359,7 @@
 % if indentation was requested by the user. See the \textsf{parskip} package
 % for further information. Enable french spacing as well.
 %    \begin{macrocode}
-\if@indent\else
+\ifskrapport@indent\else
         \setlength\parskip{0.5\baselineskip \@plus 2pt}
 	\parindent=\z@
 	\setlength\parfillskip{30\p@ \@plus 1fil}
@@ -383,6 +438,7 @@
 % The standard |\maketitle| command as taken from the \textsf{article} class
 % but with some basic restyling.
 %    \begin{macrocode}
+\let\@smallprintstyle\relax
 \newcommand\maketitle{\par%
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
@@ -402,6 +458,7 @@
   \begin{flushleft}%
 		\vspace{-\headsep}
     {\small%
+      \@smallprintstyle
       \if\@regarding\relax\else\@regarding{, }\fi%
       \@date\par%
     }%
@@ -500,7 +557,7 @@
 % 
 %	Titlepage environment.
 %    \begin{macrocode}
-\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@copyright\end{minipage}}\let\@evenfoot\@oddfoot}
+\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@smallprintstyle\@copyright\end{minipage}}\let\@evenfoot\@oddfoot}
 \newenvironment{titlepage}{\cleardoublepage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\cleardoublepage\setcounter{page}\@ne}
 %    \end{macrocode}
 % 
@@ -538,13 +595,14 @@
 % 
 % Captions.
 %    \begin{macrocode}
+\let\@captionstyle\relax
 \newlength\abovecaptionskip\setlength\abovecaptionskip{10\p@}
 \newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
 \long\def\@makecaption#1#2{%
 	\vskip\abovecaptionskip
 	\sbox\@tempboxa{\small{\bfseries#1:} \itshape#2}%
 	\ifdim \wd\@tempboxa >\hsize
-		\small{\bfseries#1:} \itshape#2\par
+		\small{\bfseries\@captionstyle#1:} \itshape#2\par
 	\else
 		\global \@minipagefalse
 		\hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
@@ -565,6 +623,7 @@
 %
 % Redefining the \verb|\emph| style to be bold when nested.
 %    \begin{macrocode}
+\let\@emstyle\relax
 \DeclareRobustCommand\em{%
 	\@nomath\em%
 	\ifdim \fontdimen\@ne\font >\z@%
@@ -572,6 +631,7 @@
 	\else%
 		\itshape%
 	\fi%
+	\@emstyle%
 }
 %    \end{macrocode}
 % Table of contents code.
@@ -665,17 +725,19 @@
 % 
 % The twocolumn hacks implemented.
 %    \begin{macrocode}
-\if@twocolumn
+\ifskrapport@twocolumn
 	\AtBeginDocument{
-		\IfEq{\@ptsize}{0}{
+		\IfStrEq{\skrapport@ptsize}{10pt}{
 			\RequirePackage[fontsize=10pt,baseline=12pt]{grid}
 		}{
-			\IfEq{\@ptsize}{1}{
+			\IfStrEq{\skrapport@ptsize}{11pt}{
 				\RequirePackage[fontsize=11pt,baseline=13.2pt]{grid}
 			}{
 				\RequirePackage[fontsize=12pt,baseline=14.4pt]{grid}
 			}	
 		}
+		% Redefining abstract
+		\renewenvironment{abstract}{\section*{\abstractname}}{}
 		% Patching \env{document} and \cs{maketitle}
 		\AfterEndPreamble{\begin{multicols}{2}}
 		\AtEndDocument{\end{multicols}}
@@ -757,6 +819,101 @@
 		\newenvironment{onecol}{\end{multicols}}{\begin{multicols}{3}}
 	}
 \fi
+%    \end{macrocode}
+%
+% Color theme setup. Start by patching commands and declaring default colors.
+%    \begin{macrocode}
+\IfStrEq{\skrapport@colors}{none}{}{%
+	\apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
+	\apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
+	\if\@titstyle\relax
+		\def\@titstyle{\color{skrapport@titlecolor}}
+	\else
+		\apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
+	\fi
+	\def\@smallprintstyle{\color{skrapport@smallprintcolor}}
+	\AtBeginDocument{%
+		\let\@abstractname\abstractname
+		\def\abstractname{\color{skrapport@titlecolor}\@abstractname}
+	}
+	\apptocmd{\quote}{\color{skrapport@quotecolor}}{}{}
+	\def\@captionstyle{\color{skrapport@captioncolor}}
+	\def\@emstyle{\color{skrapport@emphcolor}}
+	\ifskrapport@twocolumn\AtBeginDocument{%
+		\renewcommand\section{\@startsection {section}{1}{\z@}%
+        	{-.999\baselineskip}{0.001\baselineskip}{\bfseries\mathversion{bold}\color{skrapport@titlecolor}}}
+		\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+			{\baselineskip}{-.35\baselineskip}{\bfseries\color{skrapport@titlecolor}\unskip}}
+		\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+			{\baselineskip}{-.35\baselineskip}{\itshape\color{skrapport@titlecolor}\unskip}}
+	}\fi
+	\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+		{1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\bfseries\color{skrapport@titlecolor}}}
+	\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+		{1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\itshape\color{skrapport@titlecolor}}}
+	\AtBeginDocument{\@ifpackageloaded{hyperref}{%
+		\hypersetup{%
+			citebordercolor=skrapport@citecolor,citecolor=skrapport@citecolor,%
+			filebordercolor=skrapport@filecolor,filecolor=skrapport@filecolor,%
+			linkbordercolor=skrapport@linkcolor,linkcolor=skrapport@linkcolor,%
+			menubordercolor=skrapport@menucolor,menucolor=skrapport@menucolor,%
+			urlbordercolor=skrapport@urlcolor,urlcolor=skrapport@urlcolor,%
+			runbordercolor=skrapport@runcolor,runcolor=skrapport@runcolor%
+		}
+	}{}}
+	\AtBeginDocument{\color{skrapport@defaultcolor}}
+	\definecolor{skrapport@citecolor}{named}{green}
+	\definecolor{skrapport@filecolor}{named}{teal}
+	\definecolor{skrapport@linkcolor}{named}{red}
+	\definecolor{skrapport@menucolor}{named}{red}
+	\definecolor{skrapport@urlcolor}{named}{cyan}
+	\definecolor{skrapport@runcolor}{named}{teal}
+	\definecolor{skrapport@boldcolor}{named}{black}
+	\definecolor{skrapport@titlecolor}{named}{black}
+	\definecolor{skrapport@italiccolor}{named}{black}
+	\definecolor{skrapport@smallprintcolor}{named}{black}
+	\definecolor{skrapport@quotecolor}{named}{black}
+	\definecolor{skrapport@captioncolor}{named}{black}
+	\definecolor{skrapport@emphcolor}{named}{black}
+	\definecolor{skrapport@defaultcolor}{named}{black}
+%    \end{macrocode}
+%
+% Color theme ``unscathed''.
+%    \begin{macrocode}
+	\IfStrEq{\skrapport@colors}{unscathed}{%
+		\definecolor{skrapport@citecolor}{named}{skrapport@defaultcolor}
+		\definecolor{skrapport@filecolor}{named}{skrapport@defaultcolor}
+		\definecolor{skrapport@menucolor}{named}{skrapport@defaultcolor}
+		\definecolor{skrapport@runcolor}{named}{skrapport@defaultcolor}
+		\definecolor{skrapport@emphcolor}{HTML}{463335}
+		\definecolor{skrapport@linkcolor}{HTML}{CF5D3B}
+		\definecolor{skrapport@urlcolor}{named}{skrapport@linkcolor}
+		\definecolor{skrapport@titlecolor}{HTML}{B34430}
+		\definecolor{skrapport@captioncolor}{named}{skrapport@titlecolor}
+		\definecolor{skrapport@quotecolor}{HTML}{70524A}
+		\definecolor{skrapport@smallprintcolor}{named}{skrapport@quotecolor}
+	}{%
+%    \end{macrocode}
+%
+% Color theme ``COLORTHEME''.
+%    \begin{macrocode}
+	\IfStrEq{\skrapport@colors}{COLORTHEME??}{%
+		% Ideas:
+		% http://www.colourlovers.com/palette/1831303/Violet_White_Bedrm
+		% http://www.colourlovers.com/palette/1418616/Colour_Me_In
+		% http://www.colourlovers.com/palette/126030/Cruel_Water_at_Night
+		% http://www.colourlovers.com/palette/71772/Calligraphy
+		% http://www.colourlovers.com/palette/175269/Picture_Book_Weeding
+	}{
+%    \end{macrocode}
+%
+% Error handling
+%    \begin{macrocode}
+		\ClassError{skrapport}{%
+			Option 'colors' has unknown value '\skrapport@colors'
+		}{}
+	}}
+}
 %    \end{macrocode}
 %
 % Final page setup
