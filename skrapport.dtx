@@ -822,6 +822,8 @@
 %    \end{macrocode}
 %
 % Color theme setup. Start by patching commands and declaring default colors.
+% Not implemented: background colors for e.g. quote environments and sections headings,
+% different colors for the different sectioning levels.
 %    \begin{macrocode}
 \IfStrEq{\skrapport@colors}{none}{}{%
 	\apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
@@ -895,24 +897,54 @@
 	}{%
 %    \end{macrocode}
 %
-% Color theme ``COLORTHEME''.
+% Color theme ``cruelwater''.
 %    \begin{macrocode}
-	\IfStrEq{\skrapport@colors}{COLORTHEME??}{%
-		% Ideas:
-		% http://www.colourlovers.com/palette/1831303/Violet_White_Bedrm
-		% http://www.colourlovers.com/palette/1418616/Colour_Me_In
-		% http://www.colourlovers.com/palette/126030/Cruel_Water_at_Night
-		% http://www.colourlovers.com/palette/71772/Calligraphy
-		% http://www.colourlovers.com/palette/175269/Picture_Book_Weeding
-	}{
+	\IfStrEq{\skrapport@colors}{cruelwater}{%
+		\definecolor{skrapport@citecolor}{named}{black}
+		\definecolor{skrapport@filecolor}{named}{black}
+		\definecolor{skrapport@linkcolor}{named}{black}
+		\definecolor{skrapport@menucolor}{named}{black}
+		\definecolor{skrapport@urlcolor}{named}{black}
+		\definecolor{skrapport@runcolor}{named}{black}
+		\definecolor{skrapport@boldcolor}{HTML}{030C22}
+		\definecolor{skrapport@titlecolor}{HTML}{20293F}
+		\definecolor{skrapport@italiccolor}{named}{black}
+		\definecolor{skrapport@smallprintcolor}{HTML}{A9B0B3}
+		\definecolor{skrapport@quotecolor}{HTML}{404749}
+		\definecolor{skrapport@captioncolor}{HTML}{030C22}
+		\definecolor{skrapport@emphcolor}{HTML}{20293F}
+		\definecolor{skrapport@defaultcolor}{named}{black}
+	}{%
 %    \end{macrocode}
+%
+% Color theme ``violet''. 311A2A, 98758D, D6CBCF, 932444, 463335
+%    \begin{macrocode}
+	\IfStrEq{\skrapport@colors}{violet}{%
+		\definecolor{skrapport@citecolor}{HTML}{932444}
+		\definecolor{skrapport@filecolor}{HTML}{932444}
+		\definecolor{skrapport@linkcolor}{HTML}{932444}
+		\definecolor{skrapport@menucolor}{HTML}{932444}
+		\definecolor{skrapport@urlcolor}{HTML}{932444}
+		\definecolor{skrapport@runcolor}{HTML}{932444}
+		\definecolor{skrapport@boldcolor}{HTML}{311A2A}
+		\definecolor{skrapport@titlecolor}{HTML}{311A2A}
+		\definecolor{skrapport@italiccolor}{named}{black}
+		\definecolor{skrapport@smallprintcolor}{HTML}{D6CBCF}
+		\definecolor{skrapport@quotecolor}{HTML}{463335}
+		\definecolor{skrapport@captioncolor}{HTML}{311A2A}
+		\definecolor{skrapport@emphcolor}{HTML}{98758D}
+		\definecolor{skrapport@defaultcolor}{named}{black}
+	}{%
+%    \end{macrocode}
+% % More themes:
+% % http://www.colourlovers.com/palette/175269/Picture_Book_Weeding
 %
 % Error handling
 %    \begin{macrocode}
 		\ClassError{skrapport}{%
 			Option 'colors' has unknown value '\skrapport@colors'
 		}{}
-	}}
+	}}}
 }
 %    \end{macrocode}
 %
