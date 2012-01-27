@@ -42,7 +42,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1135}
+% \CheckSum{1370}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
@@ -62,7 +62,8 @@
 % \changes{v0.07a}{2011/09/18}{Fixed \textsf{kpfonts} issues}
 % \changes{v0.08}{2011/12/24}{Added option \texttt{twocolumn}}
 % \changes{v0.09}{2012/01/09}{Introduced \textsf{kvoptions} and color schemes,
-%							  fixed abstract in twocolumn mode}
+%							  fixed abstract in twocolumn mode, added
+%							  \texttt{sftitles} option}
 % % \changes{v0.10}{???/??/??}{Fixed documentation}
 %
 % \GetFileInfo{skrapport.dtx}
@@ -190,8 +191,19 @@
 % 
 % Declare options for bold/roman section titles.
 %    \begin{macrocode}
-\DeclareBoolOption[false]{bftitles}
-\DeclareComplementaryOption{rmtitles}{bftitles}
+\DeclareStringOption[rm]{titles}
+\DeclareVoidOption{rmtitles}{\skrapport@SetupTitles}
+\DeclareVoidOption{bftitles}{\skrapport@SetupTitles}
+\DeclareVoidOption{sftitles}{\skrapport@SetupTitles}
+\newcommand*{\skrapport@SetupTitles}{\expandafter\@skrapport@SetupTitles\expandafter{\CurrentOption}}
+\newcommand*{\@skrapport@SetupTitles}[1]{%
+	\IfStrEq{#1}{bftitles}{%
+		\setkeys{skrapport}{titles={bf}}%
+	}{\IfStrEq{#1}{sftitles}{%
+		\setkeys{skrapport}{titles={sf}}%
+	}{
+		\setkeys{skrapport}{titles={rm}}%
+	}}}
 %    \end{macrocode}
 % 
 % Declare options for swedish/english \textsf{babel} support.
@@ -262,11 +274,13 @@
 \fi
 \ifskrapport@leqno\input{leqno.clo}\fi
 \ifskrapport@fleqn\input{fleqn.clo}\fi
-\ifskrapport@bftitles
-	\let\@titstyle\bfseries
-\else
-	\let\@titstyle\relax
-\fi
+\IfStrEq{\skrapport@titles}{bf}{%
+	\let\@titstyle\bfseries%
+}{\IfStrEq{\skrapport@titles}{sf}{%
+	\let\@titstyle\sffamily\bfseries%
+}{%
+	\let\@titstyle\relax%
+}}
 \ifxetex
   \RequirePackage[quiet]{fontspec}
 	\DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
@@ -940,8 +954,6 @@
 		\definecolor{skrapport@defaultcolor}{named}{black}
 	}{%
 %    \end{macrocode}
-% % More themes:
-% % http://www.colourlovers.com/palette/175269/Picture_Book_Weeding
 %
 % Error handling
 %    \begin{macrocode}
