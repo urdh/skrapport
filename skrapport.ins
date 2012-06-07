@@ -45,7 +45,14 @@ and the derived filebase skrapport.cls.
 
 \endpreamble
 
-\generate{\file{skrapport.cls}{\from{skrapport.dtx}{class}}}
+\generate{%
+	\file{skrapport.cls}{\from{skrapport.dtx}{class}}
+	\usedir{themes}
+	\file{skrapport-colortheme-default.sty}{\from{skrapport.dtx}{ctdefault}}
+	\file{skrapport-colortheme-unscathed.sty}{\from{skrapport.dtx}{ctunscathed}}
+	\file{skrapport-colortheme-cruelwater.sty}{\from{skrapport.dtx}{ctcruelwater}}
+	\file{skrapport-colortheme-violet.sty}{\from{skrapport.dtx}{ctviolet}}
+}
 
 \obeyspaces
 \Msg{*************************************************************}

@@ -26,7 +26,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 %<class>\ProvidesClass{skrapport}
 %<*class>
-    [2012/01/09 v0.09 Skånings rapportklass]
+    [2012/06/07 v0.09 Skånings rapportklass]
 %</class>
 %
 %<*driver>
@@ -42,7 +42,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1370}
+% \CheckSum{1375}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
@@ -61,7 +61,7 @@
 %                             option for fonts}
 % \changes{v0.07a}{2011/09/18}{Fixed \textsf{kpfonts} issues}
 % \changes{v0.08}{2011/12/24}{Added option \texttt{twocolumn}}
-% \changes{v0.09}{2012/01/09}{Introduced \textsf{kvoptions} and color schemes,
+% \changes{v0.09}{2012/06/07}{Introduced \textsf{kvoptions} and color schemes,
 %							  fixed abstract in twocolumn mode, added
 %							  \texttt{sftitles} option}
 % % \changes{v0.10}{???/??/??}{Fixed documentation}
@@ -112,6 +112,8 @@
 %   \item[\texttt{onecolumn},\texttt{twocolumn}] Decides wether the document has one
 %                   column (default) or two (implemented using the excellend
 %                   \texttt{multicol} package).
+%   \item[\texttt{color},\texttt{nocolor}] Enables or diables colors and color themes
+%                   in the document. Default is \texttt{color}.
 % \end{description}
 %
 % \subsection{Useful macros}
@@ -128,6 +130,11 @@
 %   which typesets its contents in a single column. Additionally, it redefines
 %   \texttt{figure} and \texttt{table} as non-floats, leaving the starred versions
 %   intact.
+% \DescribeMacro{\colortheme}
+% If the package is loaded with the \texttt{color} option, changing the color theme is
+% possible using \texttt{colortheme}, which loads an
+% appropriate package. At the moment, four color themes are available: \textsf{default},
+% \textsf{unscathed}, \textsf{cruelwater} and \textsf{violet}.
 %
 % \section{Additional information}
 % \subsection{Included packages}
@@ -138,6 +145,9 @@
 % \StopEventually{}
 %
 % \section{Implementation}
+%\iffalse
+%<*class>
+%\fi
 % Start by including \textsf{kvoptions} and defining some variables for future use.
 %    \begin{macrocode}
 \RequirePackage{xstring}
@@ -228,10 +238,11 @@
 \DeclareBoolOption[false]{indent}
 \DeclareComplementaryOption{noindent}{indent}
 %    \end{macrocode}
-% 
-% Declare coloring options.
+%
+% Declare color option.
 %    \begin{macrocode}
-\DeclareStringOption[none]{colors}[unscathed]
+\DeclareBoolOption[true]{color}
+\DeclareComplementaryOption{nocolor}{color}
 %    \end{macrocode}
 % 
 % Execute default options and process given options.
@@ -287,10 +298,10 @@
 \else
   \RequirePackage[T1]{fontenc}	
 \fi
-\IfStrEq{\skrapport@colors}{none}{}{%
+\ifskrapport@color
 	\RequirePackage{etoolbox}
 	\RequirePackage{xcolor}
-}
+\fi
 \IfStrEq{\skrapport@font}{nofont}{}{%
 	\IfStrEq{\skrapport@font}{kpfonts}{%
 		\RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
@@ -843,7 +854,7 @@
 % Not implemented: background colors for e.g. quote environments and sections headings,
 % different colors for the different sectioning levels.
 %    \begin{macrocode}
-\IfStrEq{\skrapport@colors}{none}{}{%
+\ifskrapport@color
 	\apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
 	\apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
 	\if\@titstyle\relax
@@ -882,86 +893,13 @@
 		}
 	}{}}
 	\AtBeginDocument{\color{skrapport@defaultcolor}}
-	\definecolor{skrapport@citecolor}{named}{green}
-	\definecolor{skrapport@filecolor}{named}{teal}
-	\definecolor{skrapport@linkcolor}{named}{red}
-	\definecolor{skrapport@menucolor}{named}{red}
-	\definecolor{skrapport@urlcolor}{named}{cyan}
-	\definecolor{skrapport@runcolor}{named}{teal}
-	\definecolor{skrapport@boldcolor}{named}{black}
-	\definecolor{skrapport@titlecolor}{named}{black}
-	\definecolor{skrapport@italiccolor}{named}{black}
-	\definecolor{skrapport@smallprintcolor}{named}{black}
-	\definecolor{skrapport@quotecolor}{named}{black}
-	\definecolor{skrapport@captioncolor}{named}{black}
-	\definecolor{skrapport@emphcolor}{named}{black}
-	\definecolor{skrapport@defaultcolor}{named}{black}
 %    \end{macrocode}
 %
-% Color theme ``unscathed''.
+% Loading color themes
 %    \begin{macrocode}
-	\IfStrEq{\skrapport@colors}{unscathed}{%
-		\definecolor{skrapport@citecolor}{named}{skrapport@defaultcolor}
-		\definecolor{skrapport@filecolor}{named}{skrapport@defaultcolor}
-		\definecolor{skrapport@menucolor}{named}{skrapport@defaultcolor}
-		\definecolor{skrapport@runcolor}{named}{skrapport@defaultcolor}
-		\definecolor{skrapport@emphcolor}{HTML}{463335}
-		\definecolor{skrapport@linkcolor}{HTML}{CF5D3B}
-		\definecolor{skrapport@urlcolor}{named}{skrapport@linkcolor}
-		\definecolor{skrapport@titlecolor}{HTML}{B34430}
-		\definecolor{skrapport@captioncolor}{named}{skrapport@titlecolor}
-		\definecolor{skrapport@quotecolor}{HTML}{70524A}
-		\definecolor{skrapport@smallprintcolor}{named}{skrapport@quotecolor}
-	}{%
-%    \end{macrocode}
-%
-% Color theme ``cruelwater''.
-%    \begin{macrocode}
-	\IfStrEq{\skrapport@colors}{cruelwater}{%
-		\definecolor{skrapport@citecolor}{named}{black}
-		\definecolor{skrapport@filecolor}{named}{black}
-		\definecolor{skrapport@linkcolor}{named}{black}
-		\definecolor{skrapport@menucolor}{named}{black}
-		\definecolor{skrapport@urlcolor}{named}{black}
-		\definecolor{skrapport@runcolor}{named}{black}
-		\definecolor{skrapport@boldcolor}{HTML}{030C22}
-		\definecolor{skrapport@titlecolor}{HTML}{20293F}
-		\definecolor{skrapport@italiccolor}{named}{black}
-		\definecolor{skrapport@smallprintcolor}{HTML}{A9B0B3}
-		\definecolor{skrapport@quotecolor}{HTML}{404749}
-		\definecolor{skrapport@captioncolor}{HTML}{030C22}
-		\definecolor{skrapport@emphcolor}{HTML}{20293F}
-		\definecolor{skrapport@defaultcolor}{named}{black}
-	}{%
-%    \end{macrocode}
-%
-% Color theme ``violet''. 311A2A, 98758D, D6CBCF, 932444, 463335
-%    \begin{macrocode}
-	\IfStrEq{\skrapport@colors}{violet}{%
-		\definecolor{skrapport@citecolor}{HTML}{932444}
-		\definecolor{skrapport@filecolor}{HTML}{932444}
-		\definecolor{skrapport@linkcolor}{HTML}{932444}
-		\definecolor{skrapport@menucolor}{HTML}{932444}
-		\definecolor{skrapport@urlcolor}{HTML}{932444}
-		\definecolor{skrapport@runcolor}{HTML}{932444}
-		\definecolor{skrapport@boldcolor}{HTML}{311A2A}
-		\definecolor{skrapport@titlecolor}{HTML}{311A2A}
-		\definecolor{skrapport@italiccolor}{named}{black}
-		\definecolor{skrapport@smallprintcolor}{HTML}{D6CBCF}
-		\definecolor{skrapport@quotecolor}{HTML}{463335}
-		\definecolor{skrapport@captioncolor}{HTML}{311A2A}
-		\definecolor{skrapport@emphcolor}{HTML}{98758D}
-		\definecolor{skrapport@defaultcolor}{named}{black}
-	}{%
-%    \end{macrocode}
-%
-% Error handling
-%    \begin{macrocode}
-		\ClassError{skrapport}{%
-			Option 'colors' has unknown value '\skrapport@colors'
-		}{}
-	}}}
-}
+	\newcommand\colortheme[1]{\usepackage{skrapport-colortheme-#1}}
+	\colortheme{default}
+\fi
 %    \end{macrocode}
 %
 % Final page setup
@@ -973,6 +911,104 @@
 \raggedbottom
 \onecolumn
 %    \end{macrocode}
-%
+%\iffalse
+%</class>
+%\fi
+% \subsection{Color themes}
+%\iffalse
+%<*ctdefault>
+%\fi
+% \subsubsection{Default color theme}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{skrapport-colortheme-default}
+    [2012/06/07 v1.0 skrapport color theme default]
+\definecolor{skrapport@citecolor}{named}{green}
+\definecolor{skrapport@filecolor}{named}{teal}
+\definecolor{skrapport@linkcolor}{named}{red}
+\definecolor{skrapport@menucolor}{named}{red}
+\definecolor{skrapport@urlcolor}{named}{cyan}
+\definecolor{skrapport@runcolor}{named}{teal}
+\definecolor{skrapport@boldcolor}{named}{black}
+\definecolor{skrapport@titlecolor}{named}{black}
+\definecolor{skrapport@italiccolor}{named}{black}
+\definecolor{skrapport@smallprintcolor}{named}{black}
+\definecolor{skrapport@quotecolor}{named}{black}
+\definecolor{skrapport@captioncolor}{named}{black}
+\definecolor{skrapport@emphcolor}{named}{black}
+\definecolor{skrapport@defaultcolor}{named}{black}
+%    \end{macrocode}
+%\iffalse
+%</ctdefault>
+%<*ctunscathed>
+%\fi
+% \subsubsection{Unscathed color theme}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{skrapport-colortheme-unscathed}
+    [2012/06/07 v1.0 skrapport color theme unscathed]
+\definecolor{skrapport@citecolor}{named}{skrapport@defaultcolor}
+\definecolor{skrapport@filecolor}{named}{skrapport@defaultcolor}
+\definecolor{skrapport@menucolor}{named}{skrapport@defaultcolor}
+\definecolor{skrapport@runcolor}{named}{skrapport@defaultcolor}
+\definecolor{skrapport@emphcolor}{HTML}{463335}
+\definecolor{skrapport@linkcolor}{HTML}{CF5D3B}
+\definecolor{skrapport@urlcolor}{named}{skrapport@linkcolor}
+\definecolor{skrapport@titlecolor}{HTML}{B34430}
+\definecolor{skrapport@captioncolor}{named}{skrapport@titlecolor}
+\definecolor{skrapport@quotecolor}{HTML}{70524A}
+\definecolor{skrapport@smallprintcolor}{named}{skrapport@quotecolor}
+%    \end{macrocode}
+%\iffalse
+%</ctunscathed>
+%<*ctcruelwater>
+%\fi
+% \subsubsection{Cruelwater color theme}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{skrapport-colortheme-cruelwater}
+    [2012/06/07 v1.0 skrapport color theme cruelwater]
+\definecolor{skrapport@citecolor}{named}{black}
+\definecolor{skrapport@filecolor}{named}{black}
+\definecolor{skrapport@linkcolor}{named}{black}
+\definecolor{skrapport@menucolor}{named}{black}
+\definecolor{skrapport@urlcolor}{named}{black}
+\definecolor{skrapport@runcolor}{named}{black}
+\definecolor{skrapport@boldcolor}{HTML}{030C22}
+\definecolor{skrapport@titlecolor}{HTML}{20293F}
+\definecolor{skrapport@italiccolor}{named}{black}
+\definecolor{skrapport@smallprintcolor}{HTML}{A9B0B3}
+\definecolor{skrapport@quotecolor}{HTML}{404749}
+\definecolor{skrapport@captioncolor}{HTML}{030C22}
+\definecolor{skrapport@emphcolor}{HTML}{20293F}
+\definecolor{skrapport@defaultcolor}{named}{black}
+%    \end{macrocode}
+%\iffalse
+%</ctcruelwater>
+%<*ctviolet>
+%\fi
+% \subsubsection{Violet color theme}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{skrapport-colortheme-violet}
+    [2012/06/07 v1.0 skrapport color theme violet]
+\definecolor{skrapport@citecolor}{HTML}{932444}
+\definecolor{skrapport@filecolor}{HTML}{932444}
+\definecolor{skrapport@linkcolor}{HTML}{932444}
+\definecolor{skrapport@menucolor}{HTML}{932444}
+\definecolor{skrapport@urlcolor}{HTML}{932444}
+\definecolor{skrapport@runcolor}{HTML}{932444}
+\definecolor{skrapport@boldcolor}{HTML}{311A2A}
+\definecolor{skrapport@titlecolor}{HTML}{311A2A}
+\definecolor{skrapport@italiccolor}{named}{black}
+\definecolor{skrapport@smallprintcolor}{HTML}{D6CBCF}
+\definecolor{skrapport@quotecolor}{HTML}{463335}
+\definecolor{skrapport@captioncolor}{HTML}{311A2A}
+\definecolor{skrapport@emphcolor}{HTML}{98758D}
+\definecolor{skrapport@defaultcolor}{named}{black}
+%    \end{macrocode}
+%\iffalse
+%</ctviolet>
+%\fi
 % \Finale
 \endinput
