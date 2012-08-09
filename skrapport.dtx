@@ -42,7 +42,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1375}
+% \CheckSum{1377}
 %
 %
 % \changes{v0.01}{2011/05/21}{Initial version}
@@ -253,9 +253,11 @@
 % Require packages as per given options.
 %    \begin{macrocode}
 \IfStrEq{\skrapport@paper}{a4paper}{%
+	\RequirePackage[a4paper]{geometry}
 	\setlength\paperheight {297mm}
 	\setlength\paperwidth  {210mm}
 }{\IfStrEq{\skrapport@paper}{a5paper}{%
+	\RequirePackage[a5paper]{geometry}
 	\setlength\paperheight {210mm}
 	\setlength\paperwidth  {148mm}
 }{%
