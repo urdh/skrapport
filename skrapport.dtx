@@ -64,7 +64,7 @@
 % \changes{v0.09}{2012/06/07}{Introduced \textsf{kvoptions} and color schemes,
 %							  fixed abstract in twocolumn mode, added
 %							  \texttt{sftitles} option}
-% % \changes{v0.10}{???/??/??}{Fixed documentation}
+% % \changes{v0.10}{???/??/??}{Fixed documentation, included skmath if exists}
 %
 % \GetFileInfo{skrapport.dtx}
 %
@@ -140,7 +140,7 @@
 % \subsection{Included packages}
 % The document class includes \textsf{babel}, \textsf{fontenc},
 % \textsf{icomma}, \textsf{amsmath}, \textsf{amssymb}, \textsf{microtype} and
-% \textsf{hyperref} by default.
+% \textsf{hyperref} by default, and \textsf{skmath} if it exists.
 %
 % \StopEventually{}
 %
@@ -364,6 +364,7 @@
 	\let\daleth\relax
 	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
 	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
+	\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}
 }
 \AtBeginDocument{
 	\@ifundefined{urlstyle}{}{\urlstyle{same}}
