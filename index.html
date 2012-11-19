@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>autobrew</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+    <header>
+        <h1>LaTeXhax</h1>
+        <h2>Ventures in the TeX realm</h2>
+    </header>
+    <p><a href="http://www.latex-project.org/">LaTeX</a> is an excellent typesetting tool mainly used by (but absolutely not restricted to) the academic world. Along with tools like <a href="http://www.bibtex.org/">BibTeX</a> (for reference management) and <a href="http://www.ams.org/publications/authors/tex/amslatex">AMS-LaTeX</a> (for excellent math typesetting), LaTeX makes and excellent platform with which documents can be beautifully typeset with ease.</p>
+    <p>LaTeX is also very extensible; both packages (for added functionality) and document classes (for change of style) are available to extend and improve the already great suite. Most of these packages and classes are available on the <a href="http://www.ctan.org/">Comprehensive TeX Archive Network</a> (CTAN), and can be easily installed by tools such as <a href="http://www.tug.org/texlive/">TeX Live</a>&rsquo;s <code>tlmgr</code>.</p>
+    <p>Below you will find some of the packages and classes I have hacked (I stress hacked) together by me, mainly for personal use but also for use by others, mainly student at Chalmers University of Technology in Göteborg, Sweden. None of these are currently available on CTAN, but they are available from my <a href="https://bitbucket.org/urdh/latexhax">LaTeXhax Mercurial repository on Bitbucket</a>. Feel free to report any bugs you find using the issue tracker provided by Bitbucket, and I might fix them when I have time. You&rsquo;re also welcome to fork my work or provide patches.</p>
+    <p>I cannot give you any support when it comes to installing these files, instead referring you to an excellent <a href="http://en.wikibooks.org/wiki/LaTeX/Packages/Installing_Extra_Packages">wikibook on the subject</a>.</p>
+    <h2>An improved report class: <code>skrapport</code></h2>
+    <p class="next-noindent"><a class="FlattrButton" style="display:none;" title="LaTeXhax: skrapport" data-flattr-category="text" href="http://urdh.github.com/latexhax/index.html#skrapport">An improved LaTeX document class for simple and stylish reports.</a></p>
+    <p>The <code>skrapport</code> document class is an attempt to provide a good-looking, compact alternative to the standard article class. It is designed to be fully compatible with the article class, meaning you should be able to simply replace the <code>\documentclass</code> declaration in the preamble of your documents should you decide to use this class instead.</p>
+    <p>Most notably it defines the <code>\maketitle</code> command to typeset your title in a more compact manner. As shown by the image below, the title and author name is left-justified, immediately followed by the abstract (if available). Note also that section titles aren&rsquo;t boldface by default (although there is an option controlling this).</p>
+    <p><img src="media/skrapport-1.png" alt="The title of the document is left-adjusted along with the author name. The abstract is typeset alongside its title, providing a compact overview of the document. Notably, titles are not boldfaced." /></p>
+    <p>The class also loads some packages by default; <code>hyperref</code> and <code>babel</code> being the most notable ones. By default, babel is loaded with swedish settings, but this can be changed to english by providing an option &mdash; this is because the class is designed for use at Chalmers, where the only languages used are swedish and english; swedish being used in most undergraduate courses. See the package documentation for more information.</p>
+    <p>Additionally, the package sets up LaTeX with paragraph spacing, much like the parskip package, as shown below. This is because short paragraphs are likely to be present in short reports, and these look much better with spacing rather than indentation.</p>
+    <p><img src="media/skrapport-2.png" alt="Paragraphs are typeset not with indentations but with spacing, making even short paragraphs look good." /></p>
+    <h2>Chalmers-style references: <code>chscite</code></h2>
+    <p class="next-noindent"><a class="FlattrButton" style="display:none;" title="LaTeXhax: chscite" data-flattr-category="text" href="http://urdh.github.com/latexhax/index.html#chscite">A LaTeX package for references in accordance with library recommendations at Chalmers University of Technology.</a></p>
+    <p>The library at Chalmers University of Technology has published a <a href="http://www.lib.chalmers.se/education/guides/references/">set of recommendations of style regarding references</a> (in swedish), which up until now has been hard to implement when using LaTeX. This package intends to make following those recommendations much easier &mdash; simply include the package, use BibTeX for reference management, and off you go!</p>
+    <p>The package automatically identifies wether you&rsquo;re writing in swedish or english, and conforms accordingly. Shown below is a sample in english, containing some of the articles I happened to have in my BibTeX database.</p>
+    <p><img src="media/chscite-1.png" alt="The included bibliography style typesets references according to the recommendations given by the library at Chalmers University of Technology." /></p>
+    <p>As you can see, the library recommendations are based on the Harvard system. Accordingly, the <code>chscite</code> package contains tools for in-text referencing using the Harvard system (shamelessly <del>stolen</del>borrowed from the <code>harvard</code> package), enabling you to cite regularly, as a noun, and so on. See the package documentation (and <a href="http://tex.loria.fr/bibdex/harvard.pdf">that of the <code>harvard</code> package</a>) for further details.</p>
+    <footer>
+        <p>This project by <a href="http://urdh.github.com/">me</a> is hosted by <a href="http://github.com/urdh/latexhax">Github</a>.</p>
+    </footer>
+    <a href="https://github.com/urdh/latexhax"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github.png" alt="Fork me on GitHub"></a>
+</body>
+</html>
