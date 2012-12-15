@@ -64,7 +64,7 @@
 % \changes{v0.09}{2012/06/07}{Introduced \textsf{kvoptions} and color schemes,
 %							  fixed abstract in twocolumn mode, added
 %							  \texttt{sftitles} option}
-% % \changes{v0.10}{???/??/??}{Fixed documentation, included skmath if exists}
+% % \changes{v0.10}{???/??/??}{Fixed documentation, included skmath if exists and wanted}
 %
 % \GetFileInfo{skrapport.dtx}
 %
@@ -114,6 +114,7 @@
 %                   \texttt{multicol} package).
 %   \item[\texttt{color},\texttt{nocolor}] Enables or diables colors and color themes
 %                   in the document. Default is \texttt{color}.
+%   \item[\texttt{math}, \texttt{nomath}] Enables or disables loading the \textsf{skmath} package. Default is \texttt{math}.
 % \end{description}
 %
 % \subsection{Useful macros}
@@ -244,6 +245,12 @@
 \DeclareBoolOption[true]{color}
 \DeclareComplementaryOption{nocolor}{color}
 %    \end{macrocode}
+%
+% Declare math option.
+%    \begin{macrocode}
+\DeclareBoolOption[true]{math}
+\DeclareComplementaryOption{nomath}{math}
+%    \end{macrocode}
 % 
 % Execute default options and process given options.
 %    \begin{macrocode}
@@ -364,7 +371,7 @@
 	\let\daleth\relax
 	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
 	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
-	\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}
+	\ifskrapport@math\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}\fi
 }
 \AtBeginDocument{
 	\@ifundefined{urlstyle}{}{\urlstyle{same}}
