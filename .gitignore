@@ -37,3 +37,8 @@
 *.bst
 *.pdf
 *.fls
+*.bib
+*.bcf
+*.ido
+*.ids
+*.xml
