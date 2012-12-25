@@ -23,6 +23,10 @@
 \usepackage[style=authoryear]{biblatex}
 %\usepackage{chslacite}
 
+% Hide the implementation
+%\OnlyDescription
+
+% Bibliography entries
 \begin{filecontents}{chslacite.bib}
     @article{kpfonts,
         author = {Christophe Caignaert},
@@ -37,171 +41,172 @@
 \SelfPreambleTo{\mypreamble}
 \DeclareFile[key=class,preamble=\mypreamble]{skrapport.cls}
 \DeclareFile[key=theme-default,preamble=\mypreamble]%
-	{skrapport-default.sty}
+    {skrapport-default.sty}
 \DeclareFile[key=theme-unscathed,preamble=\mypreamble]%
-	{skrapport-unscathed.sty}
+    {skrapport-unscathed.sty}
 \DeclareFile[key=theme-cruelwater,preamble=\mypreamble]%
-	{skrapport-cruelwater.sty}
+    {skrapport-cruelwater.sty}
 \DeclareFile[key=theme-violet,preamble=\mypreamble]%
-	{skrapport-violet.sty}
+    {skrapport-violet.sty}
 
 % This is where the documentation begins
 \begin{document}
-	% Change & version info
-	\version{0.10}
-	\changes{0.01}{Initial version}
-	\changes{0.03}{Removed \cs{rd} and \cs{id}}
-	\changes{0.04}{Added \textsf{microtype} package}
-	\changes{0.05}{Improved documentation}
-	\changes{0.06}{Corrected cheksum, further improved documentation}
-	\changes{0.07}{Various bugfixes, \hologo{XeLaTeX} compatibility, 
-					better float settings, quote style fix,
-					\texttt{intlimits} option to \textsf{amsmath}}
-	\changes{0.07a}{Fixed \textsf{kpfonts} issues}
-	\changes{0.09}{Introduced \textsf{kvoptions},
-					fixed abstract in twocolumn mode}
-	\changes{0.10}{Fixed documentation, include skmath if exists
-					and wanted.}
+    % Change & version info
+    \version{0.10}
+    \changes{0.01}{Initial version}
+    \changes{0.03}{Removed \cs{rd} and \cs{id}}
+    \changes{0.04}{Added \textsf{microtype} package}
+    \changes{0.05}{Improved documentation}
+    \changes{0.06}{Corrected cheksum, further improved documentation}
+    \changes{0.07}{Various bugfixes, \hologo{XeLaTeX} compatibility, 
+                    better float settings, quote style fix,
+                    \texttt{intlimits} option to \textsf{amsmath}}
+    \changes{0.07a}{Fixed \textsf{kpfonts} issues}
+    \changes{0.09}{Introduced \textsf{kvoptions},
+                    fixed abstract in twocolumn mode}
+    \changes{0.10}{Fixed documentation, include skmath if exists
+                    and wanted.}
 
-	% Metadata
-	\package[ctan,vcs=https://github.com/urdh/skrapport]{skrapport}
-	\title{The \textbf{\thepackage} document class}
-	\author{Simon Sigurdhsson}
-	\email{sigurdhsson@gmail.com}
+    % Metadata
+    \package[ctan,vcs=https://github.com/urdh/skrapport]{skrapport}
+    \title{The \textbf{\thepackage} document class}
+    \author{Simon Sigurdhsson}
+    \email{sigurdhsson@gmail.com}
 
-	% First page
-	\maketitle
-	\begin{abstract}
-		A document class intended for simple documents \emph{e.g.}
-		reports handed in to courses and such. It is small,
-		straightforwars and heavily inspired by the Prac\TeX{}
-		Journal style.
-	\end{abstract}
-	\tableofcontents
+    % First page
+    \maketitle
+    \begin{abstract}
+        A document class intended for simple documents \emph{e.g.}
+        reports handed in to courses and such. It is small,
+        straightforwars and heavily inspired by the Prac\TeX{}
+        Journal style.
+    \end{abstract}
+    \tableofcontents
 
-	\section{Documentation}
-	\subsection{Loading the class}
-	The document class is loaded using \cs{documentclass} as usual,
-	but it has a bunch of options that you might want to know about.
+    \section{Documentation}
+    \subsection{Loading the class}
+    The document class is loaded using \cs{documentclass} as usual,
+    but it has a bunch of options that you might want to know about.
 
-	\subsubsection{Compatibility options}
-	There are a couple of options that are mostly provided for
-	compatibility with the standard \LaTeXe\ document classes. These
-	will do exactly the same thing they do in the standard classes,
-	although they may differ in default value. Although some of these
-	are key-value options, for compatibility their valid values may
-	also be passed as keys.
+    \subsubsection{Compatibility options}
+    There are a couple of options that are mostly provided for
+    compatibility with the standard \LaTeXe\ document classes. These
+    will do exactly the same thing they do in the standard classes,
+    although they may differ in default value. Although some of these
+    are key-value options, for compatibility their valid values may
+    also be passed as keys.
 
-	\Options{paper}
-	Specifying paper size is possible using the \opt{paper} option
-	(the values of which are based
-	on European paper sizes; use the \pkg{geometry} package for other
-	standards). Only A4 and A5 are defined since these two sizes cover
-	pretty much all intended use of the class. \opt{a4paper} is the
-	default value of this option, and the only other valid value is
-	\texttt{a5paper}.
+    \Options{paper}\WithValues{a4paper, a5paper}\AndDefault{a4paper}
+    Specifying paper size is possible using the \opt{paper} option
+    (the values of which are based
+    on European paper sizes; use the \pkg{geometry} package for other
+    standards). Only A4 and A5 are defined since these two sizes cover
+    pretty much all intended use of the class. \opt{a4paper} is the
+    default value of this option, and the only other valid value is
+    \texttt{a5paper}.
 
-	\Options{ptsize}
-	The same font sizes specified in the standard classes are also
-	available in \thepackage\ (\emph{i.e.} \texttt{10pt},
-	\texttt{11pt} and \texttt{12pt}. The default font size is
-	\texttt{11pt}, and there should be no compelling reason to change
-	this.
+    \Options{ptsize}\WithValues{10pt, 11pt, 12pt}\AndDefault{11pt}
+    The same font sizes specified in the standard classes are also
+    available in \thepackage\ (\emph{i.e.} \texttt{10pt},
+    \texttt{11pt} and \texttt{12pt}. The default font size is
+    \texttt{11pt}, and there should be no compelling reason to change
+    this.
 
-	\Options{draft,final}
-	The \opt{draft} and \opt{final} options work as expected, triggering
-	or untriggering the familiar draft mode. The default is \opt{final}.
+    \Options{draft,final}
+    The \opt{draft} and \opt{final} options work as expected, triggering
+    or untriggering the familiar draft mode. The default is \opt{final}.
 
-	\Options{fleqn,leqno}
-	Purely for compatibility \thepackage\ also defines the \opt{fleqn}
-	and \opt{leqno} options. As with the standard \LaTeXe\ classes,
-	\opt{fleqn} aligns equations with the left-hand margin and
-	\opt{leqno} places equation numbers to the left. None of these
-	are activated by default.
+    \Options{fleqn,leqno}
+    Purely for compatibility \thepackage\ also defines the \opt{fleqn}
+    and \opt{leqno} options. As with the standard \LaTeXe\ classes,
+    \opt{fleqn} aligns equations with the left-hand margin and
+    \opt{leqno} places equation numbers to the left. None of these
+    are activated by default.
 
-	\subsubsection{Typographic options}
-	There is also a number of options available to change certain
-	aspects of the typography of the typeset document.
+    \subsubsection{Typographic options}
+    There is also a number of options available to change certain
+    aspects of the typography of the typeset document.
 
-	\Options{titles}
-	There are three different ways to typeset section headings in
-	\thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
-	serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
+    \Options{titles}\WithValues{rm, bf, sf}\AndDefault{rm}
+    There are three different ways to typeset section headings in
+    \thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
+    serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
 
-	\Options{font}
-	In addition, the specific font can also be changed --- the available
-	choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
-	(Kp-Fonts) and \texttt{palatino} (either \TeX-Gyre Pagella or
-	Pazo Math depending on what's available), with the default being
-	\texttt{kpfonts}. It is also possible to tell \thepackage\ not
-	to use any font (\texttt{nofont}), which is sometimes useful
-	when using \hologo{XeLaTeX}, among other things.
+    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts}\AndDefault{kpfonts}
+    In addition, the specific font can also be changed --- the available
+    choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
+    (Kp-Fonts) and \texttt{palatino} (either \TeX-Gyre Pagella or
+    Pazo Math depending on what's available), with the default being
+    \texttt{kpfonts}. It is also possible to tell \thepackage\ not
+    to use any font (\texttt{nofont}), which is sometimes useful
+    when using \hologo{XeLaTeX}, among other things.
 
-	\Options{indent,noindent}
-	Controlling indentation is posible using the options
-	\texttt{(no)indent}. The default, \texttt{noindent}, behaves
-	much like the \pkg{parskip} package in that it replaces
-	paragraph indentation with vertical spacing.
+    \Options{indent,noindent}
+    Controlling indentation is posible using the options
+    \texttt{(no)indent}. The default, \texttt{noindent}, behaves
+    much like the \pkg{parskip} package in that it replaces
+    paragraph indentation with vertical spacing.
 
-	\Options{onecolumn,twocolumn}
-	Similar to the options available in the standard classes, these
-	options specify wether to typeset the document in one or two
-	columns. Unlike the standard classes, the two-column mode is
-	implemented using \pkg{multicol}. The default is \texttt{onecolumn}.
+    \Options{onecolumn,twocolumn}
+    Similar to the options available in the standard classes, these
+    options specify wether to typeset the document in one or two
+    columns. Unlike the standard classes, the two-column mode is
+    implemented using \pkg{multicol}. The default is \texttt{onecolumn}.
 
-	\subsubsection{Other options}
-	\Options{swe,eng}
-	Either \pkg{babel} or \pkg{polyglossia} (depending on engine) is
-	loaded by the package. These options specify what language should
-	be used as the main language (swedish or english); both languages
-	are always loaded. The default is \texttt{swe}.
+    \subsubsection{Other options}
+    \Options{swe,eng}
+    Either \pkg{babel} or \pkg{polyglossia} (depending on engine) is
+    loaded by the package. These options specify what language should
+    be used as the main language (swedish or english); both languages
+    are always loaded. The default is \texttt{swe}.
 
-	\Options{color,nocolor}
-	It is also possible to load \pkg{xcolor} inside the package. If
-	this is done, a range of color themes (discussed later) will be
-	available in the package and these will affect the document. The
-	default value is \texttt{nocolor}.
+    \Options{color,nocolor}
+    It is also possible to load \pkg{xcolor} inside the package. If
+    this is done, a range of color themes (discussed later) will be
+    available in the package and these will affect the document. The
+    default value is \texttt{nocolor}.
 
-	\Options{math,nomath}
-	Loading the \pkg{skmath} package is recommended and as such it is
-	loaded by default. If this for some reason is undesirable, the
-	\texttt{nomath} option will supress this behaviour.
+    \Options{math,nomath}
+    Loading the \pkg{skmath} package is recommended and as such it is
+    loaded by default. If this for some reason is undesirable, the
+    \texttt{nomath} option will supress this behaviour.
 
-	\subsection{Further documentation (unfinished)}
-	In general, the class defines the same macros as the \textsf{article} class.
+    \subsection{Further documentation (unfinished)}
+    In general, the class defines the same macros as the \textsf{article} class.
 
-	\DescribeMacro\regarding{<text>}
-	The class does add a |\regarding| macro, which is used like the standard
-		|\author| and |\title| macros and should be given an accurate but short
-		description of the purpose of the report (i.e.~course name or similar). This
-		is printed along with the date on the top of the title/first page.
+    \DescribeMacro\regarding{<text>}
+    The class does add a |\regarding| macro, which is used like the standard
+        |\author| and |\title| macros and should be given an accurate but short
+        description of the purpose of the report (i.e.~course name or similar). This
+        is printed along with the date on the top of the title/first page.
 
-	\DescribeEnv[<content>]{onecol}
-	In \texttt{twocolumn} mode, the package defines an environment \texttt{onecol}
-	  which typesets its contents in a single column. Additionally, it redefines
-	  \texttt{figure} and \texttt{table} as non-floats, leaving the starred versions
-	  intact.
-	\DescribeMacro\colortheme{<theme>}
-	If the package is loaded with the \texttt{color} option, changing the color theme is
-	possible using \texttt{colortheme}, which loads an
-	appropriate package. At the moment, four color themes are available: \textsf{default},
-	\textsf{unscathed}, \textsf{cruelwater} and \textsf{violet}.
+    \DescribeEnv[<content>]{onecol}
+    In \texttt{twocolumn} mode, the package defines an environment \texttt{onecol}
+      which typesets its contents in a single column. Additionally, it redefines
+      \texttt{figure} and \texttt{table} as non-floats, leaving the starred versions
+      intact.
+    \DescribeMacro\colortheme{<theme>}
+    If the package is loaded with the \texttt{color} option, changing the color theme is
+    possible using \texttt{colortheme}, which loads an
+    appropriate package. At the moment, four color themes are available: \textsf{default},
+    \textsf{unscathed}, \textsf{cruelwater} and \textsf{violet}.
 
-	\section{Additional information}
-	\subsection{Included packages}
-	The document class includes \textsf{babel}, \textsf{fontenc},
-	\textsf{icomma}, \textsf{amsmath}, \textsf{amssymb}, \textsf{microtype} and
-	\textsf{hyperref} by default, and \textsf{skmath} if it exists.
+    \section{Additional information}
+    \subsection{Included packages}
+    The document class includes \textsf{babel}, \textsf{fontenc},
+    \textsf{icomma}, \textsf{amsmath}, \textsf{amssymb}, \textsf{microtype} and
+    \textsf{hyperref} by default, and \textsf{skmath} if it exists.
 
-	\section{Implementation}
-	Start with the standard \LaTeX\ cruft.
+    \Implementation
+    \section{Implementation}
+    Start with the standard \LaTeX\ cruft.
 \begin{MacroCode}{class}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{skrapport}%
     [2012/06/07 v0.09 Skånings rapportklass]
 \end{MacroCode}
-	Then, start by including \pkg{kvoptions} and defining some
-	variables for future use.
+    Then, start by including \pkg{kvoptions} and defining some
+    variables for future use.
 \begin{MacroCode}{class}
 \RequirePackage{xstring}
 \RequirePackage{kvoptions}
@@ -214,11 +219,11 @@
 }
 \end{MacroCode}
 
-	\subsection{Options}
-	\begin{option}{paper}
-	\begin{option}{a4paper}
-	\begin{option}{a5paper}
-	Declare the paper size options.
+    \subsection{Options}
+    \begin{option}{paper}
+    \begin{option}{a4paper}
+    \begin{option}{a5paper}
+    Declare the paper size options.
 \begin{MacroCode}{class}
 \DeclareStringOption[a4paper]{paper}
 \DeclareVoidOption{a4paper}{\skrapport@SetupPaper}
@@ -226,15 +231,15 @@
 \newcommand*{\skrapport@SetupPaper}{\expandafter\@skrapport@SetupPaper\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupPaper}[1]{\setkeys{skrapport}{paper={#1}}}
 \end{MacroCode}
-	\end{option}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{ptsize}
-	\begin{option}{10pt}
-	\begin{option}{11pt}
-	\begin{option}{12pt}
-	Declare point size options.
+    \begin{option}{ptsize}
+    \begin{option}{10pt}
+    \begin{option}{11pt}
+    \begin{option}{12pt}
+    Declare point size options.
 \begin{MacroCode}{class}
 \DeclareStringOption[11pt]{ptsize}
 \DeclareVoidOption{10pt}{\skrapport@SetupPtsize}
@@ -243,52 +248,52 @@
 \newcommand*{\skrapport@SetupPtsize}{\expandafter\@skrapport@SetupPtsize\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupPtsize}[1]{\setkeys{skrapport}{ptsize={#1}}}
 \end{MacroCode}
-	\end{option}
-	\end{option}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{twocolumn}
-	\changes{0.08}{Added option \opt{twocolumn}}
-	\begin{option}{onecolumn}
-	Declare column options.
+    \begin{option}{twocolumn}
+    \changes{0.08}{Added option \opt{twocolumn}}
+    \begin{option}{onecolumn}
+    Declare column options.
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{twocolumn}
 \DeclareComplementaryOption{onecolumn}{twocolumn}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{draft}
-	\begin{option}{final}
-	Declare \opt{draft} and \opt{final} options.
+    \begin{option}{draft}
+    \begin{option}{final}
+    Declare \opt{draft} and \opt{final} options.
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{draft}
 \DeclareComplementaryOption{final}{draft}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
 
-	Declare the \opt{fleqn} and \opt{leqno} options for
-	compatibility with the \pkg{article} class.
-	\begin{option}{leqno}
+    Declare the \opt{fleqn} and \opt{leqno} options for
+    compatibility with the \pkg{article} class.
+    \begin{option}{leqno}
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{leqno}
 \end{MacroCode}
-	\end{option}
-	\begin{option}{fleqn}
+    \end{option}
+    \begin{option}{fleqn}
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{fleqn}
 \end{MacroCode}
-	\end{option}
+    \end{option}
 
-	\begin{option}{titles}
-	Declare options for section titles.
-	\begin{option}{rmtitles}
-	\begin{option}{bftitles}
-	\begin{option}{sftitles}
-	\changes{0.09}{Added \opt{sftitles} option}
+    \begin{option}{titles}
+    Declare options for section titles.
+    \begin{option}{rmtitles}
+    \begin{option}{bftitles}
+    \begin{option}{sftitles}
+    \changes{0.09}{Added \opt{sftitles} option}
 \begin{MacroCode}{class}
 \DeclareStringOption[rm]{titles}
 \DeclareVoidOption{rmtitles}{\skrapport@SetupTitles}
@@ -296,38 +301,38 @@
 \DeclareVoidOption{sftitles}{\skrapport@SetupTitles}
 \newcommand*{\skrapport@SetupTitles}{\expandafter\@skrapport@SetupTitles\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupTitles}[1]{%
-	\IfStrEq{#1}{bftitles}{%
-		\setkeys{skrapport}{titles={bf}}%
-	}{\IfStrEq{#1}{sftitles}{%
-		\setkeys{skrapport}{titles={sf}}%
-	}{
-		\setkeys{skrapport}{titles={rm}}%
-	}}}
+    \IfStrEq{#1}{bftitles}{%
+        \setkeys{skrapport}{titles={bf}}%
+    }{\IfStrEq{#1}{sftitles}{%
+        \setkeys{skrapport}{titles={sf}}%
+    }{
+        \setkeys{skrapport}{titles={rm}}%
+    }}}
 \end{MacroCode}
-	\end{option}
-	\end{option}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{swe}
-	\begin{option}{eng}
-	Declare options for swedish/english \pkg{babel} or
-	\pkg{polyglossia} support.
+    \begin{option}{swe}
+    \begin{option}{eng}
+    Declare options for swedish/english \pkg{babel} or
+    \pkg{polyglossia} support.
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{eng}
 \DeclareComplementaryOption{swe}{eng}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{font}
-	Declare font options.
-	\begin{option}{kpfonts}
-	\changes{0.07}{Added option \opt{kpfonts}, set as default
-					option for fonts}
-	\begin{option}{lmodern}
-	\begin{option}{palatino}
-	\begin{option}{nofont}
+    \begin{option}{font}
+    Declare font options.
+    \begin{option}{kpfonts}
+    \changes{0.07}{Added option \opt{kpfonts}, set as default
+                    option for fonts}
+    \begin{option}{lmodern}
+    \begin{option}{palatino}
+    \begin{option}{nofont}
 \begin{MacroCode}{class}
 \DeclareStringOption[kpfonts]{font}
 \DeclareVoidOption{kpfonts}{\skrapport@SetupFont}
@@ -337,252 +342,252 @@
 \newcommand*{\skrapport@SetupFont}{\expandafter\@skrapport@SetupFont\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupFont}[1]{\setkeys{skrapport}{font={#1}}}
 \end{MacroCode}
-	\end{option}
-	\end{option}
-	\end{option}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
+    \end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{indent}
-	\changes{0.02}{Added option of indented paragraphs}
-	\begin{option}{noindent}
-	Declare indentation options.
+    \begin{option}{indent}
+    \changes{0.02}{Added option of indented paragraphs}
+    \begin{option}{noindent}
+    Declare indentation options.
 \begin{MacroCode}{class}
 \DeclareBoolOption[false]{indent}
 \DeclareComplementaryOption{noindent}{indent}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{color}
-	\changes{0.09}{Added \opt{color} option}
-	\begin{option}{nocolor}
-	Declare color options.
+    \begin{option}{color}
+    \changes{0.09}{Added \opt{color} option}
+    \begin{option}{nocolor}
+    Declare color options.
 \begin{MacroCode}{class}
 \DeclareBoolOption[true]{color}
 \DeclareComplementaryOption{nocolor}{color}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
-	\begin{option}{math}
-	\begin{option}{nomath}
-	Declare math options.
+    \begin{option}{math}
+    \begin{option}{nomath}
+    Declare math options.
 \begin{MacroCode}{class}
 \DeclareBoolOption[true]{math}
 \DeclareComplementaryOption{nomath}{math}
 \end{MacroCode}
-	\end{option}
-	\end{option}
+    \end{option}
+    \end{option}
 
-	Execute default options and process given options.
+    Execute default options and process given options.
 \begin{MacroCode}{class}
 \ProcessKeyvalOptions*
 \end{MacroCode}
 
-	\subsection{Loading packages}
-	\subsubsection{Optional packages}
-	Require packages as per given options. Start with the paper size.
+    \subsection{Loading packages}
+    \subsubsection{Optional packages}
+    Require packages as per given options. Start with the paper size.
 \begin{MacroCode}{class}
 \IfStrEq{\skrapport@paper}{a4paper}{%
-	\RequirePackage[a4paper]{geometry}
-	\setlength\paperheight {297mm}
-	\setlength\paperwidth  {210mm}
+    \RequirePackage[a4paper]{geometry}
+    \setlength\paperheight {297mm}
+    \setlength\paperwidth  {210mm}
 }{\IfStrEq{\skrapport@paper}{a5paper}{%
-	\RequirePackage[a5paper]{geometry}
-	\setlength\paperheight {210mm}
-	\setlength\paperwidth  {148mm}
+    \RequirePackage[a5paper]{geometry}
+    \setlength\paperheight {210mm}
+    \setlength\paperwidth  {148mm}
 }{%
-	\ClassError{skrapport}{%
-		Option `paper' has unknown value `\skrapport@paper'!
-	}{}	
+    \ClassError{skrapport}{%
+        Option `paper' has unknown value `\skrapport@paper'!
+    }{} 
 }}
 \end{MacroCode}
 
-	\begin{macro}{\@ptsize}
-	Follow up with the point size.
+    \begin{macro}{\@ptsize}
+    Follow up with the point size.
 \begin{MacroCode}{class}
 \IfStrEq{\skrapport@ptsize}{10pt}{%
-	\renewcommand\@ptsize{0}
+    \renewcommand\@ptsize{0}
 }{%
-	\IfStrEq{\skrapport@ptsize}{11pt}{%
-		\renewcommand\@ptsize{1}
-	}{%
-		\IfStrEq{\skrapport@ptsize}{12pt}{%
-			\renewcommand\@ptsize{2}
-		}{%
-			\ClassError{skrapport}{%
-				Option `ptsize' has unknown value `\skrapport@ptsize'!
-			}{}
-		}
-	}
+    \IfStrEq{\skrapport@ptsize}{11pt}{%
+        \renewcommand\@ptsize{1}
+    }{%
+        \IfStrEq{\skrapport@ptsize}{12pt}{%
+            \renewcommand\@ptsize{2}
+        }{%
+            \ClassError{skrapport}{%
+                Option `ptsize' has unknown value `\skrapport@ptsize'!
+            }{}
+        }
+    }
 }
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	Setting \opt{draft} mode is fairly easy, we only need
-	\cs{overfullrule}s.
+    Setting \opt{draft} mode is fairly easy, we only need
+    \cs{overfullrule}s.
 \begin{MacroCode}{class}
 \ifskrapport@draft
-	\setlength\overfullrule{5pt}
+    \setlength\overfullrule{5pt}
 \else
-	\setlength\overfullrule{0pt}
+    \setlength\overfullrule{0pt}
 \fi
 \end{MacroCode}
 
-	Load |leqno.clo| and |fleqno.clo| if those options are desired.
+    Load |leqno.clo| and |fleqno.clo| if those options are desired.
 \begin{MacroCode}{class}
 \ifskrapport@leqno\input{leqno.clo}\fi
 \ifskrapport@fleqn\input{fleqn.clo}\fi
 \end{MacroCode}
 
-	\begin{macro*}{\@titstyle}
-	Set the title font as prescribed.
+    \begin{macro*}{\@titstyle}
+    Set the title font as prescribed.
 \begin{MacroCode}{class}
 \IfStrEq{\skrapport@titles}{bf}{%
-	\let\@titstyle\bfseries%
+    \let\@titstyle\bfseries%
 }{\IfStrEq{\skrapport@titles}{sf}{%
-	\let\@titstyle\sffamily\bfseries%
+    \let\@titstyle\sffamily\bfseries%
 }{%
-	\let\@titstyle\relax%
+    \let\@titstyle\relax%
 }}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 
-	Now things get tricky. If we are using \hologo{XeTeX}, we don't
-	want \pkg{fontenc} because it makes no sense. We \emph{do} want
-	\pkg{fontspec}, though, because we want to be able to specify
-	fonts. We also include a \cs{nobreakspace} macro which seems to
-	be broken in \hologo{XeTeX}.
+    Now things get tricky. If we are using \hologo{XeTeX}, we don't
+    want \pkg{fontenc} because it makes no sense. We \emph{do} want
+    \pkg{fontspec}, though, because we want to be able to specify
+    fonts. We also include a \cs{nobreakspace} macro which seems to
+    be broken in \hologo{XeTeX}.
 \begin{MacroCode}{class}
 \ifxetex
   \RequirePackage[quiet]{fontspec}
 \end{MacroCode}
-	\begin{macro}{\nobreakspace}
+    \begin{macro}{\nobreakspace}
 \begin{MacroCode}{class}
-	\DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
+    \DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 \begin{MacroCode}{class}
 \else
-  \RequirePackage[T1]{fontenc}	
+  \RequirePackage[T1]{fontenc}  
 \fi
 \end{MacroCode}
 
-	The \opt{color} option requires both \pkg{etoolbox} and
-	\pkg{xcolor} to be loaded.
+    The \opt{color} option requires both \pkg{etoolbox} and
+    \pkg{xcolor} to be loaded.
 \begin{MacroCode}{class}
 \ifskrapport@color
-	\RequirePackage{etoolbox}
-	\RequirePackage{xcolor}
+    \RequirePackage{etoolbox}
+    \RequirePackage{xcolor}
 \fi
 \end{MacroCode}
 
-	We also need to handle the \opt{font} option. Note that we only
-	load \pkg{tpagella} if it exists, and fall back to \pkg{mathpazo}
-	otherwise.
-\begin{MacroCode}{class}	
+    We also need to handle the \opt{font} option. Note that we only
+    load \pkg{tpagella} if it exists, and fall back to \pkg{mathpazo}
+    otherwise.
+\begin{MacroCode}{class}    
 \IfStrEq{\skrapport@font}{nofont}{}{%
-	\IfStrEq{\skrapport@font}{kpfonts}{%
-		\RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
-	}{%
-		\IfStrEq{\skrapport@font}{palatino}{%
-			\IfFileExists{tgpagella.sty}{%
-				\RequirePackage{tgpagella}
-			}{%
-				\RequirePackage[sc]{mathpazo}
-			}
-		}{%
-			\IfStrEq{\skrapport@font}{lmodern}{%
-				\RequirePackage{lmodern}
-			}{%
-				\ClassError{skrapport}{%
-					Option `font' has unknown value `\skrapport@font'!
-				}{}
-			}
-		}
-	}
+    \IfStrEq{\skrapport@font}{kpfonts}{%
+        \RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
+    }{%
+        \IfStrEq{\skrapport@font}{palatino}{%
+            \IfFileExists{tgpagella.sty}{%
+                \RequirePackage{tgpagella}
+            }{%
+                \RequirePackage[sc]{mathpazo}
+            }
+        }{%
+            \IfStrEq{\skrapport@font}{lmodern}{%
+                \RequirePackage{lmodern}
+            }{%
+                \ClassError{skrapport}{%
+                    Option `font' has unknown value `\skrapport@font'!
+                }{}
+            }
+        }
+    }
 }
 \end{MacroCode}
 
-	Language options follow. It it a bit convoluted since we load
-	\pkg{polyglossia} in \hologo{XeTeX} and \pkg{babel} in \TeX,
-	but it's fairly easy to follow.
+    Language options follow. It it a bit convoluted since we load
+    \pkg{polyglossia} in \hologo{XeTeX} and \pkg{babel} in \TeX,
+    but it's fairly easy to follow.
 \begin{MacroCode}{class}
 \ifxetex
-	\RequirePackage{xkeyval}
-	\RequirePackage{polyglossia}
-	\ifskrapport@eng
-		\setmainlanguage[variant=british]{english}
-		\setotherlanguage{swedish}
-	\else
-		\setmainlanguage{swedish}
-		\setotherlanguage[variant=british]{english}
-	\fi
+    \RequirePackage{xkeyval}
+    \RequirePackage{polyglossia}
+    \ifskrapport@eng
+        \setmainlanguage[variant=british]{english}
+        \setotherlanguage{swedish}
+    \else
+        \setmainlanguage{swedish}
+        \setotherlanguage[variant=british]{english}
+    \fi
 \else
-	\ifskrapport@eng
-		\RequirePackage[swedish,british]{babel}
-	\else
-		\RequirePackage[british,swedish]{babel}
-	\fi
+    \ifskrapport@eng
+        \RequirePackage[swedish,british]{babel}
+    \else
+        \RequirePackage[british,swedish]{babel}
+    \fi
 \fi
 \end{MacroCode}
 
-	Two-column mode requires \pkg{etoolbox} and \pkg{multicol}.
+    Two-column mode requires \pkg{etoolbox} and \pkg{multicol}.
 \begin{MacroCode}{class}
 \ifskrapport@twocolumn
-	\RequirePackage{etoolbox}
-	\RequirePackage{multicol}
+    \RequirePackage{etoolbox}
+    \RequirePackage{multicol}
 \fi
 \end{MacroCode}
 
-	\subsubsection{Required packages}
-	We also include some essential packages per default. The
-	\pkg{calc} package, for instance, is essential in later
-	definitions.
+    \subsubsection{Required packages}
+    We also include some essential packages per default. The
+    \pkg{calc} package, for instance, is essential in later
+    definitions.
 \begin{MacroCode}{class}
 \RequirePackage{calc}
 \end{MacroCode}
 
-	At the end of the class definition we load a couple of very
-	useful packages that improve typesetting. These are
-	\pkg{microtype}, \pkg{icomma} and \pkg{amsmath}. Additionally,
-	we load \pkg{skmath} if it exists and is wanted, and unless we
-	are using KP-Fonts, we load \pkg{amssymb} and \pkg{textcomp} (the
-	reason being that \pkg{kpfonts} load these packages itself, see
-	\textcite[p.~1]{kpfonts}, and we don't want conflicting options).
+    At the end of the class definition we load a couple of very
+    useful packages that improve typesetting. These are
+    \pkg{microtype}, \pkg{icomma} and \pkg{amsmath}. Additionally,
+    we load \pkg{skmath} if it exists and is wanted, and unless we
+    are using KP-Fonts, we load \pkg{amssymb} and \pkg{textcomp} (the
+    reason being that \pkg{kpfonts} load these packages itself, see
+    \textcite[p.~1]{kpfonts}, and we don't want conflicting options).
 \begin{MacroCode}{class}
 \AtEndOfClass{
     \RequirePackage{microtype}
-	\RequirePackage{icomma}
-	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage[intlimits]{amsmath}}
-	\let\Finv\relax
-	\let\Game\relax
-	\let\beth\relax
-	\let\gimel\relax
-	\let\daleth\relax
-	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
-	\IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
-	\ifskrapport@math\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}\fi
+    \RequirePackage{icomma}
+    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage[intlimits]{amsmath}}
+    \let\Finv\relax
+    \let\Game\relax
+    \let\beth\relax
+    \let\gimel\relax
+    \let\daleth\relax
+    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
+    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
+    \ifskrapport@math\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}\fi
 }
 \end{MacroCode}
-	
-	When the document starts, we set the URL style if the user has
-	loaded the \pkg{url} package.
+    
+    When the document starts, we set the URL style if the user has
+    loaded the \pkg{url} package.
 \begin{MacroCode}{class}
 \AtBeginDocument{
-	\@ifundefined{urlstyle}{}{\urlstyle{same}}
+    \@ifundefined{urlstyle}{}{\urlstyle{same}}
 }
 \end{MacroCode}
 
-	Lastly, we include the correct point size |.clo| file from the
-	\textsf{article} class.
+    Lastly, we include the correct point size |.clo| file from the
+    \textsf{article} class.
 \begin{MacroCode}{class}
 \input{size1\@ptsize.clo}
 \end{MacroCode}
-	
-	\subsection{Hidden things}
-	Set some default measurements.
+    
+    \subsection{Hidden things}
+    Set some default measurements.
 \begin{MacroCode}{class}
 \addtolength\textwidth{0.5\oddsidemargin}
 \addtolength\textwidth{0.5\evensidemargin}
@@ -591,84 +596,84 @@
 \setlength\lineskip{1\p@}
 \setlength\normallineskip{1\p@}
 \end{MacroCode}
-	\begin{macro}{\baselinestretch}
+    \begin{macro}{\baselinestretch}
 \begin{MacroCode}{class}
 \renewcommand\baselinestretch{}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	\subsubsection{Indentation}
-	Indentation code. Undo the indentation set by the \pkg{article} 
-	class if indentation was requested by the user. See the
-	\pkg{parskip} package for further information. Enable french
-	spacing as well.
+    \subsubsection{Indentation}
+    Indentation code. Undo the indentation set by the \pkg{article} 
+    class if indentation was requested by the user. See the
+    \pkg{parskip} package for further information. Enable french
+    spacing as well.
 \begin{MacroCode}{class}
 \ifskrapport@indent\else
     \setlength\parskip{0.5\baselineskip \@plus 2pt}
-	\parindent=\z@
-	\setlength\parfillskip{30\p@ \@plus 1fil}
+    \parindent=\z@
+    \setlength\parfillskip{30\p@ \@plus 1fil}
 \end{MacroCode}
-	\begin{macro*}{\@listI}
-	\begin{macro*}{\@listi}
+    \begin{macro*}{\@listI}
+    \begin{macro*}{\@listi}
 \begin{MacroCode}{class}
-	\def\@listI{\leftmargin\leftmargini
-	   \topsep\z@ \parsep\parskip \itemsep\z@}
-	\let\@listi\@listI
+    \def\@listI{\leftmargin\leftmargini
+       \topsep\z@ \parsep\parskip \itemsep\z@}
+    \let\@listi\@listI
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
+    \end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
-	\@listi
+    \@listi
 \end{MacroCode}
-	\begin{macro*}{\@listii}
+    \begin{macro*}{\@listii}
 \begin{MacroCode}{class}
-	\def\@listii{\leftmargin\leftmarginii
-	  \labelwidth\leftmarginii\advance\labelwidth-\labelsep
-	  \topsep\z@ \parsep\parskip \itemsep\z@}
+    \def\@listii{\leftmargin\leftmarginii
+      \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+      \topsep\z@ \parsep\parskip \itemsep\z@}
 \end{MacroCode}
-	\end{macro*}
-	\begin{macro*}{\@listiii}
+    \end{macro*}
+    \begin{macro*}{\@listiii}
 \begin{MacroCode}{class}
-	\def\@listiii{\leftmargin\leftmarginiii
-	  \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
-	  \topsep\z@ \parsep\parskip \itemsep\z@}
+    \def\@listiii{\leftmargin\leftmarginiii
+      \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
+      \topsep\z@ \parsep\parskip \itemsep\z@}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
-	\partopsep=\z@
-	\@ifundefined{CheckCommand}{}{%
-	  \CheckCommand*{\@starttoc}[1]{%
-	    \begingroup
-	      \makeatletter
-	      \@input{\jobname.#1}%
-	      \if@filesw
-	        \expandafter\newwrite\csname tf@#1\endcsname
-	        \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-	      \fi
-	      \@nobreakfalse
-	    \endgroup}}
+    \partopsep=\z@
+    \@ifundefined{CheckCommand}{}{%
+      \CheckCommand*{\@starttoc}[1]{%
+        \begingroup
+          \makeatletter
+          \@input{\jobname.#1}%
+          \if@filesw
+            \expandafter\newwrite\csname tf@#1\endcsname
+            \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+          \fi
+          \@nobreakfalse
+        \endgroup}}
 \end{MacroCode}
-	\begin{macro*}{\@starttoc}
+    \begin{macro*}{\@starttoc}
 \begin{MacroCode}{class}
-	\renewcommand*{\@starttoc}[1]{%
-	  \begingroup
-	    \makeatletter
-	    \parskip\z@
-	    \@input{\jobname.#1}%
-	    \if@filesw
-	      \expandafter\newwrite\csname tf@#1\endcsname
-	      \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-	    \fi
-	    \@nobreakfalse
-	  \endgroup}
+    \renewcommand*{\@starttoc}[1]{%
+      \begingroup
+        \makeatletter
+        \parskip\z@
+        \@input{\jobname.#1}%
+        \if@filesw
+          \expandafter\newwrite\csname tf@#1\endcsname
+          \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+        \fi
+        \@nobreakfalse
+      \endgroup}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
 \fi
 \frenchspacing
 \end{MacroCode}
 
-	\subsubsection{Penalties}
+    \subsubsection{Penalties}
 \begin{MacroCode}{class}
 \@lowpenalty   51
 \@medpenalty  151
@@ -678,12 +683,12 @@
 \setcounter{totalnumber}{4}
 \setcounter{dbltopnumber}{2}
 \end{MacroCode}
-	\begin{macro*}{\topfraction}
-	\begin{macro*}{\bottomfraction}
-	\begin{macro*}{\textfraction}
-	\begin{macro*}{\floatpagefraction}
-	\begin{macro*}{\dbltopfraction}
-	\begin{macro*}{\dblfloatpagefraction}
+    \begin{macro*}{\topfraction}
+    \begin{macro*}{\bottomfraction}
+    \begin{macro*}{\textfraction}
+    \begin{macro*}{\floatpagefraction}
+    \begin{macro*}{\dbltopfraction}
+    \begin{macro*}{\dblfloatpagefraction}
 \begin{MacroCode}{class}
 \renewcommand\topfraction{.75}
 \renewcommand\bottomfraction{.5}
@@ -692,41 +697,41 @@
 \renewcommand\dbltopfraction{.75}
 \renewcommand\dblfloatpagefraction{.625}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
 
-	\subsection{User-level commands}
-	\subsubsection{The front page}
-	\begin{macro}{\regarding}
-	This macro defines a variable used by |\maketitle| to insert a 
-	simple text into the header on the title page.
-	\begin{macro*}{\@regarding}
+    \subsection{User-level commands}
+    \subsubsection{The front page}
+    \begin{macro}{\regarding}
+    This macro defines a variable used by |\maketitle| to insert a 
+    simple text into the header on the title page.
+    \begin{macro*}{\@regarding}
 \begin{MacroCode}{class}
 \def\@regarding{\relax}
 \newcommand{\regarding}[1]{\gdef\@regarding{#1}}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro}
+    \end{macro*}
+    \end{macro}
 
-	\begin{macro}{\license}
-	\changes{0.07}{Added command \cs{license}}
-	This macro defines a variable used by |\maketitle| to insert a 
-	license into the footer on the titlepage.
-	\begin{macro*}{\@copyright}
+    \begin{macro}{\license}
+    \changes{0.07}{Added command \cs{license}}
+    This macro defines a variable used by |\maketitle| to insert a 
+    license into the footer on the titlepage.
+    \begin{macro*}{\@copyright}
 \begin{MacroCode}{class}
 \def\@copyright{\relax}
 \newcommand{\license}[1]{\gdef\@copyright{#1}}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro}
+    \end{macro*}
+    \end{macro}
 
-	\begin{macro}{\maketitle}
-	The standard \cs{maketitle} command as taken from the \pkg{article}
-	class but with some basic restyling.
+    \begin{macro}{\maketitle}
+    The standard \cs{maketitle} command as taken from the \pkg{article}
+    class but with some basic restyling.
 \begin{MacroCode}{class}
 \let\@smallprintstyle\relax
 \newcommand\maketitle{\par%
@@ -743,14 +748,14 @@
   \setcounter{footnote}{0}%
 }
 \end{MacroCode}
-	\end{macro}
-	\begin{macro*}{\@maketitle}
+    \end{macro}
+    \begin{macro*}{\@maketitle}
 \begin{MacroCode}{class}
 \def\@maketitle{%
   \newpage
   \null
   \begin{flushleft}%
-		\vspace{-\headsep}
+        \vspace{-\headsep}
     {\small%
       \@smallprintstyle
       \if\@regarding\relax\else\@regarding{, }\fi%
@@ -765,30 +770,30 @@
   \par%
 }
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 
-	\begin{environment}{abstract}
-	Standard restyled \env{abstract} environment from the
-	\pkg{article} class.
+    \begin{environment}{abstract}
+    Standard restyled \env{abstract} environment from the
+    \pkg{article} class.
 \begin{MacroCode}{class}
 \newenvironment{abstract}{\newlength\skrapport@abstract@tw\newlength\skrapport@abstract@aw\settowidth{\skrapport@abstract@tw}{\bfseries\abstractname}\setlength{\skrapport@abstract@aw}{\the\textwidth-\the\skrapport@abstract@tw-1em}\begin{minipage}[t]{\skrapport@abstract@tw}\begin{flushright}\bfseries\abstractname\end{flushright}\end{minipage}\hspace{1em}\begin{minipage}[t]{\skrapport@abstract@aw}}{\end{minipage}}
 \end{MacroCode}
-	\end{environment}
+    \end{environment}
 
-	\begin{environment}{titlepage}
-	Titlepage environment.
-	\begin{macro*}{\ps@skrapport@titlepage}
+    \begin{environment}{titlepage}
+    Titlepage environment.
+    \begin{macro*}{\ps@skrapport@titlepage}
 \begin{MacroCode}{class}
 \newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@smallprintstyle\@copyright\end{minipage}}\let\@evenfoot\@oddfoot}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
 \newenvironment{titlepage}{\cleardoublepage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\cleardoublepage\setcounter{page}\@ne}
 \end{MacroCode}
-	\end{environment}
+    \end{environment}
 
-	\subsubsection{Sectioning}
-	Sectioning commands.
+    \subsubsection{Sectioning}
+    Sectioning commands.
 \begin{MacroCode}{class}
 \setcounter{secnumdepth}{3}
 \newcounter{section}
@@ -797,11 +802,11 @@
 \newcounter{paragraph}[subsubsection]
 \newcounter{subparagraph}[paragraph]
 \end{MacroCode}
-	\begin{macro*}{\thesection}
-	\begin{macro*}{\thesubsection}
-	\begin{macro*}{\thesubsubsection}
-	\begin{macro*}{\theparagraph}
-	\begin{macro*}{\thesubparagraph}
+    \begin{macro*}{\thesection}
+    \begin{macro*}{\thesubsection}
+    \begin{macro*}{\thesubsubsection}
+    \begin{macro*}{\theparagraph}
+    \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
 \renewcommand\thesection{\@arabic\c@section}
 \renewcommand\thesubsection{\thesection.\@arabic\c@subsection}
@@ -809,54 +814,54 @@
 \renewcommand\theparagraph{\thesubsubsection.\@arabic\c@paragraph}
 \renewcommand\thesubparagraph{\theparagraph.\@arabic\c@subparagraph}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\begin{macro}{\section}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \begin{macro}{\section}
 \begin{MacroCode}{class}
 \newcommand\section{\@startsection{section}{1}{\z@}%
   {-4ex \@plus 1ex \@minus -1ex}%
   {.5ex \@plus.5ex}%
   {\normalfont\LARGE\@titstyle}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\subsection}
+    \end{macro}
+    \begin{macro}{\subsection}
 \begin{MacroCode}{class}
 \newcommand\subsection{\@startsection{subsection}{2}{\z@}%
   {-3ex \@plus 1ex \@minus -1ex}%
   {.25ex \@plus.25ex}%
   {\normalfont\Large\@titstyle}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\subsubsection}
+    \end{macro}
+    \begin{macro}{\subsubsection}
 \begin{MacroCode}{class}
 \newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
   {-2ex \@plus .5ex \@minus -.5ex}%
   {.125ex \@plus.125ex}%
   {\normalfont\large\@titstyle}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\paragraph}
+    \end{macro}
+    \begin{macro}{\paragraph}
 \begin{MacroCode}{class}
 \newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
   {1ex \@plus .25ex \@minus -.25ex}%
   {-1em}%
   {\normalfont\normalsize\bfseries}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\subparagraph}
+    \end{macro}
+    \begin{macro}{\subparagraph}
 \begin{MacroCode}{class}
 \newcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
   {1ex \@plus .25ex \@minus -.25ex}%
   {-1em}%
   {\normalfont\normalsize\itshape}}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	\subsubsection{Commands from \pkg{article}}
-	Itemization commands.
+    \subsubsection{Commands from \pkg{article}}
+    Itemization commands.
 \begin{MacroCode}{class}
 \setlength\leftmargini{2em}
 \leftmargin\leftmargini
@@ -872,202 +877,202 @@
 \@endparpenalty   -\@lowpenalty
 \@itempenalty     -\@lowpenalty
 \end{MacroCode}
-	\begin{macro*}{\theenumi}
-	\begin{macro*}{\theenumii}
-	\begin{macro*}{\theenumiii}
-	\begin{macro*}{\theenumiv}
+    \begin{macro*}{\theenumi}
+    \begin{macro*}{\theenumii}
+    \begin{macro*}{\theenumiii}
+    \begin{macro*}{\theenumiv}
 \begin{MacroCode}{class}
 \renewcommand\theenumi{\@arabic\c@enumi}
 \renewcommand\theenumii{\@alph\c@enumii}
 \renewcommand\theenumiii{\@roman\c@enumiii}
 \renewcommand\theenumiv{\@Alph\c@enumiv}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\begin{macro*}{\labelenumi}
-	\begin{macro*}{\labelenumii}
-	\begin{macro*}{\labelenumiii}
-	\begin{macro*}{\labelenumiv}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \begin{macro*}{\labelenumi}
+    \begin{macro*}{\labelenumii}
+    \begin{macro*}{\labelenumiii}
+    \begin{macro*}{\labelenumiv}
 \begin{MacroCode}{class}
 \newcommand\labelenumi{\theenumi.}
 \newcommand\labelenumii{\theenumii)}
 \newcommand\labelenumiii{\theenumiii.}
 \newcommand\labelenumiv{\theenumiv.}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\begin{macro*}{\p@enumii}
-	\begin{macro*}{\p@enumiii}
-	\begin{macro*}{\p@enumiiv}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \begin{macro*}{\p@enumii}
+    \begin{macro*}{\p@enumiii}
+    \begin{macro*}{\p@enumiiv}
 \begin{MacroCode}{class}
 \renewcommand\p@enumii{\theenumi}
 \renewcommand\p@enumiii{\theenumi(\theenumii)}
 \renewcommand\p@enumiv{\p@enumiii\theenumiii}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\begin{macro*}{\labelitemi}
-	\begin{macro*}{\labelitemii}
-	\begin{macro*}{\labelitemiii}
-	\begin{macro*}{\labelitemiv}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \begin{macro*}{\labelitemi}
+    \begin{macro*}{\labelitemii}
+    \begin{macro*}{\labelitemiii}
+    \begin{macro*}{\labelitemiv}
 \begin{MacroCode}{class}
 \newcommand\labelitemi{\textbullet}
 \newcommand\labelitemii{\textopenbullet}
 \newcommand\labelitemiii{\normalfont\bfseries\textendash}
 \newcommand\labelitemiv{\textrightarrow}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\begin{environment}{description}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \begin{environment}{description}
 \begin{MacroCode}{class}
 \newenvironment{description}
   {\list{}{\labelwidth\z@\itemindent-\leftmargin
     \let\makelabel\descriptionlabel}}{\endlist}
 \newcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\bfseries #1}
 \end{MacroCode}
-	\end{environment}
+    \end{environment}
 
-	Quotation environments.
-	\begin{environment}{quote}
+    Quotation environments.
+    \begin{environment}{quote}
 \begin{MacroCode}{class}
 \newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item\relax\itshape}{\endlist}
 \end{MacroCode}
-	\end{environment}
-	\begin{environment}{quotation}
+    \end{environment}
+    \begin{environment}{quotation}
 \begin{MacroCode}{class}
 \newenvironment{quotation}{\bigskip\begin{quote}}{\end{quote}\bigskip}
 \end{MacroCode}
-	\end{environment}
-	\begin{environment}{verse}
+    \end{environment}
+    \begin{environment}{verse}
 \begin{MacroCode}{class}
 \newenvironment{verse}{\begin{quote}}{\end{quote}}
 \end{MacroCode}
-	\end{environment}
+    \end{environment}
 
-	\begin{macro}{\appendix}
-	Appendix macro.
+    \begin{macro}{\appendix}
+    Appendix macro.
 \begin{MacroCode}{class}
 \newcommand\appendix{\par\setcounter{section}{0}\setcounter{subsection}{0}\gdef\thesection{\@Alph\c@section}}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	Old font commands.
-	\begin{macro}{\rm}
+    Old font commands.
+    \begin{macro}{\rm}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\sf}
+    \end{macro}
+    \begin{macro}{\sf}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\tt}
+    \end{macro}
+    \begin{macro}{\tt}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\bf}
+    \end{macro}
+    \begin{macro}{\bf}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\it}
+    \end{macro}
+    \begin{macro}{\it}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\sl}
+    \end{macro}
+    \begin{macro}{\sl}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\sc}
+    \end{macro}
+    \begin{macro}{\sc}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	\begin{macro}{\emph}
-	Redefining the \cs{emph} style to be bold when nested.
-	\begin{macro*}{\em}
+    \begin{macro}{\emph}
+    Redefining the \cs{emph} style to be bold when nested.
+    \begin{macro*}{\em}
 \begin{MacroCode}{class}
 \let\@emstyle\relax
 \DeclareRobustCommand\em{%
-	\@nomath\em%
-	\ifdim \fontdimen\@ne\font >\z@%
-		\itshape\bfseries%
-	\else%
-		\itshape%
-	\fi%
-	\@emstyle%
+    \@nomath\em%
+    \ifdim \fontdimen\@ne\font >\z@%
+        \itshape\bfseries%
+    \else%
+        \itshape%
+    \fi%
+    \@emstyle%
 }
 \end{MacroCode}
-	\end{macro*}
-	\end{macro}
+    \end{macro*}
+    \end{macro}
 
-	\begin{macro*}{\footnoterule}
-	Footnote code.
-	\begin{macro*}{\@makefntext}
+    \begin{macro*}{\footnoterule}
+    Footnote code.
+    \begin{macro*}{\@makefntext}
 \begin{MacroCode}{class}
 \renewcommand\footnoterule{%
-	\kern-3\p@
-	\hrule\@width.4\columnwidth
-	\kern2.6\p@}
+    \kern-3\p@
+    \hrule\@width.4\columnwidth
+    \kern2.6\p@}
 \newcommand\@makefntext[1]{%
-	\parindent 1em%
-	\noindent
-	\hb@xt@1.8em{\hss\@makefnmark}#1}
+    \parindent 1em%
+    \noindent
+    \hb@xt@1.8em{\hss\@makefnmark}#1}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
+    \end{macro*}
+    \end{macro*}
 
-	Basic translatable texts.
-	\begin{macro}{\contentsname}
+    Basic translatable texts.
+    \begin{macro}{\contentsname}
 \begin{MacroCode}{class}
 \newcommand\contentsname{Innehåll}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\refname}
+    \end{macro}
+    \begin{macro}{\refname}
 \begin{MacroCode}{class}
 \newcommand\refname{Referenser}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\figurename}
+    \end{macro}
+    \begin{macro}{\figurename}
 \begin{MacroCode}{class}
 \newcommand\figurename{Figur}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\tablename}
+    \end{macro}
+    \begin{macro}{\tablename}
 \begin{MacroCode}{class}
 \newcommand\tablename{Tabell}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\appendixname}
+    \end{macro}
+    \begin{macro}{\appendixname}
 \begin{MacroCode}{class}
 \newcommand\appendixname{Bilaga}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\abstractname}
+    \end{macro}
+    \begin{macro}{\abstractname}
 \begin{MacroCode}{class}
 \newcommand\abstractname{Sammanfattning}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\today}
+    \end{macro}
+    \begin{macro}{\today}
 \begin{MacroCode}{class}
 \def\today{\year--\month--\day}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 
-	\subsubsection{Floats}
-	Figure and table floats.
+    \subsubsection{Floats}
+    Figure and table floats.
 \begin{MacroCode}{class}
 \setlength\arraycolsep{5\p@}
 \setlength\tabcolsep{6\p@}
@@ -1078,11 +1083,11 @@
 \setlength\fboxsep{3\p@}
 \setlength\fboxrule{.4\p@}
 \end{MacroCode}
-	\begin{macro*}{\theequation}
+    \begin{macro*}{\theequation}
 \begin{MacroCode}{class}
 \renewcommand\theequation{\@arabic\c@equation}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
 \newcounter{figure}\renewcommand\thefigure{\@arabic\c@figure}
 \def\fps@figure{tb}
@@ -1090,14 +1095,14 @@
 \def\ext@figure{lof}
 \def\fnum@figure{\figurename~\thefigure}
 \end{MacroCode}
-	\begin{environment}{figure}
-	\begin{environment*}{figure*}
+    \begin{environment}{figure}
+    \begin{environment*}{figure*}
 \begin{MacroCode}{class}
 \newenvironment{figure}{\@float{figure}}{\end@float}
 \newenvironment{figure*}{\@dblfloat{figure}}{\end@dblfloat}
 \end{MacroCode}
-	\end{environment*}
-	\end{environment}
+    \end{environment*}
+    \end{environment}
 \begin{MacroCode}{class}
 \newcounter{table}\renewcommand\thetable{\@arabic\c@table}
 \def\fps@table{tb}
@@ -1105,59 +1110,59 @@
 \def\ext@table{lot}
 \def\fnum@table{\tablename~\thetable}
 \end{MacroCode}
-	\begin{environment}{table}
-	\begin{environment*}{table*}
+    \begin{environment}{table}
+    \begin{environment*}{table*}
 \begin{MacroCode}{class}
 \newenvironment{table}{\@float{table}}{\end@float}
 \newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat}
 \end{MacroCode}
-	\end{environment*}
-	\end{environment}
+    \end{environment*}
+    \end{environment}
 
-	Captions.
+    Captions.
 \begin{MacroCode}{class}
 \let\@captionstyle\relax
 \newlength\abovecaptionskip\setlength\abovecaptionskip{10\p@}
 \newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
 \end{MacroCode}
-	\begin{macro*}{\@makecaption}
+    \begin{macro*}{\@makecaption}
 \begin{MacroCode}{class}
 \long\def\@makecaption#1#2{%
-	\vskip\abovecaptionskip
-	\sbox\@tempboxa{\small{\bfseries#1:} \itshape#2}%
-	\ifdim \wd\@tempboxa >\hsize
-		\small{\bfseries\@captionstyle#1:} \itshape#2\par
-	\else
-		\global \@minipagefalse
-		\hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
-	\fi
-	\vskip\belowcaptionskip}
+    \vskip\abovecaptionskip
+    \sbox\@tempboxa{\small{\bfseries#1:} \itshape#2}%
+    \ifdim \wd\@tempboxa >\hsize
+        \small{\bfseries\@captionstyle#1:} \itshape#2\par
+    \else
+        \global \@minipagefalse
+        \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \vskip\belowcaptionskip}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 
-	\subsubsection{Table of contents}
+    \subsubsection{Table of contents}
 \begin{MacroCode}{class}
 \newcommand\@pnumwidth{1.55em}
 \newcommand\@tocrmarg{2em}
 \newcommand\@dotsep{1.7}
 \setcounter{tocdepth}{5}
 \end{MacroCode}
-	\begin{macro}{\tableofcontents}
+    \begin{macro}{\tableofcontents}
 \begin{MacroCode}{class}
 \newcommand\tableofcontents{%
   \section*{\contentsname
     \@mkboth{\MakeUppercase\contentsname}{\MakeUppercase\contentsname}
   }%
-	\vskip\baselineskip%
+    \vskip\baselineskip%
   \@starttoc{toc}%
 }
 \end{MacroCode}
-	\end{macro}
-	\begin{macro*}{\l@section}
-	\begin{macro*}{\l@subsection}
-	\begin{macro*}{\l@subsubsection}
-	\begin{macro*}{\l@paragraph}
-	\begin{macro*}{\l@subparagraph}
+    \end{macro}
+    \begin{macro*}{\l@section}
+    \begin{macro*}{\l@subsection}
+    \begin{macro*}{\l@subsubsection}
+    \begin{macro*}{\l@paragraph}
+    \begin{macro*}{\l@subparagraph}
 \begin{MacroCode}{class}
 \newcommand*\l@section{\@dottedtocline{1}{0em}{1.3em}}
 \newcommand*\l@subsection{\@dottedtocline{2}{1.3em}{2em}}
@@ -1165,267 +1170,267 @@
 \newcommand*\l@paragraph{\@dottedtocline{4}{6.45em}{4.15em}}
 \newcommand*\l@subparagraph{\@dottedtocline{5}{10.6em}{5.15em}}
 \end{MacroCode}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
-	\end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
 
-	Fix for \emph{e.g.}~\pkg{tocloft} package.
+    Fix for \emph{e.g.}~\pkg{tocloft} package.
 \begin{MacroCode}{class}
 \let\l@figure\@empty
 \let\l@table\@empty
 \end{MacroCode}
 
-	\subsubsection{Basic bibliography support}
+    \subsubsection{Basic bibliography support}
 \begin{MacroCode}{class}
 \newdimen\bibindent
 \setlength\bibindent{2em}
 \end{MacroCode}
-	\begin{environment}{thebibliography}
+    \begin{environment}{thebibliography}
 \begin{MacroCode}{class}
 \newenvironment{thebibliography}[1]
-	{\section*{\refname}%
-		\@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}%
-		\list{\@biblabel{\@arabic\c@enumiv}}%
-			{\settowidth\labelwidth{\@biblabel{#1}}%
-				\leftmargin\labelwidth
-				\advance\leftmargin\labelsep
-				\@openbib@code
-				\usecounter{enumiv}%
-				\let\p@enumiv\@empty
-				\renewcommand\theenumiv{\@arabic\c@enumiv}}%
-		\sloppy
-		\clubpenalty4000
-		\@clubpenalty \clubpenalty
-		\widowpenalty4000}%
-	{\def\@noitemerr
-		{\@latex@warning{Empty ‘thebibliography’ environment}}%
-		\endlist}
+    {\section*{\refname}%
+        \@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}%
+        \list{\@biblabel{\@arabic\c@enumiv}}%
+            {\settowidth\labelwidth{\@biblabel{#1}}%
+                \leftmargin\labelwidth
+                \advance\leftmargin\labelsep
+                \@openbib@code
+                \usecounter{enumiv}%
+                \let\p@enumiv\@empty
+                \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+        \sloppy
+        \clubpenalty4000
+        \@clubpenalty \clubpenalty
+        \widowpenalty4000}%
+    {\def\@noitemerr
+        {\@latex@warning{Empty ‘thebibliography’ environment}}%
+        \endlist}
 \end{MacroCode}
-	\end{environment}
-	\begin{macro*}{\newblock}
+    \end{environment}
+    \begin{macro*}{\newblock}
 \begin{MacroCode}{class}
 \newcommand\newblock{\hskip .11em\@plus.33em\@minus.07em}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 \begin{MacroCode}{class}
 \let\@openbib@code\@empty
 \end{MacroCode}
-	\begin{environment}{theindex}
+    \begin{environment}{theindex}
 \begin{MacroCode}{class}
 \newenvironment{theindex}
-	{\twocolumn[\section*{\indexname}]%
-		\@mkboth{\MakeUppercase\indexname}%
-			{\MakeUppercase\indexname}%
-		\thispagestyle{plain}\parindent\z@
-		\parskip\z@ \@plus .3\p@\relax
-		\columnseprule \z@
-		\columnsep 35\p@
-		\let\item\@idxitem}
-	{\onecolumn}
+    {\twocolumn[\section*{\indexname}]%
+        \@mkboth{\MakeUppercase\indexname}%
+            {\MakeUppercase\indexname}%
+        \thispagestyle{plain}\parindent\z@
+        \parskip\z@ \@plus .3\p@\relax
+        \columnseprule \z@
+        \columnsep 35\p@
+        \let\item\@idxitem}
+    {\onecolumn}
 \end{MacroCode}
-	\end{environment}
-	\begin{macro*}{\@idxitem}
+    \end{environment}
+    \begin{macro*}{\@idxitem}
 \begin{MacroCode}{class}
 \newcommand\@idxitem{\par\hangindent 40\p@}
 \end{MacroCode}
-	\end{macro*}
-	\begin{macro}{\subitem}
+    \end{macro*}
+    \begin{macro}{\subitem}
 \begin{MacroCode}{class}
 \newcommand\subitem{\@idxitem \hspace*{20\p@}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro}{\subsubitem}
+    \end{macro}
+    \begin{macro}{\subsubitem}
 \begin{MacroCode}{class}
 \newcommand\subsubitem{\@idxitem \hspace*{30\p@}}
 \end{MacroCode}
-	\end{macro}
-	\begin{macro*}{\indexspace}
+    \end{macro}
+    \begin{macro*}{\indexspace}
 \begin{MacroCode}{class}
 \newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
 \end{MacroCode}
-	\end{macro*}
+    \end{macro*}
 
-	\subsubsection{Two-column mode}
-	The twocolumn hacks implemented.
+    \subsubsection{Two-column mode}
+    The twocolumn hacks implemented.
 \begin{MacroCode}{class}
 \ifskrapport@twocolumn
-	\AtBeginDocument{
+    \AtBeginDocument{
 \end{MacroCode}
-	We include the \pkg{grid} package in two-column mode, because
-	it looks way better that way.
+    We include the \pkg{grid} package in two-column mode, because
+    it looks way better that way.
 \begin{MacroCode}{class}
-		\IfStrEq{\skrapport@ptsize}{10pt}{
-			\RequirePackage[fontsize=10pt,baseline=12pt]{grid}
-		}{
-			\IfStrEq{\skrapport@ptsize}{11pt}{
-				\RequirePackage[fontsize=11pt,baseline=13.2pt]{grid}
-			}{
-				\RequirePackage[fontsize=12pt,baseline=14.4pt]{grid}
-			}	
-		}
+        \IfStrEq{\skrapport@ptsize}{10pt}{
+            \RequirePackage[fontsize=10pt,baseline=12pt]{grid}
+        }{
+            \IfStrEq{\skrapport@ptsize}{11pt}{
+                \RequirePackage[fontsize=11pt,baseline=13.2pt]{grid}
+            }{
+                \RequirePackage[fontsize=12pt,baseline=14.4pt]{grid}
+            }   
+        }
 \end{MacroCode}
-	Now, we patch commands. First up is \env{abstract}.
+    Now, we patch commands. First up is \env{abstract}.
 \begin{MacroCode}{class}
-		\renewenvironment{abstract}{\section*{\abstractname}}{}
+        \renewenvironment{abstract}{\section*{\abstractname}}{}
 \end{MacroCode}
-	Then \env{document} and \cs{maketitle}.
+    Then \env{document} and \cs{maketitle}.
 \begin{MacroCode}{class}
-		\AfterEndPreamble{\begin{multicols}{2}}
-		\AtEndDocument{\end{multicols}}
-		\pretocmd{\maketitle}{\end{multicols}}{}{}
-		\apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
+        \AfterEndPreamble{\begin{multicols}{2}}
+        \AtEndDocument{\end{multicols}}
+        \pretocmd{\maketitle}{\end{multicols}}{}{}
+        \apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
 \end{MacroCode}
-	Always typeset \env{equation} and friends outside the grid:
+    Always typeset \env{equation} and friends outside the grid:
 \begin{MacroCode}{class}
-		\BeforeBeginEnvironment{equation}{\begin{gridenv}}
-		\AfterEndEnvironment{equation}{\end{gridenv}}
-		\BeforeBeginEnvironment{equation*}{\begin{gridenv}}
-		\AfterEndEnvironment{equation*}{\end{gridenv}}
-		\BeforeBeginEnvironment{multline}{\begin{gridenv}}
-		\AfterEndEnvironment{multline}{\end{gridenv}}
-		\BeforeBeginEnvironment{multline*}{\begin{gridenv}}
-		\AfterEndEnvironment{multline*}{\end{gridenv}}
-		\BeforeBeginEnvironment{gather}{\begin{gridenv}}
-		\AfterEndEnvironment{gather}{\end{gridenv}}
-		\BeforeBeginEnvironment{gather*}{\begin{gridenv}}
-		\AfterEndEnvironment{gather*}{\end{gridenv}}
-		\BeforeBeginEnvironment{align}{\begin{gridenv}}
-		\AfterEndEnvironment{align}{\end{gridenv}}
-		\BeforeBeginEnvironment{align*}{\begin{gridenv}}
-		\AfterEndEnvironment{align*}{\end{gridenv}}
-		\BeforeBeginEnvironment{flalign}{\begin{gridenv}}
-		\AfterEndEnvironment{flalign}{\end{gridenv}}
-		\BeforeBeginEnvironment{flalign*}{\begin{gridenv}}
-		\AfterEndEnvironment{flalign*}{\end{gridenv}}
-		\BeforeBeginEnvironment{alignat}{\begin{gridenv}}
-		\AfterEndEnvironment{alignat}{\end{gridenv}}
-		\BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
-		\AfterEndEnvironment{alignat*}{\end{gridenv}}
+        \BeforeBeginEnvironment{equation}{\begin{gridenv}}
+        \AfterEndEnvironment{equation}{\end{gridenv}}
+        \BeforeBeginEnvironment{equation*}{\begin{gridenv}}
+        \AfterEndEnvironment{equation*}{\end{gridenv}}
+        \BeforeBeginEnvironment{multline}{\begin{gridenv}}
+        \AfterEndEnvironment{multline}{\end{gridenv}}
+        \BeforeBeginEnvironment{multline*}{\begin{gridenv}}
+        \AfterEndEnvironment{multline*}{\end{gridenv}}
+        \BeforeBeginEnvironment{gather}{\begin{gridenv}}
+        \AfterEndEnvironment{gather}{\end{gridenv}}
+        \BeforeBeginEnvironment{gather*}{\begin{gridenv}}
+        \AfterEndEnvironment{gather*}{\end{gridenv}}
+        \BeforeBeginEnvironment{align}{\begin{gridenv}}
+        \AfterEndEnvironment{align}{\end{gridenv}}
+        \BeforeBeginEnvironment{align*}{\begin{gridenv}}
+        \AfterEndEnvironment{align*}{\end{gridenv}}
+        \BeforeBeginEnvironment{flalign}{\begin{gridenv}}
+        \AfterEndEnvironment{flalign}{\end{gridenv}}
+        \BeforeBeginEnvironment{flalign*}{\begin{gridenv}}
+        \AfterEndEnvironment{flalign*}{\end{gridenv}}
+        \BeforeBeginEnvironment{alignat}{\begin{gridenv}}
+        \AfterEndEnvironment{alignat}{\end{gridenv}}
+        \BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
+        \AfterEndEnvironment{alignat*}{\end{gridenv}}
 \end{MacroCode}
-	The \env{figure} environment is patched...
+    The \env{figure} environment is patched...
 \begin{MacroCode}{class}
-		\renewenvironment{figure}{%
-			\begin{gridenv}%
-			\vspace{\intextsep}%
-			\begin{minipage}{\linewidth}%
-			\def\@captype{figure}%
-		}{%
-			\end{minipage}%
-			\vspace{\intextsep}%
-			\end{gridenv}%
-		}
+        \renewenvironment{figure}{%
+            \begin{gridenv}%
+            \vspace{\intextsep}%
+            \begin{minipage}{\linewidth}%
+            \def\@captype{figure}%
+        }{%
+            \end{minipage}%
+            \vspace{\intextsep}%
+            \end{gridenv}%
+        }
 \end{MacroCode}
-	...as is \env{table}.
+    ...as is \env{table}.
 \begin{MacroCode}{class}
-		\renewenvironment{table}{%
-			\begin{gridenv}%
-			\vspace{\intextsep}%
-			\begin{minipage}{\linewidth}%
-			\def\@captype{table}%
-			\let\@old@caption\caption%
-			\renewcommand{\caption}[1]{%
-				\setlength{\@tempdima}{\abovecaptionskip}%
-				\setlength{\abovecaptionskip}{\belowcaptionskip}%
-				\setlength{\belowcaptionskip}{\@tempdima}%
-				\@old@caption{##1}%
-				\vspace{\belowcaptionskip}%
-			}%
-		}{%
-			\end{minipage}%
-			\vspace{\intextsep}%
-			\end{gridenv}%
-		}
-		\let\oldoldtablest\oldtablest
-		\renewcommand{\oldtablest}{%
-			\oldoldtablest%
-			\let\@old@caption\caption%
-			\renewcommand{\caption}[1]{%
-				\setlength{\@tempdima}{\abovecaptionskip}%
-				\setlength{\abovecaptionskip}{\belowcaptionskip}%
-				\setlength{\belowcaptionskip}{\@tempdima}%
-				\@old@caption{##1}%
-				\vspace{\belowcaptionskip}%
-			}%
-		}
+        \renewenvironment{table}{%
+            \begin{gridenv}%
+            \vspace{\intextsep}%
+            \begin{minipage}{\linewidth}%
+            \def\@captype{table}%
+            \let\@old@caption\caption%
+            \renewcommand{\caption}[1]{%
+                \setlength{\@tempdima}{\abovecaptionskip}%
+                \setlength{\abovecaptionskip}{\belowcaptionskip}%
+                \setlength{\belowcaptionskip}{\@tempdima}%
+                \@old@caption{##1}%
+                \vspace{\belowcaptionskip}%
+            }%
+        }{%
+            \end{minipage}%
+            \vspace{\intextsep}%
+            \end{gridenv}%
+        }
+        \let\oldoldtablest\oldtablest
+        \renewcommand{\oldtablest}{%
+            \oldoldtablest%
+            \let\@old@caption\caption%
+            \renewcommand{\caption}[1]{%
+                \setlength{\@tempdima}{\abovecaptionskip}%
+                \setlength{\abovecaptionskip}{\belowcaptionskip}%
+                \setlength{\belowcaptionskip}{\@tempdima}%
+                \@old@caption{##1}%
+                \vspace{\belowcaptionskip}%
+            }%
+        }
 \end{MacroCode}
-	\begin{environment}{onecol}
-	Finally, we define an environment \env{onecol} that typesets
-	arbitrary material in a single column.
+    \begin{environment}{onecol}
+    Finally, we define an environment \env{onecol} that typesets
+    arbitrary material in a single column.
 \begin{MacroCode}{class}
-		\newenvironment{onecol}{\end{multicols}}{\begin{multicols}{3}}
-	}
+        \newenvironment{onecol}{\end{multicols}}{\begin{multicols}{3}}
+    }
 \end{MacroCode}
-	\end{environment}
+    \end{environment}
 \begin{MacroCode}{class}
 \fi
 \end{MacroCode}
 
-	\subsubsection{Color theme support}
-	Color theme setup. Start by patching commands and declaring
-	default colors. Not implemented: background colors for e.g.
-	quote environments and sections headings, different colors
-	for the different sectioning levels.
+    \subsubsection{Color theme support}
+    Color theme setup. Start by patching commands and declaring
+    default colors. Not implemented: background colors for e.g.
+    quote environments and sections headings, different colors
+    for the different sectioning levels.
 \begin{MacroCode}{class}
 \ifskrapport@color
-	\apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
-	\apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
-	\if\@titstyle\relax
-		\def\@titstyle{\color{skrapport@titlecolor}}
-	\else
-		\apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
-	\fi
-	\def\@smallprintstyle{\color{skrapport@smallprintcolor}}
-	\AtBeginDocument{%
-		\let\@abstractname\abstractname
-		\def\abstractname{\color{skrapport@titlecolor}\@abstractname}
-	}
-	\apptocmd{\quote}{\color{skrapport@quotecolor}}{}{}
-	\def\@captionstyle{\color{skrapport@captioncolor}}
-	\def\@emstyle{\color{skrapport@emphcolor}}
-	\ifskrapport@twocolumn\AtBeginDocument{%
-		\renewcommand\section{\@startsection {section}{1}{\z@}%
-        	{-.999\baselineskip}{0.001\baselineskip}{\bfseries\mathversion{bold}\color{skrapport@titlecolor}}}
-		\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-			{\baselineskip}{-.35\baselineskip}{\bfseries\color{skrapport@titlecolor}\unskip}}
-		\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-			{\baselineskip}{-.35\baselineskip}{\itshape\color{skrapport@titlecolor}\unskip}}
-	}\fi
-	\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-		{1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\bfseries\color{skrapport@titlecolor}}}
-	\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-		{1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\itshape\color{skrapport@titlecolor}}}
-	\AtBeginDocument{\@ifpackageloaded{hyperref}{%
-		\hypersetup{%
-			citebordercolor=skrapport@citecolor,citecolor=skrapport@citecolor,%
-			filebordercolor=skrapport@filecolor,filecolor=skrapport@filecolor,%
-			linkbordercolor=skrapport@linkcolor,linkcolor=skrapport@linkcolor,%
-			menubordercolor=skrapport@menucolor,menucolor=skrapport@menucolor,%
-			urlbordercolor=skrapport@urlcolor,urlcolor=skrapport@urlcolor,%
-			runbordercolor=skrapport@runcolor,runcolor=skrapport@runcolor%
-		}
-	}{}}
-	\AtBeginDocument{\color{skrapport@defaultcolor}}
+    \apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
+    \apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
+    \if\@titstyle\relax
+        \def\@titstyle{\color{skrapport@titlecolor}}
+    \else
+        \apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
+    \fi
+    \def\@smallprintstyle{\color{skrapport@smallprintcolor}}
+    \AtBeginDocument{%
+        \let\@abstractname\abstractname
+        \def\abstractname{\color{skrapport@titlecolor}\@abstractname}
+    }
+    \apptocmd{\quote}{\color{skrapport@quotecolor}}{}{}
+    \def\@captionstyle{\color{skrapport@captioncolor}}
+    \def\@emstyle{\color{skrapport@emphcolor}}
+    \ifskrapport@twocolumn\AtBeginDocument{%
+        \renewcommand\section{\@startsection {section}{1}{\z@}%
+            {-.999\baselineskip}{0.001\baselineskip}{\bfseries\mathversion{bold}\color{skrapport@titlecolor}}}
+        \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+            {\baselineskip}{-.35\baselineskip}{\bfseries\color{skrapport@titlecolor}\unskip}}
+        \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+            {\baselineskip}{-.35\baselineskip}{\itshape\color{skrapport@titlecolor}\unskip}}
+    }\fi
+    \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\bfseries\color{skrapport@titlecolor}}}
+    \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\itshape\color{skrapport@titlecolor}}}
+    \AtBeginDocument{\@ifpackageloaded{hyperref}{%
+        \hypersetup{%
+            citebordercolor=skrapport@citecolor,citecolor=skrapport@citecolor,%
+            filebordercolor=skrapport@filecolor,filecolor=skrapport@filecolor,%
+            linkbordercolor=skrapport@linkcolor,linkcolor=skrapport@linkcolor,%
+            menubordercolor=skrapport@menucolor,menucolor=skrapport@menucolor,%
+            urlbordercolor=skrapport@urlcolor,urlcolor=skrapport@urlcolor,%
+            runbordercolor=skrapport@runcolor,runcolor=skrapport@runcolor%
+        }
+    }{}}
+    \AtBeginDocument{\color{skrapport@defaultcolor}}
 \end{MacroCode}
-	\begin{macro}{\colortheme}
-	The \cs{colortheme} macro allows the end-user to load color themes
-	(described later) to customize the colors of the document when the
-	class is loaded with the \opt{color} option.
+    \begin{macro}{\colortheme}
+    The \cs{colortheme} macro allows the end-user to load color themes
+    (described later) to customize the colors of the document when the
+    class is loaded with the \opt{color} option.
 \begin{MacroCode}{class}
-	\newcommand\colortheme[1]{\usepackage{skrapport-colortheme-#1}}
+    \newcommand\colortheme[1]{\usepackage{skrapport-colortheme-#1}}
 \end{MacroCode}
-	\end{macro}
+    \end{macro}
 \begin{MacroCode}{class}
-	\colortheme{default}
+    \colortheme{default}
 \fi
 \end{MacroCode}
 
-	\subsection{Final class setup}
-	We end the document class by setting a few lengths along with the
-	page style and page numbering. Also, activate \cs{raggedbottom} and
-	\cs{onexolumn} (since we always do all the two-column stuff
-	ourselves anyway).
+    \subsection{Final class setup}
+    We end the document class by setting a few lengths along with the
+    page style and page numbering. Also, activate \cs{raggedbottom} and
+    \cs{onexolumn} (since we always do all the two-column stuff
+    ourselves anyway).
 \begin{MacroCode}{class}
 \setlength\columnsep{10\p@}
 \setlength\columnseprule{0\p@}
@@ -1436,14 +1441,14 @@
 \endinput
 \end{MacroCode}
 
-	\subsection{Color themes}
-	As described earlier, the user can load color themes to customize
-	the appearance of the document if the class was loaded with the
-	\opt{color} option. Four themes are available by default.
-	
-	\subsubsection{Default color theme}
-	\begin{theme}{Default}
-	\changes{0.09}{Added default color theme}
+    \subsection{Color themes}
+    As described earlier, the user can load color themes to customize
+    the appearance of the document if the class was loaded with the
+    \opt{color} option. Four themes are available by default.
+    
+    \subsubsection{Default color theme}
+    \begin{theme}{Default}
+    \changes{0.09}{Added default color theme}
 \begin{MacroCode}{theme-default}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{skrapport-colortheme-default}%
@@ -1464,11 +1469,11 @@
 \definecolor{skrapport@defaultcolor}{named}{black}
 \endinput
 \end{MacroCode}
-	\end{theme}
+    \end{theme}
 
-	\subsubsection{Unscathed color theme}
-	\begin{theme}{Unscathed}
-	\changes{0.09}{Added ``Unschathed'' color theme}
+    \subsubsection{Unscathed color theme}
+    \begin{theme}{Unscathed}
+    \changes{0.09}{Added ``Unschathed'' color theme}
 \begin{MacroCode}{theme-unscathed}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{skrapport-colortheme-unscathed}%
@@ -1486,11 +1491,11 @@
 \definecolor{skrapport@smallprintcolor}{named}{skrapport@quotecolor}
 \endinput
 \end{MacroCode}
-	\end{theme}
+    \end{theme}
 
-	\subsubsection{Cruelwater color theme}
-	\begin{theme}{Cruelwater}
-	\changes{0.09}{Added ``Cruelwater'' color theme}
+    \subsubsection{Cruelwater color theme}
+    \begin{theme}{Cruelwater}
+    \changes{0.09}{Added ``Cruelwater'' color theme}
 \begin{MacroCode}{theme-cruelwater}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesPackage{skrapport-colortheme-cruelwater}%
@@ -1511,10 +1516,10 @@
 \definecolor{skrapport@defaultcolor}{named}{black}
 \endinput
 \end{MacroCode}
-	\end{theme}
+    \end{theme}
 
-	\subsubsection{Violet color theme}
-	\begin{theme}{Violet}
+    \subsubsection{Violet color theme}
+    \begin{theme}{Violet}
 \changes{0.09}{Added ``Violet'' color theme}
 \begin{MacroCode}{theme-violet}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
@@ -1536,8 +1541,9 @@
 \definecolor{skrapport@defaultcolor}{named}{black}
 \endinput
 \end{MacroCode}
-	\end{theme}
+    \end{theme}
 
+    \Finale
     \PrintChanges
     \PrintIndex
     \printbibliography
