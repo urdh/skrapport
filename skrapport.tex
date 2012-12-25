@@ -776,7 +776,7 @@
     Standard restyled \env{abstract} environment from the
     \pkg{article} class.
 \begin{MacroCode}{class}
-\newenvironment{abstract}{\newlength\skrapport@abstract@tw\newlength\skrapport@abstract@aw\settowidth{\skrapport@abstract@tw}{\bfseries\abstractname}\setlength{\skrapport@abstract@aw}{\the\textwidth-\the\skrapport@abstract@tw-1em}\begin{minipage}[t]{\skrapport@abstract@tw}\begin{flushright}\bfseries\abstractname\end{flushright}\end{minipage}\hspace{1em}\begin{minipage}[t]{\skrapport@abstract@aw}}{\end{minipage}}
+\newenvironment{abstract}{\newlength\skrapport@abstract@tw\newlength\skrapport@abstract@aw\settowidth{\skrapport@abstract@tw}{\bfseries\abstractname}\setlength{\skrapport@abstract@aw}{\the\textwidth-\the\skrapport@abstract@tw-1em}\begin{minipage}[t]{\skrapport@abstract@tw}\begin{flushright}\leavevmode\bfseries\abstractname\end{flushright}\end{minipage}\hspace{1em}\begin{minipage}[t]{\skrapport@abstract@aw}}{\end{minipage}}
 \end{MacroCode}
     \end{environment}
 
