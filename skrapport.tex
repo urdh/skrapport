@@ -14,8 +14,8 @@
 %% 
 %% The Current Maintainer of this work is Simon Sigurdhsson.
 %% 
-%% This work consists of the file skrapport.tex and the derived
-%% files skrapport.cls, skrapport-colortheme-default.sty,
+%% This work consists of the file skrapport.tex and Makefile and the 
+%% derived files skrapport.cls, skrapport-colortheme-default.sty,
 %% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
 %% and skrapport-colortheme-cruelwater.sty.
 \documentclass{skdoc}
@@ -220,7 +220,7 @@
 \end{MacroCode}
 
     \subsection{Options}
-    \begin{option}{paper}
+    \begin{option}{paper}{a4paper, a5paper}
     \begin{option}{a4paper}
     \begin{option}{a5paper}
     Declare the paper size options.
@@ -235,7 +235,7 @@
     \end{option}
     \end{option}
 
-    \begin{option}{ptsize}
+    \begin{option}{ptsize}{10pt, 11pt, 12pt}
     \begin{option}{10pt}
     \begin{option}{11pt}
     \begin{option}{12pt}
@@ -288,7 +288,7 @@
 \end{MacroCode}
     \end{option}
 
-    \begin{option}{titles}
+    \begin{option}{titles}{rm, bf, sf}
     Declare options for section titles.
     \begin{option}{rmtitles}
     \begin{option}{bftitles}
@@ -325,7 +325,7 @@
     \end{option}
     \end{option}
 
-    \begin{option}{font}
+    \begin{option}{font}{nofont, kpfonts, lmodern, palatino}
     Declare font options.
     \begin{option}{kpfonts}
     \changes{0.07}{Added option \opt{kpfonts}, set as default
