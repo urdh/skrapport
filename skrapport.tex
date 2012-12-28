@@ -175,8 +175,8 @@
     In general, the class defines the same macros as the \textsf{article} class.
 
     \DescribeMacro\regarding{<text>}
-    The class does add a |\regarding| macro, which is used like the standard
-        |\author| and |\title| macros and should be given an accurate but short
+    The class does add a \cs{regarding} macro, which is used like the standard
+        \cs{author} and \cs{title} macros and should be given an accurate but short
         description of the purpose of the report (i.e.~course name or similar). This
         is printed along with the date on the top of the title/first page.
 
@@ -435,7 +435,7 @@
 \fi
 \end{MacroCode}
 
-    Load |leqno.clo| and |fleqno.clo| if those options are desired.
+    Load \texttt{leqno.clo} and \texttt{fleqno.clo} if those options are desired.
 \begin{MacroCode}{class}
 \ifskrapport@leqno\input{leqno.clo}\fi
 \ifskrapport@fleqn\input{fleqn.clo}\fi
@@ -580,7 +580,7 @@
 }
 \end{MacroCode}
 
-    Lastly, we include the correct point size |.clo| file from the
+    Lastly, we include the correct point size \texttt{.clo} file from the
     \textsf{article} class.
 \begin{MacroCode}{class}
 \input{size1\@ptsize.clo}
@@ -707,7 +707,7 @@
     \subsection{User-level commands}
     \subsubsection{The front page}
     \begin{macro}{\regarding}
-    This macro defines a variable used by |\maketitle| to insert a 
+    This macro defines a variable used by \cs{maketitle} to insert a 
     simple text into the header on the title page.
     \begin{macro*}{\@regarding}
 \begin{MacroCode}{class}
@@ -719,7 +719,7 @@
 
     \begin{macro}{\license}
     \changes{0.07}{Added command \cs{license}}
-    This macro defines a variable used by |\maketitle| to insert a 
+    This macro defines a variable used by \cs{maketitle} to insert a 
     license into the footer on the titlepage.
     \begin{macro*}{\@copyright}
 \begin{MacroCode}{class}
