@@ -1297,13 +1297,21 @@
     We include the \pkg{grid} package in two-column mode, because
     it looks way better that way.
 \begin{MacroCode}{class}
+        \IfStrEq{\skrapport@paper}{a4paper}
+            {\def\@@@lines{40}}{\def\@@@lines{28}}
         \IfStrEq{\skrapport@ptsize}{10pt}{
-            \RequirePackage[fontsize=10pt,baseline=12pt]{grid}
+            \RequirePackage[fontsize=10pt,%
+                            baseline=12pt,%
+                            lines=\@@@lines]{grid}
         }{
             \IfStrEq{\skrapport@ptsize}{11pt}{
-                \RequirePackage[fontsize=11pt,baseline=13.2pt]{grid}
+                \RequirePackage[fontsize=11pt,%
+                                baseline=13.2pt,%
+                                lines=\@@@lines]{grid}
             }{
-                \RequirePackage[fontsize=12pt,baseline=14.4pt]{grid}
+                \RequirePackage[fontsize=12pt,%
+                                baseline=14.4pt,%
+                                lines=\@@@lines]{grid}
             }   
         }
 \end{MacroCode}
