@@ -14,7 +14,7 @@
 %% 
 %% The Current Maintainer of this work is Simon Sigurdhsson.
 %% 
-%% This work consists of the file skrapport.tex and Makefile and the 
+%% This work consists of the file skrapport.tex and the 
 %% derived files skrapport.cls, skrapport-colortheme-default.sty,
 %% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
 %% and skrapport-colortheme-cruelwater.sty.
@@ -27,7 +27,7 @@
 %\OnlyDescription
 
 % Bibliography entries
-\begin{filecontents}{chslacite.bib}
+\begin{filecontents}{skrapport.bib}
     @article{kpfonts,
         author = {Christophe Caignaert},
         title = {KP-Fonts 3.31},
@@ -35,7 +35,7 @@
         url = {http://www.tex.ac.uk/tex-archive/fonts/kpfonts/doc/kpfonts.pdf}
     }
 \end{filecontents}
-\addbibresource{chslacite.bib}
+\addbibresource{skrapport.bib}
 
 % Declare the target files
 \SelfPreambleTo{\mypreamble}
@@ -68,7 +68,7 @@
                     and wanted.}
 
     % Metadata
-    \package[ctan,vcs=https://github.com/urdh/skrapport]{skrapport}
+    \package[ctan=skbundle,vcs=https://github.com/urdh/skrapport]{skrapport}
     \title{The \textbf{\thepackage} document class}
     \author{Simon Sigurdhsson}
     \email{sigurdhsson@gmail.com}
@@ -1357,9 +1357,36 @@
 \end{MacroCode}
     \begin{environment}{onecol}
     Finally, we define an environment \env{onecol} that typesets
-    arbitrary material in a single column.
+    arbitrary material in a single column. This is a bit tricky to
+    do, and probably cargo-cult as well. We define the start of the
+    environment to immediately end itself (with the empty ending),
+    then end the \env{multiols} environment, redefine our end macro
+    to start \env{multicols} as well as redefining the start of
+    \env{onecol} to simply reset itself, then start the environment
+    again only to have it ended at once.
+
+    Basically, we trick \LaTeX\ into thinking that we have an empty
+    \env{onecol} environment at the end of the first \env{multicols},
+    then some content inside a fake \env{onecol}, then an empty
+    \env{onecol} at the start of the next \env{multicols}. Voilá, no
+    wierd group errors!
 \begin{MacroCode}{class}
-        \newenvironment{onecol}{\end{multicols}}{\begin{multicols}{3}}
+        \newenvironment{onecol}{
+            \end{onecol}
+            \end{multicols}
+            \begingroup
+            \def\endonecol{
+                \endgroup
+                \begin{multicols}{2}
+                \let\old@onecol\onecol
+                \def\onecol{
+                    \let\onecol\old@onecol
+                }
+                \begin{onecol}
+            }
+            \def\onecol{}
+            \begin{onecol}
+        }{}
     }
 \end{MacroCode}
     \end{environment}
