@@ -65,7 +65,8 @@
     \changes{0.09}{Introduced \textsf{kvoptions},
                     fixed abstract in twocolumn mode}
     \changes{0.10}{Fixed documentation, include skmath if exists
-                    and wanted.}
+                    and wanted. Gobble optional arguments to
+                    \env{figure} and \env{table} in two-column mode.}
 
     % Metadata
     \package[ctan=skbundle,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -1311,7 +1312,11 @@
 \end{MacroCode}
     The \env{figure} environment is patched...
 \begin{MacroCode}{class}
-        \renewenvironment{figure}{%
+        \expandafter\let\expandafter
+                    \old@figurest\csname figure*\endcsname
+        \expandafter\let\expandafter
+                    \old@endfigurest\csname endfigure*\endcsname
+        \RenewDocumentEnvironment{figure}{o}{%
             \begin{gridenv}%
             \vspace{\intextsep}%
             \begin{minipage}{\linewidth}%
@@ -1321,10 +1326,16 @@
             \vspace{\intextsep}%
             \end{gridenv}%
         }
+        \RenewDocumentEnvironment{figure*}{o}{\old@figurest}%
+                                             {\old@endfigurest}
 \end{MacroCode}
     ...as is \env{table}.
 \begin{MacroCode}{class}
-        \renewenvironment{table}{%
+        \expandafter\let\expandafter
+                    \old@tablest\csname table*\endcsname
+        \expandafter\let\expandafter
+                    \old@endtablest\csname endtable*\endcsname
+        \RenewDocumentEnvironment{table}{o}{%
             \begin{gridenv}%
             \vspace{\intextsep}%
             \begin{minipage}{\linewidth}%
@@ -1354,8 +1365,11 @@
                 \vspace{\belowcaptionskip}%
             }%
         }
+        \RenewDocumentEnvironment{table*}{o}{\old@tablest}%
+                                            {\old@endtablest}
 \end{MacroCode}
     \begin{environment}{onecol}
+    \changes{0.10}{Fixed, now not completely broken}
     Finally, we define an environment \env{onecol} that typesets
     arbitrary material in a single column. This is a bit tricky to
     do, and probably cargo-cult as well. We define the start of the
