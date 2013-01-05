@@ -55,14 +55,14 @@
     \version{0.10}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
-    \changes{0.04}{Added \textsf{microtype} package}
+    \changes{0.04}{Added \pkg{microtype} package}
     \changes{0.05}{Improved documentation}
     \changes{0.06}{Corrected cheksum, further improved documentation}
     \changes{0.07}{Various bugfixes, \hologo{XeLaTeX} compatibility, 
                     better float settings, quote style fix,
-                    \texttt{intlimits} option to \textsf{amsmath}}
-    \changes{0.07a}{Fixed \textsf{kpfonts} issues}
-    \changes{0.09}{Introduced \textsf{kvoptions},
+                    \opt{intlimits} option to \pkg{amsmath}}
+    \changes{0.07a}{Fixed \pkg{kpfonts} issues}
+    \changes{0.09}{Introduced \pkg{kvoptions},
                     fixed abstract in twocolumn mode}
     \changes{0.10}{Fixed documentation, include skmath if exists
                     and wanted. Gobble optional arguments to
@@ -104,13 +104,13 @@
     standards). Only A4 and A5 are defined since these two sizes cover
     pretty much all intended use of the class. \opt{a4paper} is the
     default value of this option, and the only other valid value is
-    \texttt{a5paper}.
+    \opt{a5paper}.
 
     \Options{ptsize}\WithValues{10pt, 11pt, 12pt}\AndDefault{11pt}
     The same font sizes specified in the standard classes are also
-    available in \thepackage\ (\emph{i.e.} \texttt{10pt},
-    \texttt{11pt} and \texttt{12pt}. The default font size is
-    \texttt{11pt}, and there should be no compelling reason to change
+    available in \thepackage\ (\emph{i.e.} \opt{10pt},
+    \opt{11pt} and \opt{12pt}. The default font size is
+    \opt{11pt}, and there should be no compelling reason to change
     this.
 
     \Options{draft,final}
@@ -152,28 +152,28 @@
     Similar to the options available in the standard classes, these
     options specify wether to typeset the document in one or two
     columns. Unlike the standard classes, the two-column mode is
-    implemented using \pkg{multicol}. The default is \texttt{onecolumn}.
+    implemented using \pkg{multicol}. The default is \opt{onecolumn}.
 
     \subsubsection{Other options}
     \Options{swe,eng}
     Either \pkg{babel} or \pkg{polyglossia} (depending on engine) is
     loaded by the package. These options specify what language should
     be used as the main language (swedish or english); both languages
-    are always loaded. The default is \texttt{swe}.
+    are always loaded. The default is \opt{swe}.
 
     \Options{color,nocolor}
     It is also possible to load \pkg{xcolor} inside the package. If
     this is done, a range of color themes (discussed later) will be
     available in the package and these will affect the document. The
-    default value is \texttt{nocolor}.
+    default value is \opt{nocolor}.
 
     \Options{math,nomath}
     Loading the \pkg{skmath} package is recommended and as such it is
     loaded by default. If this for some reason is undesirable, the
-    \texttt{nomath} option will supress this behaviour.
+    \opt{nomath} option will supress this behaviour.
 
     \subsection{Further documentation (unfinished)}
-    In general, the class defines the same macros as the \textsf{article} class.
+    In general, the class defines the same macros as the \pkg{article} class.
 
     \DescribeMacro\regarding{<text>}
     The class does add a \cs{regarding} macro, which is used like the standard
@@ -182,15 +182,50 @@
         is printed along with the date on the top of the title/first page.
 
     \DescribeEnv[<content>]{onecol}
-    In \texttt{twocolumn} mode, the package defines an environment \texttt{onecol}
+    In \texttt{twocolumn} mode, the package defines an environment \opt{onecol}
       which typesets its contents in a single column. Additionally, it redefines
-      \texttt{figure} and \texttt{table} as non-floats, leaving the starred versions
+      \env{figure} and \env{table} as non-floats, leaving the starred versions
       intact.
+
+    \subsubsection{Color themes}
     \DescribeMacro\colortheme{<theme>}
-    If the package is loaded with the \texttt{color} option, changing the color theme is
-    possible using \texttt{colortheme}, which loads an
-    appropriate package. At the moment, four color themes are available: \textsf{default},
-    \textsf{unscathed}, \textsf{cruelwater} and \textsf{violet}.
+    If the package is loaded with the \opt{color} option, changing the color theme is
+    possible using \cs{colortheme}, which loads an
+    appropriate package. At the moment, four color themes are available.
+
+    \Theme{default}
+    The \thm{default} theme is fairly conservative, only coloring
+    \pkg{hyperef} links with more readable, slightly darker colors than
+    the standard ones. It should print well even on non-color printers.
+
+    \Theme{unscathed}
+    The \thm{unscathed} theme is based on a palette with the same
+    name on COLOURlovers%
+\footnote{\url{http://www.colourlovers.com/palette/1440498/unscathed}},
+    and applies a \textcolor[HTML]{463335}{dark brown} color to
+    emphasized text, a \textcolor[HTML]{CF5D3B}{rusty} color to links,
+    a \textcolor[HTML]{B34430}{darker rust} color to titles and a
+    \textcolor[HTML]{70524A}{lighter brown} to quotes.
+
+    \Theme{cruelwater}
+    The \thm{cruelwater} theme is also based on a palette from 
+    COLOURlovers%
+\footnote{\url{http://www.colourlovers.com/palette/126030/Cruel_Water_at_Night}},
+    and applies a \textcolor[HTML]{030C22}{dark blue} color to bold
+    text and captions, a \textcolor[HTML]{20293F}{slightly less dark 
+    blue} to titles and emphasized text, a \textcolor[HTML]{A9B0B3}{
+    light gray} color to small print and a \textcolor[HTML]{404749}{
+    darker gray} to quotes.
+
+    \Theme{violet}
+    The \thm{violet} theme, like \thm{unscathed} and \thm{cruelwater},
+    is based on a COLOURlovers palette%
+\footnote{\url{http://www.colourlovers.com/palette/1831303/Violet_White_Bedrm}}.
+    It colors all links \textcolor[HTML]{932444}{bright purple}, applies
+    a \textcolor[HTML]{311A2A}{dark puple} color to titles, bold text
+    and captions, a \textcolor[HTML]{D6CBCF}{grayish purple} to small
+    print, a \textcolor[HTML]{463335}{dark brown} color to quotes and a
+    \textcolor[HTML]{98758D}{pastel violet} color to emphasized text.
 
     \section{Additional information}
     \subsection{Included packages}
@@ -436,7 +471,7 @@
 \fi
 \end{MacroCode}
 
-    Load \texttt{leqno.clo} and \texttt{fleqno.clo} if those options are desired.
+    Load \file{leqno.clo} and \file{fleqno.clo} if those options are desired.
 \begin{MacroCode}{class}
 \ifskrapport@leqno\input{leqno.clo}\fi
 \ifskrapport@fleqn\input{fleqn.clo}\fi
@@ -582,7 +617,7 @@
 \end{MacroCode}
 
     Lastly, we include the correct point size \texttt{.clo} file from the
-    \textsf{article} class.
+    \pkg{article} class.
 \begin{MacroCode}{class}
 \input{size1\@ptsize.clo}
 \end{MacroCode}
