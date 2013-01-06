@@ -64,7 +64,7 @@
     \changes{0.07a}{Fixed \pkg{kpfonts} issues}
     \changes{0.09}{Introduced \pkg{kvoptions},
                     fixed abstract in twocolumn mode}
-    \changes{0.10}{Fixed documentation, include skmath if exists
+    \changes{0.10}{Include skmath if exists
                     and wanted. Gobble optional arguments to
                     \env{figure} and \env{table} in two-column mode.}
 
@@ -1450,6 +1450,37 @@
 \begin{MacroCode}{class}
 \fi
 \end{MacroCode}
+
+    \subsubsection{Miscellaneous}
+    A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let 
+    the user add comments and notes to the document.
+    \begin{macro}{\@comment}
+\begin{MacroCode}
+\NewDocumentCommand\@comment{m}{%
+    {\textbf{Comment:} #1}%
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\comment}
+    \changes{0.10}{Added macro for comments}
+\begin{MacroCode}
+\NewDocumentCommand\comment{sm}{%
+    \IfBooleanTF{#1}%
+        {\colorbox{red!50}{\@comment{#2}}}%
+        {\marginpar{\@comment{#2}}}%
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\com}
+    \begin{macro}{\note}
+\begin{MacroCode}
+\ProvideDocumentCommand\com{sm}%
+    {\IfBooleanTF{#1}{\comment*{#1}}{\comment{#1}}}
+\ProvideDocumentCommand\note{sm}%
+    {\IfBooleanTF{#1}{\comment*{#1}}{\comment{#1}}}
+\end{MacroCode}
+    \end{macro}
+    \end{macro}
 
     \subsubsection{Color theme support}
     Color theme setup. Start by patching commands and declaring
