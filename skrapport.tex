@@ -19,12 +19,12 @@
 %% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
 %% and skrapport-colortheme-cruelwater.sty.
 \documentclass{skdoc}
-\usepackage{hologo}
+\usepackage{hologo,booktabs}
 \usepackage[style=authoryear]{biblatex}
 %\usepackage{chslacite}
 
 % Hide the implementation
-%\OnlyDescription
+\OnlyDescription
 
 % Bibliography entries
 \begin{filecontents}{skrapport.bib}
@@ -172,20 +172,36 @@
     loaded by default. If this for some reason is undesirable, the
     \opt{nomath} option will supress this behaviour.
 
-    \subsection{Further documentation (unfinished)}
-    In general, the class defines the same macros as the \pkg{article} class.
+    \subsection{Macros and environments}
+    In general, the class defines the same macros as the \pkg{article} class, and adds a few. Only the novel ones are described here, as
+    the inherited ones should behave identically.
+
+    \subsubsection{Front-matter and metadata}
+    \DescribeMacro\license{<license>}
+    The \cs{license} macro specifies the name of a license under which
+    the document is available. This will be typeset on the lower right
+    corner of the title page.
 
     \DescribeMacro\regarding{<text>}
-    The class does add a \cs{regarding} macro, which is used like the standard
-        \cs{author} and \cs{title} macros and should be given an accurate but short
-        description of the purpose of the report (i.e.~course name or similar). This
-        is printed along with the date on the top of the title/first page.
+    The class adds a \cs{regarding} macro, which is used like the 
+    standard \cs{author} and \cs{title} macros and should be given an 
+    accurate but short description of the purpose of the report (i.e.
+    ~course name or similar). This is printed along with the date on 
+    the top of the title/first page.
 
+    \DescribeMacro\maketitle
+    The title page (or rather, block) has been refashioned to mimic the
+    Prac\TeX\ Journal style. This means a fairly compact block, starting
+    with a line of text containing the date and subject matter, followed
+    by a large skip and then the title, author and optionally an
+    abstract set ragged-right and fairly close together.
+
+    \subsubsection{Two-column mode}
     \DescribeEnv[<content>]{onecol}
-    In \texttt{twocolumn} mode, the package defines an environment \opt{onecol}
-      which typesets its contents in a single column. Additionally, it redefines
-      \env{figure} and \env{table} as non-floats, leaving the starred versions
-      intact.
+    In \opt{twocolumn} mode, the package defines an environment
+    \env{onecol} which typesets its contents in a single column. 
+    Additionally, it redefines \env{figure} and \env{table} as
+    non-floats, leaving the starred versions intact.
 
     \subsubsection{Color themes}
     \DescribeMacro\colortheme{<theme>}
@@ -227,11 +243,39 @@
     print, a \textcolor[HTML]{463335}{dark brown} color to quotes and a
     \textcolor[HTML]{98758D}{pastel violet} color to emphasized text.
 
-    \section{Additional information}
-    \subsection{Included packages}
-    The document class includes \textsf{babel}, \textsf{fontenc},
-    \textsf{icomma}, \textsf{amsmath}, \textsf{amssymb}, \textsf{microtype} and
-    \textsf{hyperref} by default, and \textsf{skmath} if it exists.
+    \subsection{Additional information}
+    The document class includes a number of packages by default. This
+    is useful to know, since passing explicit options to these packages
+    will require you to utilize the \cs{PassOptionsToPackage} macro
+    before you load the class using \cs{documentclass}.
+    Table~\ref{tab:pkgs} lists the packages included by \thepkg\ along
+    with their options (if applicable).
+
+    \begin{table}[tbp]
+        \centering
+        \caption{User-level packages included by \thepkg.}
+        \label{tab:pkgs}
+        \begin{tabular}{llp{15em}}
+            \toprule
+            \textbf{Package} & \textbf{Options} & \textbf{Comments} \\
+            \midrule
+            \pkg{amsmath} & \texttt{intlimits} & Provides \hologo{AmS} commands and environments. \\
+            \pkg{amssymb} & & Only if not using \opt{kpfonts}.\\
+            \pkg{babel} & see options \opt{swe} and \opt{eng} & Only loaded if \emph{not} using \hologo{XeTeX}.\\
+            \pkg{calc} & & \\
+            \pkg{fontenc} & \texttt{T1} & Only loaded if \emph{not} using \hologo{XeTeX}. Makes sure we are using a good font encoding for crisp appearance on-screen (OT1 is horrible). \\
+            \pkg{fontspec} & \texttt{quiet} & Only loaded if using \hologo{XeTeX}. Provides basic OTF font selection commands.\\
+            \pkg{geometry} & \texttt{a4paper} or \texttt{a5paper} & This is used by the \opt{paper} option to set the paper area. \\
+            \pkg{icomma} & & \\
+            \pkg{microtype} & & Provides micro-typographic improvements.\\
+            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
+            \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
+            \pkg{skmath} & & Only if it exists and \opt{nomath} isn't set.\\
+            \pkg{textcomp} & & Only if not using \opt{kpfonts}.\\
+            \pkg{xcolor} & & Only loaded with the \opt{color} option.\\
+            \bottomrule
+        \end{tabular}
+    \end{table}
 
     \Implementation
     \section{Implementation}
@@ -1455,7 +1499,7 @@
     A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let 
     the user add comments and notes to the document.
     \begin{macro}{\@comment}
-\begin{MacroCode}
+\begin{MacroCode}{class}
 \NewDocumentCommand\@comment{m}{%
     {\textbf{Comment:} #1}%
 }
@@ -1463,7 +1507,7 @@
     \end{macro}
     \begin{macro}{\comment}
     \changes{0.10}{Added macro for comments}
-\begin{MacroCode}
+\begin{MacroCode}{class}
 \NewDocumentCommand\comment{sm}{%
     \IfBooleanTF{#1}%
         {\colorbox{red!50}{\@comment{#2}}}%
@@ -1473,7 +1517,7 @@
     \end{macro}
     \begin{macro}{\com}
     \begin{macro}{\note}
-\begin{MacroCode}
+\begin{MacroCode}{class}
 \ProvideDocumentCommand\com{sm}%
     {\IfBooleanTF{#1}{\comment*{#1}}{\comment{#1}}}
 \ProvideDocumentCommand\note{sm}%
