@@ -52,7 +52,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.10}
+    \version{0.10a}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -67,6 +67,7 @@
     \changes{0.10}{Include skmath if exists
                     and wanted. Gobble optional arguments to
                     \env{figure} and \env{table} in two-column mode.}
+    \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
 
     % Metadata
     \package[ctan=skbundle,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -283,12 +284,12 @@
 \begin{MacroCode}{class}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{skrapport}%
-    [2012/06/07 v0.09 Skånings rapportklass]
+    [2013/01/09 v0.10a Skånings rapportklass]
 \end{MacroCode}
     Then, start by including \pkg{kvoptions} and defining some
     variables for future use.
 \begin{MacroCode}{class}
-\RequirePackage{xstring}
+\RequirePackage{xparse,xstring}
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{family=skrapport,prefix=skrapport@}
 \newcommand\@ptsize{}
