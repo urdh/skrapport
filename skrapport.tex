@@ -52,7 +52,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.10a}
+    \version{0.11}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -189,6 +189,12 @@
     accurate but short description of the purpose of the report (i.e.
     ~course name or similar). This is printed along with the date on 
     the top of the title/first page.
+
+    \DescribeMacro\author[<email>]{<author>}
+    The \cs{author} macro is redefined in two ways. To begin with, the
+    macro now acceps an optional argument specifying the email address
+    of the author. If the macro is used multiple times, authors are
+    appended to the list of author names displayed by \cs{maketitle}.
 
     \DescribeMacro\maketitle
     The title page (or rather, block) has been refashioned to mimic the
@@ -787,6 +793,40 @@
 
     \subsection{User-level commands}
     \subsubsection{The front page}
+    \begin{macro}{\author}
+    \changes{0.11}{Improved \cs{author} macro}
+    The \cs{author} macro is redefined to accept an optional argument
+    and to be used multiple times.
+    \begin{macro*}{\skrapport@email}
+    The \cs{skrapport@email} helper macro typesets an email address
+    using \pkg{hyperref} if that package is used. This is suboptimal,
+    the macro behaves differently with respect to special characters
+    depending on wether \pkg{hyperref} is loaded or not.
+\begin{MacroCode}{class}
+\DeclareExpandableDocumentCommand\skrapport@email{m}{%
+    \@ifpackageloaded{hyperref}{%
+        \href{mailto:#1}{\nolinkurl{#1}}%
+    }{%
+        \texttt{#1}%
+    }%
+}
+\end{MacroCode}{class}
+    \end{macro*}
+    \begin{macro*}{\@author}
+\begin{MacroCode}{class}
+\def\@author{\relax}
+\DeclareDocumentCommand\author{om}{%
+    \xdef\@author{%
+        \if\@author\relax\else\@author\\\fi%
+        #2%
+        \IfNoValueTF{#1}{}%
+        {~\(\langle\)\skrapport@email{#1}\(\rangle\)}}%
+    }%
+}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro}
+
     \begin{macro}{\regarding}
     This macro defines a variable used by \cs{maketitle} to insert a 
     simple text into the header on the title page.
