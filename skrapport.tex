@@ -203,6 +203,20 @@
     by a large skip and then the title, author and optionally an
     abstract set ragged-right and fairly close together.
 
+    \subsubsection{Useful macros}
+    The class defines a few additional macros that aren't available in
+    \pkg{article} but don't fit in any specifiv \enquote{set} of
+    features. These include commands to typeset comments.
+
+    \DescribeMacro\comment*{<comment>}
+    \DescribeMacro\com*{<comment>}
+    \DescribeMacro\note*{<comment>}
+    The \cs{comment} macro (also available in an unstarred variant)
+    typesets a comment. The starred variant typesets the commen in red
+    prefixed by the word \enquote{Comment}, while the unstarred variant
+    typesets the comment as a margin note (but still prefixed). The
+    \cs{com} and \cs{note} macros are aliases of \cs{comment}.
+
     \subsubsection{Two-column mode}
     \DescribeEnv[<content>]{onecol}
     In \opt{twocolumn} mode, the package defines an environment
@@ -1559,11 +1573,12 @@
     \end{macro}
     \begin{macro}{\com}
     \begin{macro}{\note}
+    \changes{0.11}{Fixed a silly error in \cs{com} and \cs{note}}
 \begin{MacroCode}{class}
 \ProvideDocumentCommand\com{sm}%
-    {\IfBooleanTF{#1}{\comment*{#1}}{\comment{#1}}}
+    {\IfBooleanTF{#1}{\comment*{#2}}{\comment{#2}}}
 \ProvideDocumentCommand\note{sm}%
-    {\IfBooleanTF{#1}{\comment*{#1}}{\comment{#1}}}
+    {\IfBooleanTF{#1}{\comment*{#2}}{\comment{#2}}}
 \end{MacroCode}
     \end{macro}
     \end{macro}
