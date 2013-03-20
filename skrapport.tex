@@ -21,6 +21,7 @@
 \documentclass{skdoc}
 \usepackage{hologo,booktabs}
 \usepackage[style=authoryear]{biblatex}
+\usepackage{csquotes}
 %\usepackage{chslacite}
 
 % Hide the implementation
@@ -52,7 +53,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.11}
+    \version{0.10b}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -297,6 +298,29 @@
             \bottomrule
         \end{tabular}
     \end{table}
+
+    \subsection{Known issues}
+    A list of current issues is available in the Github repository of this
+    package\footnote{\url{https://github.com/urdh/skrapport/issues}}, but as
+    of the release of \theversion, there are only two known issues:
+    \begin{description}
+        \item[\#6]  When using the \opt{color} option, sometimes captions are
+                    uncolored. It seems that color only appears when the caption
+                    is long enough to break a line. It is unknown wether this is
+                    due to some error in \thepackage\ or something caused by
+                    \pkg{caption} (or another dependency).
+        \item[\#7]  As of a recent update to \pkg{xparse}, the \opt{twocolumn}
+                    option is broken. When loading \thepackage\ with that option,
+                    \pkg{xparse} emits a warning stating that \enquote{Argument
+                    specification for expandable command ends with optional
+                    argument}. Presumably this is because environments are now
+                    defined using expandable macros, whereas they weren't before.
+                    %It's a tricky one to solve while keeping the \env{figure} and
+                    %\env{table} environments API-compatible across \opt{onecolumn}
+                    %and \opt{twocolumn} documents.
+    \end{description}
+    If you discover any bugs in this package, please report them to the issue
+    tracker in the \thepackage\ Github repository.
 
     \Implementation
     \section{Implementation}
@@ -808,7 +832,7 @@
     \subsection{User-level commands}
     \subsubsection{The front page}
     \begin{macro}{\author}
-    \changes{0.11}{Improved \cs{author} macro}
+    \changes{0.10b}{Improved \cs{author} macro}
     The \cs{author} macro is redefined to accept an optional argument
     and to be used multiple times.
     \begin{macro*}{\skrapport@email}
@@ -1573,7 +1597,7 @@
     \end{macro}
     \begin{macro}{\com}
     \begin{macro}{\note}
-    \changes{0.11}{Fixed a silly error in \cs{com} and \cs{note}}
+    \changes{0.10b}{Fixed a silly error in \cs{com} and \cs{note}}
 \begin{MacroCode}{class}
 \ProvideDocumentCommand\com{sm}%
     {\IfBooleanTF{#1}{\comment*{#2}}{\comment{#2}}}
