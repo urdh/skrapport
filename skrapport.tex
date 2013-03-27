@@ -309,15 +309,6 @@
                     is long enough to break a line. It is unknown wether this is
                     due to some error in \thepackage\ or something caused by
                     \pkg{caption} (or another dependency).
-        \item[\#7]  As of a recent update to \pkg{xparse}, the \opt{twocolumn}
-                    option is broken. When loading \thepackage\ with that option,
-                    \pkg{xparse} emits a warning stating that \enquote{Argument
-                    specification for expandable command ends with optional
-                    argument}. Presumably this is because environments are now
-                    defined using expandable macros, whereas they weren't before.
-                    It's a tricky one to solve while keeping the \env{figure} and
-                    \env{table} environments API-compatible across \opt{onecolumn}
-                    and \opt{twocolumn} documents.
     \end{description}
     If you discover any bugs in this package, please report them to the issue
     tracker in the \thepackage\ Github repository.
