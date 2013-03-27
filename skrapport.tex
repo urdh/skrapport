@@ -53,7 +53,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.10c}
+    \version{0.11}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -69,6 +69,7 @@
                     and wanted. Gobble optional arguments to
                     \env{figure} and \env{table} in two-column mode.}
     \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
+    \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
 
     % Metadata
     \package[ctan=skbundle,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -135,10 +136,11 @@
     \thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
     serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
 
-    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts}\AndDefault{kpfonts}
+    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion}\AndDefault{kpfonts}
     In addition, the specific font can also be changed --- the available
     choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
-    (Kp-Fonts) and \texttt{palatino} (either \TeX-Gyre Pagella or
+    (Kp-Fonts), \texttt{minion} (Adobe Minion Pro)
+    and \texttt{palatino} (either \TeX-Gyre Pagella or
     Pazo Math depending on what's available), with the default being
     \texttt{kpfonts}. It is also possible to tell \thepackage\ not
     to use any font (\texttt{nofont}), which is sometimes useful
@@ -323,7 +325,7 @@
 \begin{MacroCode}{class}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{skrapport}%
-    [2013/04/01 v0.10c Skånings rapportklass]
+    [2013/01/09 v0.11 Skånings rapportklass]
 \end{MacroCode}
     Then, start by including \pkg{kvoptions} and defining some
     variables for future use.
@@ -452,16 +454,20 @@
                     option for fonts}
     \begin{option}{lmodern}
     \begin{option}{palatino}
+    \begin{option}{minion}
+    \changes{0.11}{Added option \opt{minion}}
     \begin{option}{nofont}
 \begin{MacroCode}{class}
 \DeclareStringOption[kpfonts]{font}
 \DeclareVoidOption{kpfonts}{\skrapport@SetupFont}
 \DeclareVoidOption{lmodern}{\skrapport@SetupFont}
 \DeclareVoidOption{palatino}{\skrapport@SetupFont}
+\DeclareVoidOption{minion}{\skrapport@SetupFont}
 \DeclareVoidOption{nofont}{\skrapport@SetupFont}
 \newcommand*{\skrapport@SetupFont}{\expandafter\@skrapport@SetupFont\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupFont}[1]{\setkeys{skrapport}{font={#1}}}
 \end{MacroCode}
+    \end{option}
     \end{option}
     \end{option}
     \end{option}
@@ -615,15 +621,20 @@
             \IfFileExists{tgpagella.sty}{%
                 \RequirePackage{tgpagella}
             }{%
-                \RequirePackage[sc]{mathpazo}
+                \RequirePackage[osf]{mathpazo}
             }
         }{%
             \IfStrEq{\skrapport@font}{lmodern}{%
                 \RequirePackage{lmodern}
             }{%
-                \ClassError{skrapport}{%
-                    Option `font' has unknown value `\skrapport@font'!
-                }{}
+                \IfStrEq{\skrapport@font}{minion}{%
+                    \RequirePackage{MinionPro}
+                    \RequirePackage{MnSymbol}
+                }{%
+                    \ClassError{skrapport}{%
+                        Option `font' has unknown value `\skrapport@font'!
+                    }{}
+                }
             }
         }
     }
