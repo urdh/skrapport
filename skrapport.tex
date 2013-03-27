@@ -53,7 +53,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.11}
+    \version{0.12}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -70,6 +70,7 @@
                     \env{figure} and \env{table} in two-column mode.}
     \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
+    \changes{0.12}{Deprecated several macros, moved to \LaTeX3}
 
     % Metadata
     \package[ctan=skbundle,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -318,7 +319,7 @@
 \begin{MacroCode}{class}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{skrapport}%
-    [2013/04/01 v0.11 Skånings rapportklass]
+    [2013/01/09 v0.12 Skånings rapportklass]
 \end{MacroCode}
     Then, start by including \pkg{kvoptions} and defining some
     variables for future use.
@@ -332,6 +333,11 @@
 }{%
   \newif\ifxetex\xetexfalse%
 }
+\end{MacroCode}
+
+    \subsection{Messages}
+\begin{MacroCode}{class}
+\msg_new:nnn{skrapport}{old-font-deprecated}{The old font command \string#1 is deprecated! Use \string#2 instead.}
 \end{MacroCode}
 
     \subsection{Options}
@@ -1122,40 +1128,47 @@
 \end{MacroCode}
     \end{macro}
 
-    Old font commands.
+    Old font commands (deprecated).
     \begin{macro}{\rm}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareDocumentCommand\rm{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\rm}{\textrm}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sf}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareDocumentCommand\sf{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sf}{\textsf}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\tt}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareDocumentCommand\tt{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\tt}{\texttt}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\bf}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareDocumentCommand\bf{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\bf}{\textbf}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\it}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareDocumentCommand\it{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\it}{\textit}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sl}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareDocumentCommand\sl{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sl}{\textsl}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sc}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\DeclareDocumentCommand\sc{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sc}{\textsc}}
 \end{MacroCode}
     \end{macro}
 
