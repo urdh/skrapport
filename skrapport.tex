@@ -53,7 +53,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.10b}
+    \version{0.10c}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -302,14 +302,11 @@
     \section{Known issues}
     A list of current issues is available in the Github repository of this
     package\footnote{\url{https://github.com/urdh/skrapport/issues}}, but as
-    of the release of \theversion, there are only two known issues:
-    \begin{description}
-        \item[\#6]  When using the \opt{color} option, sometimes captions are
-                    uncolored. It seems that color only appears when the caption
-                    is long enough to break a line. It is unknown wether this is
-                    due to some error in \thepackage\ or something caused by
-                    \pkg{caption} (or another dependency).
-    \end{description}
+    of the release of \theversion, there are no known issues:
+    %\begin{description}
+    %    \item[\#6]  ???
+    %\end{description}
+    
     If you discover any bugs in this package, please report them to the issue
     tracker in the \thepackage\ Github repository.
 
@@ -319,7 +316,7 @@
 \begin{MacroCode}{class}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{skrapport}%
-    [2013/01/09 v0.10b Skånings rapportklass]
+    [2013/04/01 v0.10c Skånings rapportklass]
 \end{MacroCode}
     Then, start by including \pkg{kvoptions} and defining some
     variables for future use.
@@ -1277,10 +1274,11 @@
 \newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
 \end{MacroCode}
     \begin{macro*}{\@makecaption}
+    \changes{0.10c}{Fix missing coloring command for some captions}
 \begin{MacroCode}{class}
 \long\def\@makecaption#1#2{%
     \vskip\abovecaptionskip
-    \sbox\@tempboxa{\small{\bfseries#1:} \itshape#2}%
+    \sbox\@tempboxa{\small{\bfseries\@captionstyle#1:} \itshape#2}%
     \ifdim \wd\@tempboxa >\hsize
         \small{\bfseries\@captionstyle#1:} \itshape#2\par
     \else
