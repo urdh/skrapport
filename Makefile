@@ -4,13 +4,14 @@ clean:
 	rm -f *.cls *.sty
 distclean: clean
 
-%.pdf:
-	pdflatex $*.tex
+%.pdf: %.tex
+	pdflatex $<
 	makeglossaries $*
-	pdflatex $*.tex
+	biber $*
+	pdflatex $<
 	makeglossaries $*
-	pdflatex $*.tex
+	pdflatex $<
 
-%.cls: $*.pdf
+%.cls: %.pdf
 
 %.sty: skrapport.cls
