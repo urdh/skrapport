@@ -1784,6 +1784,22 @@
     \end{theme}
 
     \Finale
+    \section{Installation}
+    The easiest way to install this package is using the package
+    manager provided by your \LaTeX\ installation if such a program
+    is available. Failing that, provided you have obtained the package
+    source (\file{skrapport.tex} and \file{Makefile}) from either CTAN
+    or Github, running \texttt{make install} inside the source directory
+    works well. This will extract the documentation and code from
+    \file{skrapport.tex}, install all files into the TDS tree at
+    \texttt{TEXMFHOME} and run \texttt{mktexlsr}.
+
+    If you want to extract code and documentation without installing
+    the package, run \texttt{make all} instead. If you insist on not
+    using \texttt{make}, remember that packages distributed using
+    \pkg{skdoc} must be extracted using \texttt{pdflatex}, \emph{not}
+    \texttt{tex} or \texttt{latex}.
+
     \PrintChanges
     \PrintIndex
     \printbibliography
