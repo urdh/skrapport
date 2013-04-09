@@ -136,12 +136,11 @@
     \thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
     serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
 
-    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion}\AndDefault{kpfonts}
+    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion, skdoc}\AndDefault{kpfonts}
     In addition, the specific font can also be changed --- the available
     choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
-    (Kp-Fonts), \texttt{minion} (Adobe Minion Pro)
-    and \texttt{palatino} (either \TeX-Gyre Pagella or
-    Pazo Math depending on what's available), with the default being
+    (Kp-Fonts), \texttt{minion} (Adobe Minion Pro), \texttt{palatino} (either \TeX-Gyre Pagella or
+    Pazo Math depending on what's available) and \texttt{skdoc} (PT Serif and Open Sans, the style used by \pkg{skdoc}), with the default being
     \texttt{kpfonts}. It is also possible to tell \thepackage\ not
     to use any font (\texttt{nofont}), which is sometimes useful
     when using \hologo{XeLaTeX}, among other things.
@@ -169,7 +168,7 @@
     It is also possible to load \pkg{xcolor} inside the package. If
     this is done, a range of color themes (discussed later) will be
     available in the package and these will affect the document. The
-    default value is \opt{nocolor}.
+    default value is \opt{color}.
 
     \Options{math,nomath}
     Loading the \pkg{skmath} package is recommended and as such it is
@@ -440,7 +439,7 @@
     \end{option}
     \end{option}
 
-    \begin{option}{font}{nofont, kpfonts, lmodern, palatino}
+    \begin{option}{font}{nofont, kpfonts, lmodern, palatino, minion, skdoc}
     Declare font options.
     \begin{option}{kpfonts}
     \changes{0.07}{Added option \opt{kpfonts}, set as default
@@ -449,6 +448,8 @@
     \begin{option}{palatino}
     \begin{option}{minion}
     \changes{0.11}{Added option \opt{minion}}
+    \begin{option}{skdoc}
+    \changes{0.11a}{Added option \opt{skdoc}}
     \begin{option}{nofont}
 \begin{MacroCode}{class}
 \DeclareStringOption[kpfonts]{font}
@@ -456,10 +457,12 @@
 \DeclareVoidOption{lmodern}{\skrapport@SetupFont}
 \DeclareVoidOption{palatino}{\skrapport@SetupFont}
 \DeclareVoidOption{minion}{\skrapport@SetupFont}
+\DeclareVoidOption{skdoc}{\skrapport@SetupFont}
 \DeclareVoidOption{nofont}{\skrapport@SetupFont}
 \newcommand*{\skrapport@SetupFont}{\expandafter\@skrapport@SetupFont\expandafter{\CurrentOption}}
 \newcommand*{\@skrapport@SetupFont}[1]{\setkeys{skrapport}{font={#1}}}
 \end{MacroCode}
+    \end{option}
     \end{option}
     \end{option}
     \end{option}
@@ -561,14 +564,15 @@
 \end{MacroCode}
 
     \begin{macro*}{\@titstyle}
+    \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced \cs{relax} with \cs{rmfamily}}
     Set the title font as prescribed.
 \begin{MacroCode}{class}
 \IfStrEq{\skrapport@titles}{bf}{%
     \let\@titstyle\bfseries%
 }{\IfStrEq{\skrapport@titles}{sf}{%
-    \let\@titstyle\sffamily\bfseries%
+    \let\@titstyle\sffamily%
 }{%
-    \let\@titstyle\relax%
+    \let\@titstyle\rmfamily%
 }}
 \end{MacroCode}
     \end{macro*}
@@ -624,9 +628,14 @@
                     \RequirePackage{MinionPro}
                     \RequirePackage{MnSymbol}
                 }{%
-                    \ClassError{skrapport}{%
-                        Option `font' has unknown value `\skrapport@font'!
-                    }{}
+                    \IfStrEq{\skrapport@font}{skdoc}{%
+                        \RequirePackage{PTSerif}
+                        \RequirePackage[defaultsans,osfigures,scale=0.95]{opensans}
+                    }{
+                        \ClassError{skrapport}{%
+                            Option `font' has unknown value `\skrapport@font'!
+                        }{}
+                    }
                 }
             }
         }
@@ -1616,11 +1625,7 @@
 \ifskrapport@color
     \apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
     \apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
-    \if\@titstyle\relax
-        \def\@titstyle{\color{skrapport@titlecolor}}
-    \else
-        \apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
-    \fi
+    \apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
     \def\@smallprintstyle{\color{skrapport@smallprintcolor}}
     \AtBeginDocument{%
         \let\@abstractname\abstractname
