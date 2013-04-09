@@ -5,15 +5,15 @@ clean:
 	rm -f *.cls *.sty
 distclean: clean
 
-%.pdf: %.tex
-	pdflatex $<
+%.pdf: %.tex %.cls
 	makeglossaries $*
 	biber $*
 	pdflatex $<
 	makeglossaries $*
 	pdflatex $<
 
-%.cls: %.pdf
+%.cls: %.tex
+	pdflatex $<
 
 %.sty: skrapport.cls
 
