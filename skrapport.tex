@@ -49,6 +49,8 @@
     {skrapport-colortheme-cruelwater.sty}
 \DeclareFile[key=theme-violet,preamble=\mypreamble]%
     {skrapport-colortheme-violet.sty}
+\DeclareFile[key=theme-skdoc,preamble=\mypreamble]%
+    {skrapport-colortheme-skdoc.sty}
 
 % This is where the documentation begins
 \begin{document}
@@ -70,6 +72,7 @@
                     \env{figure} and \env{table} in two-column mode.}
     \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
+    \changes{0.11a}{Added \opt{skdoc} font option and \thm{skdoc} color theme}
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -265,6 +268,9 @@
     and captions, a \textcolor[HTML]{D6CBCF}{grayish purple} to small
     print, a \textcolor[HTML]{463335}{dark brown} color to quotes and a
     \textcolor[HTML]{98758D}{pastel violet} color to emphasized text.
+
+    \Theme{skdoc}
+    The \thm{skdoc} theme is loosely based on the \pkg{skdoc} document class, with which this documentation is typeset.
 
     \subsection{Additional information}
     The document class includes a number of packages by default. This
@@ -1783,6 +1789,31 @@
 \definecolor{skrapport@quotecolor}{HTML}{463335}
 \definecolor{skrapport@captioncolor}{HTML}{311A2A}
 \definecolor{skrapport@emphcolor}{HTML}{98758D}
+\definecolor{skrapport@defaultcolor}{named}{black}
+\endinput
+\end{MacroCode}
+    \end{theme}
+
+    \subsubsection{skdoc color theme}
+    \begin{theme}{skdoc}
+\changes{0.11a}{Added ``skdoc'' color theme}
+\begin{MacroCode}{theme-skdoc}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{skrapport-colortheme-skdoc}%
+    [2013/04/10 v1.0 skrapport color theme skdoc]
+\definecolor{skrapport@citecolor}{RGB}{140,35,24}
+\definecolor{skrapport@filecolor}{RGB}{73,10,61}
+\definecolor{skrapport@linkcolor}{RGB}{140,35,24}
+\definecolor{skrapport@menucolor}{RGB}{140,35,24}
+\definecolor{skrapport@urlcolor}{RGB}{73,10,61}
+\definecolor{skrapport@runcolor}{RGB}{73,10,61}
+\definecolor{skrapport@boldcolor}{RGB}{73,10,61}
+\definecolor{skrapport@titlecolor}{RGB}{11,72,107}
+\definecolor{skrapport@italiccolor}{named}{black}
+\definecolor{skrapport@smallprintcolor}{RGB}{11,72,107}
+\definecolor{skrapport@quotecolor}{RGB}{140,35,24}
+\definecolor{skrapport@captioncolor}{RGB}{11,72,107}
+\definecolor{skrapport@emphcolor}{RGB}{73,10,61}
 \definecolor{skrapport@defaultcolor}{named}{black}
 \endinput
 \end{MacroCode}
