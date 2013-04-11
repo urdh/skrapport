@@ -325,31 +325,59 @@
 \ProvidesClass{skrapport}%
     [2013/04/10 v0.11a Skånings rapportklass]
 \end{MacroCode}
-    Then, start by including \pkg{kvoptions} and defining some
+    Then, start by including \pkg{l3keys2e} and defining some
     variables for future use.
 \begin{MacroCode}{class}
-\RequirePackage{xparse,xstring}
-\RequirePackage{kvoptions}
-\SetupKeyvalOptions{family=skrapport,prefix=skrapport@}
+\RequirePackage{expl3,l3keys2e,xparse,xstring}
 \newcommand\@ptsize{}
 \IfFileExists{ifxetex.sty}{%
   \RequirePackage{ifxetex}%
 }{%
   \newif\ifxetex\xetexfalse%
 }
+\ExplSyntaxOn
+\end{MacroCode}
+    
+    \subsection{Messages}
+\begin{MacroCode}{class}
+\msg_new:nnnn{skrapport}{option-deprecated}{Option `#1' deprecated!}
+    {Please use `#2' instead.}
+\msg_new:nnnn{skrapport}{option-no-effect}{Option `#1' deprecated!}
+    {It has no effect; simply use nothing instead.}
 \end{MacroCode}
 
     \subsection{Options}
-    \begin{option}{paper}{a4paper, a5paper}
+\begin{MacroCode}{class}
+\keys_define:nn{skrapport}{
+\end{MacroCode}
+    \begin{option}{paper}{a4paper, a5paper, a4, a5}
     \begin{option}{a4paper}
     \begin{option}{a5paper}
     Declare the paper size options.
 \begin{MacroCode}{class}
-\DeclareStringOption[a4paper]{paper}
-\DeclareVoidOption{a4paper}{\skrapport@SetupPaper}
-\DeclareVoidOption{a5paper}{\skrapport@SetupPaper}
-\newcommand*{\skrapport@SetupPaper}{\expandafter\@skrapport@SetupPaper\expandafter{\CurrentOption}}
-\newcommand*{\@skrapport@SetupPaper}[1]{\setkeys{skrapport}{paper={#1}}}
+    paper .choice:,
+    paper / a4 .code:n =
+        {\__skrapport_setup_paper:n{a4}},
+    paper / a5 .code:n =
+        {\__skrapport_setup_paper:n{a5}},
+    paper / a4paper .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {paper=a4paper}{paper=a4}
+         \keys_set:nn{skrapport}{paper=a4}},
+    paper / a5paper .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {paper=a5paper}{paper=a5}
+         \keys_set:nn{skrapport}{paper=a4}},
+    paper .value_required:,
+    paper .initial:n = a4,
+    a4paper .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {a4paper}{paper=a4}
+         \keys_set:nn{skrapport}{paper=a4}},
+    a5paper .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {a5paper}{paper=a5}
+         \keys_set:nn{skrapport}{paper=a5}},
 \end{MacroCode}
     \end{option}
     \end{option}
@@ -361,12 +389,14 @@
     \begin{option}{12pt}
     Declare point size options.
 \begin{MacroCode}{class}
-\DeclareStringOption[11pt]{ptsize}
-\DeclareVoidOption{10pt}{\skrapport@SetupPtsize}
-\DeclareVoidOption{11pt}{\skrapport@SetupPtsize}
-\DeclareVoidOption{12pt}{\skrapport@SetupPtsize}
-\newcommand*{\skrapport@SetupPtsize}{\expandafter\@skrapport@SetupPtsize\expandafter{\CurrentOption}}
-\newcommand*{\@skrapport@SetupPtsize}[1]{\setkeys{skrapport}{ptsize={#1}}}
+    ptsize .choices:nn =
+        { 10pt, 11pt, 12pt }
+        {\__skrapport_setup_ptsize:x{\tl_use:N\l_keys_choice_tl}},
+    ptsize .value_required:,
+    ptsize .initial:n = 11pt,
+    10pt .meta:n = {ptsize=10pt},
+    11pt .meta:n = {ptsize=11pt},
+    12pt .meta:n = {ptsize=12pt},
 \end{MacroCode}
     \end{option}
     \end{option}
@@ -378,18 +408,23 @@
     \begin{option}{onecolumn}
     Declare column options.
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{twocolumn}
-\DeclareComplementaryOption{onecolumn}{twocolumn}
+    twocolumn .code:n =
+        {\__skrapport_setup_twocolumn:},
+    onecolumn .code:n =
+        {\msg_warning:nnn{skrapport}{option-no-effect}{onecolumn}},
 \end{MacroCode}
     \end{option}
     \end{option}
 
-    \begin{option}{draft}
+    \begin{option}{draft}{true, false}
     \begin{option}{final}
     Declare \opt{draft} and \opt{final} options.
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{draft}
-\DeclareComplementaryOption{final}{draft}
+    draft .bool_set:N = \g__skrapport_draft_bool,
+    draft .default:n = true,
+    draft .initial:n = false,
+    final .code:n =
+        {\msg_warning:nnn{skrapport}{option-no-effect}{final}},
 \end{MacroCode}
     \end{option}
     \end{option}
@@ -399,12 +434,14 @@
     compatibility with the \pkg{article} class.
     \begin{option}{leqno}
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{leqno}
+    leqno .code:n =
+        {\__skrapport_setup_leqno:},
 \end{MacroCode}
     \end{option}
     \begin{option}{fleqn}
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{fleqn}
+    fleqn .code:n =
+        {\__skrapport_setup_fleqn:},
 \end{MacroCode}
     \end{option}
 
@@ -415,37 +452,54 @@
     \begin{option}{sftitles}
     \changes{0.09}{Added \opt{sftitles} option}
 \begin{MacroCode}{class}
-\DeclareStringOption[rm]{titles}
-\DeclareVoidOption{rmtitles}{\skrapport@SetupTitles}
-\DeclareVoidOption{bftitles}{\skrapport@SetupTitles}
-\DeclareVoidOption{sftitles}{\skrapport@SetupTitles}
-\newcommand*{\skrapport@SetupTitles}{\expandafter\@skrapport@SetupTitles\expandafter{\CurrentOption}}
-\newcommand*{\@skrapport@SetupTitles}[1]{%
-    \IfStrEq{#1}{bftitles}{%
-        \setkeys{skrapport}{titles={bf}}%
-    }{\IfStrEq{#1}{sftitles}{%
-        \setkeys{skrapport}{titles={sf}}%
-    }{
-        \setkeys{skrapport}{titles={rm}}%
-    }}}
+    titles .choices:nn =
+        { rm, bf, sf }
+        {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
+    titles .value_required,
+    titles .initial:n = bf,
+    rmtitles .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {rmtitles}{titles=rm}
+         \keys_set:nn{skrapport}{titles=rm}},
+    bftitles .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {bftitles}{titles=bf}
+         \keys_set:nn{skrapport}{titles=bf}},
+    sftitles .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {sftitles}{titles=sf}
+         \keys_set:nn{skrapport}{titles=sf}},
 \end{MacroCode}
     \end{option}
     \end{option}
     \end{option}
     \end{option}
 
+    \begin{option}{lang}{sv, en}
     \begin{option}{swe}
     \begin{option}{eng}
     Declare options for swedish/english \pkg{babel} or
     \pkg{polyglossia} support.
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{eng}
-\DeclareComplementaryOption{swe}{eng}
+    lang .choices:nn = 
+        { sv, en }
+        {\__skrapport_setup_lang:x{\tl_use:N\l_keys_choice_tl}},
+    lang .value_required:,
+    lang .initial:n = sv,
+    swe .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {swe}{lang=sv}
+         \keys_set:nn{skrapport}{lang=sv}},
+    eng .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {eng}{lang=en}
+         \keys_set:nn{skrapport}{lang=en}},
 \end{MacroCode}
     \end{option}
     \end{option}
+    \end{option}
 
-    \begin{option}{font}{nofont, kpfonts, lmodern, palatino, minion, skdoc}
+    \begin{option}{font}{none, kpfonts, lmodern, palatino, minion, skdoc}
     Declare font options.
     \begin{option}{kpfonts}
     \changes{0.07}{Added option \opt{kpfonts}, set as default
@@ -458,15 +512,35 @@
     \changes{0.11a}{Added option \opt{skdoc}}
     \begin{option}{nofont}
 \begin{MacroCode}{class}
-\DeclareStringOption[kpfonts]{font}
-\DeclareVoidOption{kpfonts}{\skrapport@SetupFont}
-\DeclareVoidOption{lmodern}{\skrapport@SetupFont}
-\DeclareVoidOption{palatino}{\skrapport@SetupFont}
-\DeclareVoidOption{minion}{\skrapport@SetupFont}
-\DeclareVoidOption{skdoc}{\skrapport@SetupFont}
-\DeclareVoidOption{nofont}{\skrapport@SetupFont}
-\newcommand*{\skrapport@SetupFont}{\expandafter\@skrapport@SetupFont\expandafter{\CurrentOption}}
-\newcommand*{\@skrapport@SetupFont}[1]{\setkeys{skrapport}{font={#1}}}
+    font .choices:nn =
+        { none, kpfonts, lmodern, palatino, minion, skdoc }
+        {\__skrapport_setup_font:x{\tl_use:N\l_keys_choice_tl}},
+    font .value_required:,
+    font .initial:n = kpfonts,
+    nofont .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {nofont}{font=none}
+         \keys_set:nn{skrapport}{font=none}},
+    kpfonts .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {kpfonts}{font=kpfonts}
+         \keys_set:nn{skrapport}{font=kpfonts}},
+    lmodern .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {lmodern}{font=lmodern}
+         \keys_set:nn{skrapport}{font=lmodern}},
+    palatino .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {palatino}{font=palatino}
+         \keys_set:nn{skrapport}{font=palatino}},
+    minion .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {minion}{font=minion}
+         \keys_set:nn{skrapport}{font=minion}},
+    skdoc .code:n = 
+        {\msg_warning:nnnn{skrapport}{option-deprecated}
+            {skdoc}{font=skdoc}
+         \keys_set:nn{skrapport}{font=skdoc}},
 \end{MacroCode}
     \end{option}
     \end{option}
@@ -476,41 +550,55 @@
     \end{option}
     \end{option}
 
-    \begin{option}{indent}
+    \begin{option}{indent}{true, false}
     \changes{0.02}{Added option of indented paragraphs}
     \begin{option}{noindent}
     Declare indentation options.
 \begin{MacroCode}{class}
-\DeclareBoolOption[false]{indent}
-\DeclareComplementaryOption{noindent}{indent}
+    indent .choice:,
+    indent / true .code:n = {\prg_do_nothing:},
+    indent / false .code:n = {\__skdoc_setup_parskip:},
+    indent .default:n = true,
+    indent .initial:n = false,
+    noindent .code:n =
+        {\msg_warning:nnn{skrapport}{option-no-effect}{noindent}},
 \end{MacroCode}
     \end{option}
     \end{option}
 
-    \begin{option}{color}
+    \begin{option}{color}{true, false}
     \changes{0.09}{Added \opt{color} option}
     \begin{option}{nocolor}
     Declare color options.
 \begin{MacroCode}{class}
-\DeclareBoolOption[true]{color}
-\DeclareComplementaryOption{nocolor}{color}
+    color .bool_set:N = \g__skrapport_color_bool,
+    color .default:n = true,
+    color .initial:n = true,
 \end{MacroCode}
     \end{option}
     \end{option}
 
-    \begin{option}{math}
+    \begin{option}{math}{true, false}
     \begin{option}{nomath}
     Declare math options.
 \begin{MacroCode}{class}
-\DeclareBoolOption[true]{math}
-\DeclareComplementaryOption{nomath}{math}
+    nomath .choice:,
+    nomath / false = .code:n {\__skdoc_setup_math:},
+    nomath / true = .code:n {\prg_do_nothing},
+    nomath .default:n = true,
+    nomath .initial:n = false,
+    math .code:n =
+        {\msg_warning:nnn{skrapport}{option-no-effect}{math}},
 \end{MacroCode}
     \end{option}
     \end{option}
+\begin{MacroCode}{class}
+}
+\end{MacroCode}
 
     Execute default options and process given options.
 \begin{MacroCode}{class}
-\ProcessKeyvalOptions*
+\ProcessKeysOptions{download}
 \end{MacroCode}
 
     \subsection{Loading packages}
