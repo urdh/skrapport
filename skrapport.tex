@@ -24,8 +24,15 @@
 \usepackage{csquotes}
 %\usepackage{chslacite}
 
+\ExplSyntaxOn
+\cs_set_protected_nopar:Npn\ExplHack{
+    \char_set_catcode_letter:n{ 58 }
+    \char_set_catcode_letter:n{ 95 }
+}
+\ExplSyntaxOff
+
 % Hide the implementation
-\OnlyDescription
+%\OnlyDescription
 
 % Bibliography entries
 \begin{filecontents}{skrapport.bib}
@@ -317,7 +324,7 @@
     If you discover any bugs in this package, please report them to the issue
     tracker in the \thepackage\ Github repository.
 
-    \Implementation
+    \Implementation\ExplHack
     \section{Implementation}
     Start with the standard \LaTeX\ cruft.
 \begin{MacroCode}{class}
@@ -329,21 +336,43 @@
     variables for future use.
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring}
-\newcommand\@ptsize{}
-\IfFileExists{ifxetex.sty}{%
-  \RequirePackage{ifxetex}%
-}{%
-  \newif\ifxetex\xetexfalse%
-}
 \ExplSyntaxOn
+\bool_new:N\g__skrapport_draft_bool
+\bool_new:N\g__skrapport_color_bool
+\bool_new:N\g__skrapport_has_polyglossia_bool
 \end{MacroCode}
     
     \subsection{Messages}
 \begin{MacroCode}{class}
-\msg_new:nnnn{skrapport}{option-deprecated}{Option `#1' deprecated!}
-    {Please use `#2' instead.}
-\msg_new:nnnn{skrapport}{option-no-effect}{Option `#1' deprecated!}
-    {It has no effect; simply use nothing instead.}
+\msg_new:nnnn{skrapport}{option-deprecated}{Option~`#1~deprecated!}
+    {Please~use~`#2'~instead.}
+\msg_new:nnnn{skrapport}{option-no-effect}{Option~`#1'~deprecated!}
+    {It~has~no~effect;~simply~use~nothing~instead.}
+\msg_new:nnnn{skrapport}{invalid-paper-size}{Invalid~paper~size~`#1'!}
+    {\token_to_str:N\__skrapport_setup_paper:n~was~invoked~with~an~
+     invalid~argument;~paper~size~will~remain~unchanged.}
+\msg_new:nnnn{skrapport}{invalid-point-size}{Invalid~point~size~`#1'!}
+    {\token_to_str:N\__skrapport_setup_ptsize:n~was~invoked~with~an~
+     invalid~argument;~cannot~continue~without~setting~a~valid~point~
+     size.~Please~fix~the~issue~before~typesetting~again.}
+\msg_new:nnnn{skrapport}{invalid-titles}{Invalid~title~type~`#1'!}
+    {\token_to_str:N\__skrapport_setup_titles:n~was~invoked~with~an~
+     invalid~argument;~falling~back~to~`#2'.}
+\msg_new:nnnn{skrapport}{invalid-lang}{Invalid~language~`#1'!}
+    {\token_to_str:N\__skrapport_setup_lang:n~was~invoked~with~an~
+     invalid~argument;~`babel'~and/or~`polyglossia'~will~remain~
+    unloaded.}
+\msg_new:nnnn{skrapport}{invalid-font}{Invalid~font~`#1'!}
+    {\token_to_str:N\__skrapport_setup_font:n~was~invoked~with~an~
+     invalid~argument;~no~font~package~has~been~loaded.~This~may~result~
+     in~bad~rendering~due~to~old~Computer~Modern~fonts.}
+\msg_new:nnnn{skrapport}{noop-call}{No-op~invokation~of~macro!}
+    {\token_to_str:N#1~was~invoked,~but~circumstances~dictate~that~the~
+    macro~should~do~nothing.~Will~do~\token_to_str:N\prg_do_nothing:~
+    instead.}
+
+\msg_new:nnn{skrapport}{not-implemented}
+    {Unimplemented~macro~\token_to_str:N#1!}
 \end{MacroCode}
 
     \subsection{Options}
@@ -420,7 +449,12 @@
     \begin{option}{final}
     Declare \opt{draft} and \opt{final} options.
 \begin{MacroCode}{class}
-    draft .bool_set:N = \g__skrapport_draft_bool,
+    draft .choice:,
+    draft / true .code:n =
+        {\bool_gset_true:N\g__skrapport_draft_bool
+         \__skrapport_setup_draft:},
+    draft / false .code:n = 
+        {\bool_gset_false:N\g__skrapport_draft_bool},
     draft .default:n = true,
     draft .initial:n = false,
     final .code:n =
@@ -557,7 +591,7 @@
 \begin{MacroCode}{class}
     indent .choice:,
     indent / true .code:n = {\prg_do_nothing:},
-    indent / false .code:n = {\__skdoc_setup_parskip:},
+    indent / false .code:n = {\__skrapport_setup_parskip:},
     indent .default:n = true,
     indent .initial:n = false,
     noindent .code:n =
@@ -571,9 +605,15 @@
     \begin{option}{nocolor}
     Declare color options.
 \begin{MacroCode}{class}
-    color .bool_set:N = \g__skrapport_color_bool,
+    color .choice:,
+    color / true .code:n =
+        {\bool_gset_true:N\g__skrapport_color_bool
+         \__skrapport_setup_color:},
+    color / false .code:n = 
+        {\bool_gset_false:N\g__skrapport_color_bool},
     color .default:n = true,
     color .initial:n = true,
+    nocolor .meta:n = {color=false},
 \end{MacroCode}
     \end{option}
     \end{option}
@@ -583,7 +623,7 @@
     Declare math options.
 \begin{MacroCode}{class}
     nomath .choice:,
-    nomath / false = .code:n {\__skdoc_setup_math:},
+    nomath / false = .code:n {\__skrapport_setup_math:},
     nomath / true = .code:n {\prg_do_nothing},
     nomath .default:n = true,
     nomath .initial:n = false,
@@ -594,80 +634,378 @@
     \end{option}
 \begin{MacroCode}{class}
 }
+\ExplSyntaxOff
 \end{MacroCode}
+
+    \section{Option setup macros}
+    The ordering of these things have to be redone I think.
+
+    \begin{macro}{\__skrapport_setup_paper:n}[1]
+        {Paper size (\texttt{a4} or \texttt{a5})}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_setup_paper:n#1{
+    \str_case:nnn{#1}{
+        {a4}{
+            \RequirePackage[a4paper]{geometry}
+            \setlength\paperheight {297mm}
+            \setlength\paperwidth  {210mm}
+        }
+        {a5}{
+            \RequirePackage[a5paper]{geometry}
+            \setlength\paperheight {210mm}
+            \setlength\paperwidth  {148mm}
+        }
+    }{
+        \msg_warning:nnn{skrapport}{invalid-paper-size}{#1}
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_ptsize:n}[1]
+        {Point size (\texttt{10pt}, \texttt{11pt} or \texttt{12pt})}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_setup_ptsize:n#1{
+    \str_case:nnn{#1}{
+\end{MacroCode}
+    \begin{macro*}{\c__skrapport_ptsize_token}
+\begin{MacroCode}{class}
+        {10pt}{\token_new:Nn\c__skrapport_ptsize_token{0}}
+        {11pt}{\token_new:Nn\c__skrapport_ptsize_token{1}}
+        {12pt}{\token_new:Nn\c__skrapport_ptsize_token{2}}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+    }{
+        \msg_critical:nnn{skrapport}{invalid-point-size}{#1}
+    }
+    \file_input:n{size1\c__skrapport_ptsize_token .clo}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_twocolumn:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_twocolumn:{
+    \RequirePackage{etoolbox}
+    \RequirePackage{multicol}
+    \msg_fatal:nnn{skrapport}{not-implemented}
+        {\__skrapport_setup_twocolumn:}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_leqno:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_leqno:{
+    \file_input:n{leqno.clo}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_fleqn:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_fleqn:{
+    \file_input:n{fleqn.clo}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_titles:n}[1]
+        {Title style (\texttt{rm}, \texttt{bf} or \texttt{sf})}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_setup_titles:n#1{
+    \str_case:nnn{#1}{
+\end{MacroCode}
+    \begin{macro*}{\__skrapport_title_style:}
+        \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced
+                        \cs{relax} with \cs{rmfamily}}
+\begin{MacroCode}{class}
+        {rm}{\cs_new:Nn\__skrapport_title_style:{\rmfamily}}
+        {bf}{\cs_new:Nn\__skrapport_title_style:{\bfseries}}
+        {sf}{\cs_new:Nn\__skrapport_title_style:{\sffamily}}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+    }{
+        \msg_info:nnnn{skrapport}{invalid-titles}{#1}{rm}
+        \__skrapport_setup_titles:n{rm}
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_lang:n}[1]
+        {Language (\texttt{sv} or \texttt{en})}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_setup_lang:n#1{
+    \str_case:nnn{#1}{
+        {sv}{
+            \bool_if:NTF\g__skrapport_has_polyglossia_bool{
+                \setmainlanguage{swedish}
+                \setotherlanguage[variant=british]{english}
+            }{
+                \RequirePackage[british,swedish]{babel}
+            }
+        }
+        {en}{
+            \bool_if:NTF\g__skrapport_has_polyglossia_bool{
+                \setmainlanguage[variant=british]{english}
+                \setotherlanguage{swedish}
+            }{
+                \RequirePackage[swedish,british]{babel}
+            }
+        }
+    }{
+        \msg_info:nnn{skrapport}{invalid-lang}{#1}
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_font:n}[1]
+        {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
+         \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_setup_font:n#1{
+    \str_case:nnn{#1}{
+        {none}{\prg_do_nothing:}
+        {kpfonts}{
+            \RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
+        }
+        {lmodern}{
+            \RequirePackage{lmodern}
+        }
+        {palatino}{
+            \file_if_exist:nTF{tgpagella.sty}{
+                \RequirePackage{tgpagella}
+            }{
+                \RequirePackage[osf]{mathpazo}
+            }
+        }
+        {minion}{
+            \RequirePackage{MinionPro}
+            \RequirePackage{MnSymbol}
+        }
+        {skdoc}{
+            \RequirePackage{PTSerif}
+            \RequirePackage[defaultsans,osfigures,scale=0.95]{opensans}
+        }
+    }{
+        \msg_info:nnn{skrapport}{invalid-font}{#1}
+    }
+    \str_if_eq:nF{#1}{kpfonts}{
+        \RequirePackage[intlimits]{amsmath}
+        \RequirePackage{amssymb}
+        \RequirePackage{textcomp}
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_parskip:}
+    This part mixes \LaTeXe and \LaTeX3, which may not be a good thing.
+    On the other hand, it seems hard to avoid.
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_parskip:{
+    \skip_gset:Nn\parskip{0.5\baselineskip plus 2pt}
+    \dim_gzero:N\parindent
+    \skip_gset:Nn\parfillskip{30pt plus 1fil}
+\end{MacroCode}
+    \begin{macro*}{\@listI}
+    \begin{macro*}{\@listi}
+\begin{MacroCode}{class}
+    \cs_gset:Npn\@listI{
+        \dim_gset_eq:NN\leftmargin\leftmargini
+        \dim_gset_eq:NN\parsep\parskip
+        \dim_gzero:N\topsep
+        \dim_gzero:N\itemsep
+    }
+    \cs_gset_eq:NN\@listi\@listI
+\end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+\begin{MacroCode}{class}
+    \@listi
+\end{MacroCode}
+    \begin{macro*}{\@listii}
+\begin{MacroCode}{class}
+    \cs_gset:Npn\@listii{
+        \dim_gset_eq:NN\leftmargin\leftmarginii
+        \dim_gset_eq:NN\labelwidth\leftmarginii
+        \dim_gset_eq:NN\parsep\parskip
+        \dim_gsub:Nn\labelwidth{-\labelsep}
+        \dim_gzero:N\topsep
+        \dim_gzero:N\itemsep
+    }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\@listiii}
+\begin{MacroCode}{class}
+    \cs_gset:Npn\@listiii{
+        \dim_gset_eq:NN\leftmargin\leftmarginiii
+        \dim_gset_eq:NN\labelwidth\leftmarginiii
+        \dim_gset_eq:NN\parsep\parskip
+        \dim_gsub:Nn\labelwidth{-\labelsep}
+        \dim_gzero:N\topsep
+        \dim_gzero:N\itemsep
+    }
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+    \dim_gzero:N\partopsep
+\end{MacroCode}
+    \begin{macro*}{\@starttoc}
+\begin{MacroCode}{class}
+    \RenewDocumentCommand\@starttoc{m}{
+        \group_begin:
+        \dim_gzero:N\parskip
+        \file_if_exist:nT{\c_job_name_tl.#1}{
+            \file_input:n{\c_job_name_tl.#1}
+        }
+        \if@filesw
+            \iow_new:c{tf@#1}
+            \iow_open:cn{tf@#1}{\c_job_name_tl.#1}
+        \fi
+        \@nobreakfalse
+        \group_end:
+    }
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_math:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_math:{
+    \file_if_exist:nT{skmath.sty}{\RequirePackage{skmath}}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_draft:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_draft:{
+    \bool_if:NTF\g__skrapport_draft_bool{
+        \dim_gset:Nn\overfullrule{5pt}
+    }{
+        \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_draft:}
+        \prg_do_nothing:
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_color:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_color:{
+    \bool_if:NTF\g__skrapport_color_bool{
+        \RequirePackage{etoolbox}
+        \RequirePackage{xcolor}
+    }{
+        \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_color:}
+        \prg_do_nothing:
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_xelatex:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_xelatex:{
+    \RequirePackage[quiet]{fontspec}
+\end{MacroCode}
+    \begin{macro}{\nobreakspace}
+\begin{MacroCode}{class}
+    \DeclareDocumentCommand\nobreakspace{}{\leavevmode\nobreak\space}
+\end{MacroCode}
+    \end{macro}
+\begin{MacroCode}{class}
+    \RequirePackage{polyglossia}
+    \bool_gset_true:N\g__skrapport_has_polyglossia_bool
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_pdftex:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_pdftex:{
+    \RequirePackage[T1]{fontenc}
+    \bool_gset_false:N\g__skrapport_has_polyglossia_bool
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\__skrapport_setup_engine_specific:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_setup_engine_specific:{
+    \bool_if:nTF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+        \__skrapport_setup_xelatex:
+    }{
+        \__skrapport_setup_pdftex:
+    }
+}
+\end{MacroCode}
+    \end{macro}
+
+    \subsubsection{Variants with expandable arguments}
+    \begin{macro}{\__skrapport_setup_ptsize:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_setup_ptsize:n{ x }
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\__skrapport_setup_titles:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_setup_titles:n{ x }
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\__skrapport_setup_lang:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_setup_lang:n{ x }
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\__skrapport_setup_font:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_setup_font:n{ x }
+\end{MacroCode}
+    \end{macro}
 
     Execute default options and process given options.
 \begin{MacroCode}{class}
-\ProcessKeysOptions{download}
+\__skrapport_setup_engine_specific:
+\ProcessKeysOptions{skrapport}
 \end{MacroCode}
 
     \subsection{Loading packages}
     \subsubsection{Optional packages}
     Require packages as per given options. Start with the paper size.
 \begin{MacroCode}{class}
-\IfStrEq{\skrapport@paper}{a4paper}{%
-    \RequirePackage[a4paper]{geometry}
-    \setlength\paperheight {297mm}
-    \setlength\paperwidth  {210mm}
-}{\IfStrEq{\skrapport@paper}{a5paper}{%
-    \RequirePackage[a5paper]{geometry}
-    \setlength\paperheight {210mm}
-    \setlength\paperwidth  {148mm}
-}{%
-    \ClassError{skrapport}{%
-        Option `paper' has unknown value `\skrapport@paper'!
-    }{} 
-}}
+
 \end{MacroCode}
 
     \begin{macro}{\@ptsize}
     Follow up with the point size.
 \begin{MacroCode}{class}
-\IfStrEq{\skrapport@ptsize}{10pt}{%
-    \renewcommand\@ptsize{0}
-}{%
-    \IfStrEq{\skrapport@ptsize}{11pt}{%
-        \renewcommand\@ptsize{1}
-    }{%
-        \IfStrEq{\skrapport@ptsize}{12pt}{%
-            \renewcommand\@ptsize{2}
-        }{%
-            \ClassError{skrapport}{%
-                Option `ptsize' has unknown value `\skrapport@ptsize'!
-            }{}
-        }
-    }
-}
+
 \end{MacroCode}
     \end{macro}
 
     Setting \opt{draft} mode is fairly easy, we only need
     \cs{overfullrule}s.
 \begin{MacroCode}{class}
-\ifskrapport@draft
-    \setlength\overfullrule{5pt}
-\else
-    \setlength\overfullrule{0pt}
-\fi
 \end{MacroCode}
 
     Load \file{leqno.clo} and \file{fleqno.clo} if those options are desired.
 \begin{MacroCode}{class}
-\ifskrapport@leqno\input{leqno.clo}\fi
-\ifskrapport@fleqn\input{fleqn.clo}\fi
 \end{MacroCode}
 
     \begin{macro*}{\@titstyle}
     \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced \cs{relax} with \cs{rmfamily}}
     Set the title font as prescribed.
 \begin{MacroCode}{class}
-\IfStrEq{\skrapport@titles}{bf}{%
-    \let\@titstyle\bfseries%
-}{\IfStrEq{\skrapport@titles}{sf}{%
-    \let\@titstyle\sffamily%
-}{%
-    \let\@titstyle\rmfamily%
-}}
+
 \end{MacroCode}
     \end{macro*}
 
@@ -677,26 +1015,13 @@
     fonts. We also include a \cs{nobreakspace} macro which seems to
     be broken in \hologo{XeTeX}.
 \begin{MacroCode}{class}
-\ifxetex
-  \RequirePackage[quiet]{fontspec}
-\end{MacroCode}
-    \begin{macro}{\nobreakspace}
-\begin{MacroCode}{class}
-    \DeclareRobustCommand\nobreakspace{\leavevmode\nobreak\space}
-\end{MacroCode}
-    \end{macro}
-\begin{MacroCode}{class}
-\else
-  \RequirePackage[T1]{fontenc}  
-\fi
+
 \end{MacroCode}
 
     The \opt{color} option requires both \pkg{etoolbox} and
     \pkg{xcolor} to be loaded.
 \begin{MacroCode}{class}
 \ifskrapport@color
-    \RequirePackage{etoolbox}
-    \RequirePackage{xcolor}
 \fi
 \end{MacroCode}
 
@@ -704,67 +1029,19 @@
     load \pkg{tpagella} if it exists, and fall back to \pkg{mathpazo}
     otherwise.
 \begin{MacroCode}{class}    
-\IfStrEq{\skrapport@font}{nofont}{}{%
-    \IfStrEq{\skrapport@font}{kpfonts}{%
-        \RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
-    }{%
-        \IfStrEq{\skrapport@font}{palatino}{%
-            \IfFileExists{tgpagella.sty}{%
-                \RequirePackage{tgpagella}
-            }{%
-                \RequirePackage[osf]{mathpazo}
-            }
-        }{%
-            \IfStrEq{\skrapport@font}{lmodern}{%
-                \RequirePackage{lmodern}
-            }{%
-                \IfStrEq{\skrapport@font}{minion}{%
-                    \RequirePackage{MinionPro}
-                    \RequirePackage{MnSymbol}
-                }{%
-                    \IfStrEq{\skrapport@font}{skdoc}{%
-                        \RequirePackage{PTSerif}
-                        \RequirePackage[defaultsans,osfigures,scale=0.95]{opensans}
-                    }{
-                        \ClassError{skrapport}{%
-                            Option `font' has unknown value `\skrapport@font'!
-                        }{}
-                    }
-                }
-            }
-        }
-    }
-}
+
 \end{MacroCode}
 
     Language options follow. It it a bit convoluted since we load
     \pkg{polyglossia} in \hologo{XeTeX} and \pkg{babel} in \TeX,
     but it's fairly easy to follow.
 \begin{MacroCode}{class}
-\ifxetex
-    \RequirePackage{xkeyval}
-    \RequirePackage{polyglossia}
-    \ifskrapport@eng
-        \setmainlanguage[variant=british]{english}
-        \setotherlanguage{swedish}
-    \else
-        \setmainlanguage{swedish}
-        \setotherlanguage[variant=british]{english}
-    \fi
-\else
-    \ifskrapport@eng
-        \RequirePackage[swedish,british]{babel}
-    \else
-        \RequirePackage[british,swedish]{babel}
-    \fi
-\fi
+
 \end{MacroCode}
 
     Two-column mode requires \pkg{etoolbox} and \pkg{multicol}.
 \begin{MacroCode}{class}
 \ifskrapport@twocolumn
-    \RequirePackage{etoolbox}
-    \RequirePackage{multicol}
 \fi
 \end{MacroCode}
 
@@ -787,15 +1064,11 @@
 \AtEndOfClass{
     \RequirePackage{microtype}
     \RequirePackage{icomma}
-    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage[intlimits]{amsmath}}
     \let\Finv\relax
     \let\Game\relax
     \let\beth\relax
     \let\gimel\relax
     \let\daleth\relax
-    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{amssymb}}
-    \IfStrEq{\skrapport@font}{kpfonts}{}{\RequirePackage{textcomp}}
-    \ifskrapport@math\IfFileExists{skmath.sty}{\RequirePackage{skmath}}{}\fi
 }
 \end{MacroCode}
     
@@ -810,7 +1083,6 @@
     Lastly, we include the correct point size \texttt{.clo} file from the
     \pkg{article} class.
 \begin{MacroCode}{class}
-\input{size1\@ptsize.clo}
 \end{MacroCode}
     
     \subsection{Hidden things}
@@ -836,66 +1108,6 @@
     spacing as well.
 \begin{MacroCode}{class}
 \ifskrapport@indent\else
-    \setlength\parskip{0.5\baselineskip \@plus 2pt}
-    \parindent=\z@
-    \setlength\parfillskip{30\p@ \@plus 1fil}
-\end{MacroCode}
-    \begin{macro*}{\@listI}
-    \begin{macro*}{\@listi}
-\begin{MacroCode}{class}
-    \def\@listI{\leftmargin\leftmargini
-       \topsep\z@ \parsep\parskip \itemsep\z@}
-    \let\@listi\@listI
-\end{MacroCode}
-    \end{macro*}
-    \end{macro*}
-\begin{MacroCode}{class}
-    \@listi
-\end{MacroCode}
-    \begin{macro*}{\@listii}
-\begin{MacroCode}{class}
-    \def\@listii{\leftmargin\leftmarginii
-      \labelwidth\leftmarginii\advance\labelwidth-\labelsep
-      \topsep\z@ \parsep\parskip \itemsep\z@}
-\end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\@listiii}
-\begin{MacroCode}{class}
-    \def\@listiii{\leftmargin\leftmarginiii
-      \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
-      \topsep\z@ \parsep\parskip \itemsep\z@}
-\end{MacroCode}
-    \end{macro*}
-\begin{MacroCode}{class}
-    \partopsep=\z@
-    \@ifundefined{CheckCommand}{}{%
-      \CheckCommand*{\@starttoc}[1]{%
-        \begingroup
-          \makeatletter
-          \@input{\jobname.#1}%
-          \if@filesw
-            \expandafter\newwrite\csname tf@#1\endcsname
-            \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-          \fi
-          \@nobreakfalse
-        \endgroup}}
-\end{MacroCode}
-    \begin{macro*}{\@starttoc}
-\begin{MacroCode}{class}
-    \renewcommand*{\@starttoc}[1]{%
-      \begingroup
-        \makeatletter
-        \parskip\z@
-        \@input{\jobname.#1}%
-        \if@filesw
-          \expandafter\newwrite\csname tf@#1\endcsname
-          \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-        \fi
-        \@nobreakfalse
-      \endgroup}
-\end{MacroCode}
-    \end{macro*}
-\begin{MacroCode}{class}
 \fi
 \frenchspacing
 \end{MacroCode}
