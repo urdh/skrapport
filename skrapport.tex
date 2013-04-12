@@ -19,6 +19,9 @@
 %% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
 %% and skrapport-colortheme-cruelwater.sty.
 \documentclass{skdoc}
+\let\SI\relax
+\usepackage{siunitx}
+\DeclareSIUnit\point{pt}
 \usepackage{hologo,booktabs}
 \usepackage[style=authoryear]{biblatex}
 \usepackage{csquotes}
@@ -41,6 +44,12 @@
         title = {KP-Fonts 3.31},
         year = {2010},
         url = {http://www.tex.ac.uk/tex-archive/fonts/kpfonts/doc/kpfonts.pdf}
+    }
+    @standard{ISO216,
+        title = {ISO 216:2007},
+        subtitle = {Writing paper and certain classes of printed matter -- Trimmed sizes -- A and B series, and indication of machine direction},
+        author = {{International Organization for Standardization, Technical Committee 6}},
+        year = {2007}
     }
 \end{filecontents}
 \addbibresource{skrapport.bib}
@@ -327,25 +336,18 @@
 
     \Implementation\ExplHack
     \section{Implementation}
-    Start with the standard \LaTeX\ cruft.
+    Start by including \pkg{expl3}, \pkg{l3keys2e} and some other
+    useful packages, as well as declaring the class.
 \begin{MacroCode}{class}
-\NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{skrapport}%
-    [2013/04/10 v0.11a Skånings rapportklass]
-\end{MacroCode}
-    Then, start by including \pkg{l3keys2e} and defining some
-    variables for future use.
-\begin{MacroCode}{class}
-\RequirePackage{expl3,l3keys2e,xparse,xstring}
-\ExplSyntaxOn
-\bool_new:N\g__skrapport_draft_bool
-\bool_new:N\g__skrapport_color_bool
-\bool_new:N\g__skrapport_has_polyglossia_bool
+\RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
+\ProvidesExplClass{skrapport}%
+    {2013/04/10}{0.11a}{stylish report document class}
 \end{MacroCode}
     
     \subsection{Messages}
+    Tons of messages are declared for future use.
 \begin{MacroCode}{class}
-\msg_new:nnnn{skrapport}{option-deprecated}{Option~`#1~deprecated!}
+\msg_new:nnnn{skrapport}{option-deprecated}{Option~`#1'~deprecated!}
     {Please~use~`#2'~instead.}
 \msg_new:nnnn{skrapport}{option-no-effect}{Option~`#1'~deprecated!}
     {It~has~no~effect;~simply~use~nothing~instead.}
@@ -371,19 +373,54 @@
     {\token_to_str:N#1~was~invoked,~but~circumstances~dictate~that~the~
     macro~should~do~nothing.~Will~do~\token_to_str:N\prg_do_nothing:~
     instead.}
-
+\end{MacroCode}
+    This message should probably not be used at all. Except in
+    development versions straight off Github, of course.
+\begin{MacroCode}{class}
 \msg_new:nnn{skrapport}{not-implemented}
     {Unimplemented~macro~\token_to_str:N#1!}
 \end{MacroCode}
 
     \subsection{Options}
+    First, a few booleans used by parts of the option handling code.
+    \begin{macro}{\g__skrapport_draft_bool}
+    Are we in \opt{draft} mode?
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_draft_bool
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\g__skrapport_color_bool}
+    Are we supposed to be using \opt{color}s?
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_color_bool
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\g__skrapport_has_polyglossia_bool}
+    Has \pkg{polyglossia} been loaded?
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_has_polyglossia_bool
+\end{MacroCode}
+    \end{macro}
+
+    Let's define some \pkg{l3keys} corresponding to the options. Note
+    that most of them just refer to a macro in their \texttt{.code:n}
+    block --- these macros are defined after the \cs{keys_define:nn}
+    block.
 \begin{MacroCode}{class}
 \keys_define:nn{skrapport}{
 \end{MacroCode}
     \begin{option}{paper}{a4paper, a5paper, a4, a5}
+    \changes{0.12}{Values \texttt{a4paper} and \texttt{a5paper} are
+                  now deprecated}
     \begin{option}{a4paper}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{a5paper}
-    Declare the paper size options.
+    \changes{0.12}{Option is now deprecated}
+    Declare the paper size options. Note that having to handle the
+    deprecated \texttt{a4paper} and \texttt{a5paper} values of the
+    \opt{paper} option makes the code less readable. In a few
+    versions, when these options are removed, the code should probably
+    be refactored to look something like the \opt{ptsize} option below.
 \begin{MacroCode}{class}
     paper .choice:,
     paper / a4 .code:n =
@@ -417,7 +454,8 @@
     \begin{option}{10pt}
     \begin{option}{11pt}
     \begin{option}{12pt}
-    Declare point size options.
+    Declare point size options. Note that we don't deprecate the
+    non-\opt{ptsize} aliases as they are much easier to type.
 \begin{MacroCode}{class}
     ptsize .choices:nn =
         { 10pt, 11pt, 12pt }
@@ -435,11 +473,15 @@
 
     \begin{option}{twocolumn}
     \changes{0.08}{Added option \opt{twocolumn}}
+    Declare column options. The code here should be run through
+    \cs{AtEndClass} so that the setup code can patch everythin
+    properly.
     \begin{option}{onecolumn}
-    Declare column options.
+    \changes{0.12}{Option is now deprecated}
+    The \opt{onecolumn} option has no effect and is deprecated.
 \begin{MacroCode}{class}
     twocolumn .code:n =
-        {\__skrapport_setup_twocolumn:},
+        {\AtEndClass{\__skrapport_setup_twocolumn:}},
     onecolumn .code:n =
         {\msg_warning:nnn{skrapport}{option-no-effect}{onecolumn}},
 \end{MacroCode}
@@ -448,7 +490,9 @@
 
     \begin{option}{draft}{true, false}
     \begin{option}{final}
-    Declare \opt{draft} and \opt{final} options.
+    Declare \opt{draft} and \opt{final} options. Note that even if the
+    \opt{final} option does absolutely nothing, users may expect it to
+    be there and as such it is not deprecated.
 \begin{MacroCode}{class}
     draft .choice:,
     draft / true .code:n =
@@ -458,14 +502,12 @@
         {\bool_gset_false:N\g__skrapport_draft_bool},
     draft .default:n = true,
     draft .initial:n = false,
-    final .code:n =
-        {\msg_warning:nnn{skrapport}{option-no-effect}{final}},
+    final .code:n = {\prg_do_nothing:},
 \end{MacroCode}
     \end{option}
     \end{option}
 
-
-    Declare the \opt{fleqn} and \opt{leqno} options for
+    Declare the \opt{fleqn} and \opt{leqno} options, mainly for
     compatibility with the \pkg{article} class.
     \begin{option}{leqno}
 \begin{MacroCode}{class}
@@ -481,11 +523,15 @@
     \end{option}
 
     \begin{option}{titles}{rm, bf, sf}
-    Declare options for section titles.
+    Declare options for section titles. The old \opt*{??titles} aliases
+    are deprecated and will be removed in a future version.
     \begin{option}{rmtitles}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{bftitles}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{sftitles}
     \changes{0.09}{Added \opt{sftitles} option}
+    \changes{0.12}{Option is now deprecated}
 \begin{MacroCode}{class}
     titles .choices:nn =
         { rm, bf, sf }
@@ -511,10 +557,16 @@
     \end{option}
 
     \begin{option}{lang}{sv, en}
+    \changes{0.12}{Incompatible change: values \texttt{swe} and
+                   \texttt{eng} are now \texttt{sv} and \texttt{en},
+                   respectively}
     \begin{option}{swe}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{eng}
+    \changes{0.12}{Option is now deprecated}
     Declare options for swedish/english \pkg{babel} or
-    \pkg{polyglossia} support.
+    \pkg{polyglossia} support. Again, the old \opt{swe} and \opt{eng}
+    aliases are deprecated and will be removed.
 \begin{MacroCode}{class}
     lang .choices:nn = 
         { sv, en }
@@ -535,17 +587,23 @@
     \end{option}
 
     \begin{option}{font}{none, kpfonts, lmodern, palatino, minion, skdoc}
-    Declare font options.
+    Declare font options. Again, aliases are deprecated.
     \begin{option}{kpfonts}
     \changes{0.07}{Added option \opt{kpfonts}, set as default
                     option for fonts}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{lmodern}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{palatino}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{minion}
     \changes{0.11}{Added option \opt{minion}}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{skdoc}
     \changes{0.11a}{Added option \opt{skdoc}}
+    \changes{0.12}{Option is now deprecated}
     \begin{option}{nofont}
+    \changes{0.12}{Option is now deprecated}
 \begin{MacroCode}{class}
     font .choices:nn =
         { none, kpfonts, lmodern, palatino, minion, skdoc }
@@ -588,7 +646,10 @@
     \begin{option}{indent}{true, false}
     \changes{0.02}{Added option of indented paragraphs}
     \begin{option}{noindent}
-    Declare indentation options.
+    \changes{0.12}{Option is now deprecated}
+    Declare indentation options. Since the \opt{noindent} option
+    technically has no effect and is an alias of \opt{indent=false},
+    it has been deprecated.
 \begin{MacroCode}{class}
     indent .choice:,
     indent / true .code:n = {\prg_do_nothing:},
@@ -604,7 +665,10 @@
     \begin{option}{color}{true, false}
     \changes{0.09}{Added \opt{color} option}
     \begin{option}{nocolor}
-    Declare color options.
+    Declare color options. Note that we explicitly set the boolean
+    \cs{g__skrapport_color_bool} as well as setting up the colors
+    through \cs{__skrapport_setup_color:}, so that we can keep track
+    of the color usage even after the options have been set up.
 \begin{MacroCode}{class}
     color .choice:,
     color / true .code:n =
@@ -619,13 +683,15 @@
     \end{option}
     \end{option}
 
-    \begin{option}{math}{true, false}
-    \begin{option}{nomath}
-    Declare math options.
+    \begin{option}{nomath}{true, false}
+    \begin{option}{math}
+    \changes{0.12}{Option is now deprecated}
+    Declare math options. As with the \opt{noindent} option, \opt{math}
+    has been deprecated since it is an alias and has no effect.
 \begin{MacroCode}{class}
     nomath .choice:,
     nomath / false = .code:n {\__skrapport_setup_math:},
-    nomath / true = .code:n {\prg_do_nothing},
+    nomath / true = .code:n {\prg_do_nothing:},
     nomath .default:n = true,
     nomath .initial:n = false,
     math .code:n =
@@ -633,30 +699,50 @@
 \end{MacroCode}
     \end{option}
     \end{option}
+    
+    That's it, we're done setting up the \pkg{l3keys} for the options.
+    Next up is the actual setup code for all the options.
 \begin{MacroCode}{class}
 }
-\ExplSyntaxOff
 \end{MacroCode}
 
-    \section{Option setup macros}
-    The ordering of these things have to be redone I think.
+    \subsection{Option setup macros}
+    In this section, all options declared in the previous section are
+    implemented using setup macros. Some of these may have to be called
+    in an appropriate order, but I haven't checked that yet.
 
     \begin{macro}{\__skrapport_setup_paper:n}[1]
         {Paper size (\texttt{a4} or \texttt{a5})}
+    The paper size is set by loading \pkg{geometry} \emph{and} explicitly
+    setting the \cs{paperheight} and \cs{paperwidth} dimensions. Perhaps
+    this can be improved.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_paper:n#1{
     \str_case:nnn{#1}{
+\end{MacroCode}
+    An A4 paper as defined by ISO216\footcite{ISO216} is
+    \SI{210x297}{\milli\metre}.
+\begin{MacroCode}{class}
         {a4}{
             \RequirePackage[a4paper]{geometry}
-            \setlength\paperheight {297mm}
-            \setlength\paperwidth  {210mm}
+            \dim_gset:Nn\paperheight {297mm}
+            \dim_gset:Nn\paperwidth  {210mm}
         }
+\end{MacroCode}
+    An A5 paper as defined by ISO216\footcite{ISO216} is
+    \SI{148x210}{\milli\metre}.
+\begin{MacroCode}{class}
         {a5}{
             \RequirePackage[a5paper]{geometry}
-            \setlength\paperheight {210mm}
-            \setlength\paperwidth  {148mm}
+            \dim_gset:Nn\paperheight {210mm}
+            \dim_gset:Nn\paperwidth  {148mm}
         }
     }{
+\end{MacroCode}
+    Invalid paper sizes (such calls should never happen) are
+    handled by issuing a warning and hoping that the default
+    paper size is acceptable.
+\begin{MacroCode}{class}
         \msg_warning:nnn{skrapport}{invalid-paper-size}{#1}
     }
 }
@@ -665,6 +751,9 @@
 
     \begin{macro}{\__skrapport_setup_ptsize:n}[1]
         {Point size (\texttt{10pt}, \texttt{11pt} or \texttt{12pt})}
+    The standard point sizes are defined much like in the \pkg{article}
+    class, \emph{i.e.} by saving a number and loading \file{size10.clo},
+    \file{size11.clo} or \file{size12.clo} as appropriate
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_ptsize:n#1{
     \str_case:nnn{#1}{
@@ -678,6 +767,13 @@
     \end{macro*}
 \begin{MacroCode}{class}
     }{
+\end{MacroCode}
+    Invalid point sizes are critical errors, since we can't recover
+    from them in any reasonable way. Loading a default point size is
+    unreasonable, since all in-class calls to this macro should know
+    what sizes are available, and if you're calling it with invalid
+    parameters from elsewhere, you should be punished.
+\begin{MacroCode}{class}
         \msg_critical:nnn{skrapport}{invalid-point-size}{#1}
     }
     \file_input:n{size1\c__skrapport_ptsize_token .clo}
@@ -686,17 +782,22 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_twocolumn:}
+    Setting up for twocolumn mode isn't implemented yet. Note that this
+    macro should be called from \cs{AtEndClass} to ensure that we patch
+    everything correctly.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
     \RequirePackage{multicol}
     \msg_fatal:nnn{skrapport}{not-implemented}
-        {\AtEndClass{\__skrapport_setup_twocolumn:}}
+        {\__skrapport_setup_twocolumn:}
 }
 \end{MacroCode}
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_leqno:}
+    Instead of loading \file{leqno.clo}, we reimplement the (tiny) file
+    as LaTeX3 code and include it directly. It's not terribly advanced.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_leqno:{
     \RenewDocumentCommand\@eqnnum{}{
@@ -712,6 +813,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_fleqn:}
+    The \file{fleqn.clo} functionality is more complex, so we include
+    the file instead of reimplementing.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_fleqn:{
     \file_input:n{fleqn.clo}
@@ -721,6 +824,9 @@
 
     \begin{macro}{\__skrapport_setup_titles:n}[1]
         {Title style (\texttt{rm}, \texttt{bf} or \texttt{sf})}
+    The title styles are implemented by creating a new macro
+    \cs{__skrapport_title_style:} which will later be used by
+    \cs{section} and friends. 
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_titles:n#1{
     \str_case:nnn{#1}{
@@ -734,6 +840,8 @@
         {sf}{\cs_new:Nn\__skrapport_title_style:{\sffamily}}
 \end{MacroCode}
     \end{macro*}
+    The fall-back for incorrect parameters is an informational message
+    along with setting up for \cs{rmfamily} titles.
 \begin{MacroCode}{class}
     }{
         \msg_info:nnnn{skrapport}{invalid-titles}{#1}{rm}
@@ -745,6 +853,12 @@
 
     \begin{macro}{\__skrapport_setup_lang:n}[1]
         {Language (\texttt{sv} or \texttt{en})}
+    Thus far only two language options are implemented, each of them
+    setting the other as the \enquote{other} language. We check if
+    \pkg{polyglossia} has been loaded (this is done by
+    \cs{__skrapport_setup_xelatex:}): if it has, we use the
+    \pkg{polyglossia} interface for setting languages, otherwise we 
+    load the \pkg{babel} package with appropriate options.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_lang:n#1{
     \str_case:nnn{#1}{
@@ -765,6 +879,10 @@
             }
         }
     }{
+\end{MacroCode}
+    Fallback prints an informational message and leaves both \pkg{babel}
+    and \pkg{polyglossia} unloaded.
+\begin{MacroCode}{class}
         \msg_info:nnn{skrapport}{invalid-lang}{#1}
     }
 }
@@ -774,17 +892,39 @@
     \begin{macro}{\__skrapport_setup_font:n}[1]
         {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
+    We set up the somewhat involved font stack.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_font:n#1{
-    \RequirePackage[scaled=1.03]{inconsolata}
+\end{MacroCode}
+    To begin with, we load \pkg{inconsolata} as our monospace font,
+    letting it be overridden later if another font stack provides
+    a monospace font. But we don't load it when using the \texttt{none}
+    font stack.
+\begin{MacroCode}{class}
+    \str_if_eq:nnF{#1}{none}{
+        \RequirePackage[scaled=1.03]{inconsolata}
+    }
     \str_case:nnn{#1}{
+\end{MacroCode}
+    The \texttt{none} font stack does literally nothing.
+\begin{MacroCode}{class}
         {none}{\prg_do_nothing:}
+\end{MacroCode}
+    The \texttt{kpfonts} font stack simply loads \pkg{kpfonts}...
+\begin{MacroCode}{class}
         {kpfonts}{
             \RequirePackage[easyscsl,intlimits,sumlimits]{kpfonts}
         }
+\end{MacroCode}
+    ...and the \texttt{lmodern} font stack loads \pkg{lmodern}.
+\begin{MacroCode}{class}
         {lmodern}{
             \RequirePackage{lmodern}
         }
+\end{MacroCode}
+    The \texttt{palatino} font stack loads \pkg{tgpagella} if available,
+    but falls back to \pkg{mathpazo} otherwise.
+\begin{MacroCode}{class}
         {palatino}{
             \file_if_exist:nTF{tgpagella.sty}{
                 \RequirePackage{tgpagella}
@@ -792,29 +932,50 @@
                 \RequirePackage[osf]{mathpazo}
             }
         }
+\end{MacroCode}
+    Minion Pro, provided by the \texttt{minion} font stack, loads both
+    \pkg{minionpro} (the font) and \pkg{MnSymbol} (appropriate math
+    symbols).
+\begin{MacroCode}{class}
         {minion}{
             \RequirePackage{minionpro}
             \RequirePackage{MnSymbol}
         }
+\end{MacroCode}
+    Finally, the \texttt{skdoc} font stack loads \pkg{PTSerif} and
+    \pkg{opensans}, inspired by the style of the \pkg{skdoc} class.
+\begin{MacroCode}{class}
         {skdoc}{
             \RequirePackage{PTSerif}
             \RequirePackage[defaultsans,osfigures,scale=0.95]{opensans}
         }
     }{
-        \msg_info:nnn{skrapport}{invalid-font}{#1}
+\end{MacroCode}
+    As a fallback, we print a waning and load no font packages.
+\begin{MacroCode}{class}
+        \msg_warning:nnn{skrapport}{invalid-font}{#1}
     }
-    \str_if_eq:nF{#1}{kpfonts}{
-        \RequirePackage[intlimits]{amsmath}
-        \RequirePackage{amssymb}
-        \RequirePackage{textcomp}
+\end{MacroCode}
+    All font stacks except \texttt{none} and \texttt{kpfonts} require
+    additional packages. Or, rather, \texttt{none} can't load these
+    packages by definition, and \texttt{kpfonts} already loads them
+    internally. They are always useful.
+\begin{MacroCode}{class}
+    \str_if_eq:nnF{#1}{kpfonts}{
+        \str_if_eq:nnF{#1}{none}{
+            \RequirePackage[intlimits]{amsmath}
+            \RequirePackage{amssymb}
+            \RequirePackage{textcomp}
+        }
     }
 }
 \end{MacroCode}
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_parskip:}
-    This part mixes \LaTeXe and \LaTeX3, which may not be a good thing.
-    On the other hand, it seems hard to avoid.
+    This part mixes \LaTeXe\ and \LaTeX3, which may not be a good thing.
+    On the other hand, it seems hard to avoid. Most of the code is
+    half-lifted from \pkg{parskip} and converted to \LaTeX3.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_parskip:{
     \skip_gset:Nn\parskip{0.5\baselineskip plus 2pt}
@@ -887,6 +1048,7 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_math:}
+    This is the simplest option, only loading \pkg{skmath} if it exists.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_math:{
     \file_if_exist:nT{skmath.sty}{\RequirePackage{skmath}}
@@ -895,6 +1057,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_draft:}
+    Setting up the \opt{draft} mode is also fairly easy, as we only need
+    wider (wider than \SI{0}{\point}, that is) \cs{overfullrule}s.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_draft:{
     \bool_if:NTF\g__skrapport_draft_bool{
@@ -908,10 +1072,12 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_color:}
+    Setting up colors is also fairly easy, as we only have to load the
+    \pkg{xcolor} package. All the other color-related code is in other
+    places, utilizing the \cs{g__skdoc_color_bool} boolean.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_color:{
     \bool_if:NTF\g__skrapport_color_bool{
-        \RequirePackage{etoolbox}
         \RequirePackage{xcolor}
     }{
         \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_color:}
@@ -922,6 +1088,10 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_xelatex:}
+    This macro contains special setup code for the \hologo{XeTeX} and
+    \hologo{LuaTeX} engines, such as loading \pkg{fontspec}, providing
+    missing commands (which have been replaced by equivalent Unicode
+    characters, apparently) and loading \pkg{polyglossia}.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_xelatex:{
     \RequirePackage[quiet]{fontspec}
@@ -939,6 +1109,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_pdftex:}
+    This macro contains special setup code for the \hologo{pdfTeX}
+    engine. Currently, it only sets the font encoding to T1.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_pdftex:{
     \RequirePackage[T1]{fontenc}
@@ -948,6 +1120,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_engine_specific:}
+    This macro detects the current engine and calls the appropriate
+    engine setup macro.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_engine_specific:{
     \bool_if:nTF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
@@ -960,6 +1134,9 @@
     \end{macro}
 
     \subsubsection{Variants with expandable arguments}
+    Some option setup macros accept arguments, but those arguments are
+    not expanded. Here, we provide variants which expand the parameters
+    properly using the excellent \pkg{l3prg} functionality.
     \begin{macro}{\__skrapport_setup_ptsize:x}
 \begin{MacroCode}{class}
 \cs_generate_variant:Nn\__skrapport_setup_ptsize:n{ x }
@@ -981,79 +1158,14 @@
 \end{MacroCode}
     \end{macro}
 
-    Execute default options and process given options.
+    Finally, we process the class options using the keys defined earlier.
+    We also run the engine-specific code implemented above.
 \begin{MacroCode}{class}
 \__skrapport_setup_engine_specific:
 \ProcessKeysOptions{skrapport}
 \end{MacroCode}
 
     \subsection{Loading packages}
-    \subsubsection{Optional packages}
-    Require packages as per given options. Start with the paper size.
-\begin{MacroCode}{class}
-
-\end{MacroCode}
-
-    \begin{macro}{\@ptsize}
-    Follow up with the point size.
-\begin{MacroCode}{class}
-
-\end{MacroCode}
-    \end{macro}
-
-    Setting \opt{draft} mode is fairly easy, we only need
-    \cs{overfullrule}s.
-\begin{MacroCode}{class}
-\end{MacroCode}
-
-    Load \file{leqno.clo} and \file{fleqno.clo} if those options are desired.
-\begin{MacroCode}{class}
-\end{MacroCode}
-
-    \begin{macro*}{\@titstyle}
-    \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced \cs{relax} with \cs{rmfamily}}
-    Set the title font as prescribed.
-\begin{MacroCode}{class}
-
-\end{MacroCode}
-    \end{macro*}
-
-    Now things get tricky. If we are using \hologo{XeTeX}, we don't
-    want \pkg{fontenc} because it makes no sense. We \emph{do} want
-    \pkg{fontspec}, though, because we want to be able to specify
-    fonts. We also include a \cs{nobreakspace} macro which seems to
-    be broken in \hologo{XeTeX}.
-\begin{MacroCode}{class}
-
-\end{MacroCode}
-
-    The \opt{color} option requires both \pkg{etoolbox} and
-    \pkg{xcolor} to be loaded.
-\begin{MacroCode}{class}
-\ifskrapport@color
-\fi
-\end{MacroCode}
-
-    We also need to handle the \opt{font} option. Note that we only
-    load \pkg{tpagella} if it exists, and fall back to \pkg{mathpazo}
-    otherwise.
-\begin{MacroCode}{class}    
-
-\end{MacroCode}
-
-    Language options follow. It it a bit convoluted since we load
-    \pkg{polyglossia} in \hologo{XeTeX} and \pkg{babel} in \TeX,
-    but it's fairly easy to follow.
-\begin{MacroCode}{class}
-
-\end{MacroCode}
-
-    Two-column mode requires \pkg{etoolbox} and \pkg{multicol}.
-\begin{MacroCode}{class}
-\ifskrapport@twocolumn
-\fi
-\end{MacroCode}
-
     \subsubsection{Required packages}
     We also include some essential packages per default. The
     \pkg{calc} package, for instance, is essential in later
