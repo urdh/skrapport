@@ -701,7 +701,7 @@
 \cs_new:Nn\__skrapport_setup_leqno:{
     \RenewDocumentCommand\@eqnnum{}{
         \hbox_to_wd:nn{.01pt}{}
-        \rlap{
+        \hbox_overlap_right:n{
             \normalfont\normalcolor
             \skip_horizontal:n{-\displaywidth}
             (\theequation)
