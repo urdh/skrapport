@@ -303,6 +303,7 @@
             \pkg{fontspec} & \texttt{quiet} & Only loaded if using \hologo{XeTeX}. Provides basic OTF font selection commands.\\
             \pkg{geometry} & \texttt{a4paper} or \texttt{a5paper} & This is used by the \opt{paper} option to set the paper area. \\
             \pkg{icomma} & & \\
+            \pkg{inconsolata} & & \\
             \pkg{microtype} & & Provides micro-typographic improvements.\\
             \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
             \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
@@ -768,6 +769,7 @@
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_font:n#1{
+    \RequirePackage[scaled=1.03]{inconsolata}
     \str_case:nnn{#1}{
         {none}{\prg_do_nothing:}
         {kpfonts}{
