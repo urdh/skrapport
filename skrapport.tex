@@ -691,7 +691,7 @@
     \RequirePackage{etoolbox}
     \RequirePackage{multicol}
     \msg_fatal:nnn{skrapport}{not-implemented}
-        {\__skrapport_setup_twocolumn:}
+        {\AtEndClass{\__skrapport_setup_twocolumn:}}
 }
 \end{MacroCode}
     \end{macro}
@@ -699,7 +699,14 @@
     \begin{macro}{\__skrapport_setup_leqno:}
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_leqno:{
-    \file_input:n{leqno.clo}
+    \RenewDocumentCommand\@eqnnum{}{
+        \hbox_to_wd:nn{.01pt}{}
+        \rlap{
+            \normalfont\normalcolor
+            \skip_horizontal:n{-\displaywidth}
+            (\theequation)
+        }
+    }
 }
 \end{MacroCode}
     \end{macro}
