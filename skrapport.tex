@@ -202,7 +202,8 @@
     \DescribeMacro\license{<license>}
     The \cs{license} macro specifies the name of a license under which
     the document is available. This will be typeset on the lower right
-    corner of the title page.
+    corner of the title page. \Notice{The license will only be printed
+    if the \env{titlepage} environment is used.}
 
     \DescribeMacro\regarding{<text>}
     The class adds a \cs{regarding} macro, which is used like the 
@@ -959,13 +960,20 @@
     All font stacks except \texttt{none} and \texttt{kpfonts} require
     additional packages. Or, rather, \texttt{none} can't load these
     packages by definition, and \texttt{kpfonts} already loads them
-    internally. They are always useful.
+    internally \footcite[p.~1]{kpfonts}. They are always useful.
 \begin{MacroCode}{class}
     \str_if_eq:nnF{#1}{kpfonts}{
         \str_if_eq:nnF{#1}{none}{
-            \RequirePackage[intlimits]{amsmath}
-            \RequirePackage{amssymb}
-            \RequirePackage{textcomp}
+            \BeforeEndPreamble{
+                \let\Finv\relax
+                \let\Game\relax
+                \let\beth\relax
+                \let\gimel\relax
+                \let\daleth\relax
+                \RequirePackage[intlimits]{amsmath}
+                \RequirePackage{amssymb}
+                \RequirePackage{textcomp}
+            }
         }
     }
 }
@@ -1176,20 +1184,11 @@
 
     At the end of the class definition we load a couple of very
     useful packages that improve typesetting. These are
-    \pkg{microtype}, \pkg{icomma} and \pkg{amsmath}. Additionally,
-    we load \pkg{skmath} if it exists and is wanted, and unless we
-    are using KP-Fonts, we load \pkg{amssymb} and \pkg{textcomp} (the
-    reason being that \pkg{kpfonts} load these packages itself, see
-    \textcite[p.~1]{kpfonts}, and we don't want conflicting options).
+    \pkg{microtype}, \pkg{icomma}.
 \begin{MacroCode}{class}
 \AtEndOfClass{
     \RequirePackage{microtype}
     \RequirePackage{icomma}
-    \let\Finv\relax
-    \let\Game\relax
-    \let\beth\relax
-    \let\gimel\relax
-    \let\daleth\relax
 }
 \end{MacroCode}
     
@@ -1197,51 +1196,74 @@
     loaded the \pkg{url} package.
 \begin{MacroCode}{class}
 \AtBeginDocument{
-    \@ifundefined{urlstyle}{}{\urlstyle{same}}
+    \cs_if_exist:NT\urlstyle{\urlstyle{same}}
 }
 \end{MacroCode}
 
-    Lastly, we include the correct point size \texttt{.clo} file from the
-    \pkg{article} class.
+    \subsection{Utilities}
+    We define useful \LaTeX3 replacements of \LaTeXe\ stuff that
+    hasn't made its way into \pkg{interface3}. This includes counter
+    mechanisms (compatible with \LaTeXe\ code), a \cs{settowidth}
+    clone and possibly more stuff later.
+    \begin{macro*}{\dim_set_to_wd:Nn}
 \begin{MacroCode}{class}
+\cs_new:Npn\dim_set_to_wd:Nn#1#2{
+    \hbox_set:Nn\l_tmpa_box{#2}
+    \dim_set:Nn#1{\box_wd:N\l_tmpa_box}
+    \box_clear:N\l_tmpa_box
+}
 \end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\ctr_new:n}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_new:n#1{
+    \@definecounter{#1} % !!!
+    \@ifnextchar[{\@newctr{#1}}{} % !!!
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\ctr_gzero:n}
+\cs_new:Npn\ctr_gzero:n#1{
+    \int_gzero:c{c@#1}
+}
+    \end{macro*}
+    \begin{macro*}{\ctr_gset:nn}
+\cs_new:Npn\ctr_gset:nn#1#2{
+    \int_gset:cn{c@#1}{#2}
+}
+    \end{macro*}
+    \begin{macro*}{\ctr_incr:n}
+\cs_new:Npn\ctr_incr:n#1{
+    \int_gincr:cn{c@#1}
+}
+    \end{macro*}
     
     \subsection{Hidden things}
-    Set some default measurements.
+    Set some default measurements (should probably be replaced with
+    simply loading \pkg{scrpage2}).
 \begin{MacroCode}{class}
-\addtolength\textwidth{0.5\oddsidemargin}
-\addtolength\textwidth{0.5\evensidemargin}
-\addtolength\oddsidemargin{-0.5\oddsidemargin}
-\addtolength\evensidemargin{-0.5\evensidemargin}
-\setlength\lineskip{1\p@}
-\setlength\normallineskip{1\p@}
+\dim_add:Nn\textwidth{0.5\oddsidemargin}
+\dim_add:Nn\textwidth{0.5\evensidemargin}
+\dim_add:Nn\oddsidemargin{-0.5\oddsidemargin}
+\dim_add:Nn\evensidemargin{-0.5\evensidemargin}
+\dim_gset:Nn\lineskip{1pt}
+\dim_gset:Nn\normallineskip{1pt}
 \end{MacroCode}
     \begin{macro}{\baselinestretch}
 \begin{MacroCode}{class}
-\renewcommand\baselinestretch{}
+\RenewDocumentCommand\baselinestretch{}{}
 \end{MacroCode}
     \end{macro}
 
-    \subsubsection{Indentation}
-    Indentation code. Undo the indentation set by the \pkg{article} 
-    class if indentation was requested by the user. See the
-    \pkg{parskip} package for further information. Enable french
-    spacing as well.
-\begin{MacroCode}{class}
-\ifskrapport@indent\else
-\fi
-\frenchspacing
-\end{MacroCode}
-
     \subsubsection{Penalties}
 \begin{MacroCode}{class}
-\@lowpenalty   51
-\@medpenalty  151
-\@highpenalty 301
-\setcounter{topnumber}{2}
-\setcounter{bottomnumber}{1}
-\setcounter{totalnumber}{4}
-\setcounter{dbltopnumber}{2}
+\int_gset:Nn\@lowpenalty  {51}
+\int_gset:Nn\@medpenalty {151}
+\int_gset:Nn\@highpenalty{301}
+\ctr_gset:nn{topnumber}{2}
+\ctr_gset:nn{bottomnumber}{1}
+\ctr_gset:nn{totalnumber}{4}
+\ctr_gset:nn{dbltopnumber}{2}
 \end{MacroCode}
     \begin{macro*}{\topfraction}
     \begin{macro*}{\bottomfraction}
@@ -1250,12 +1272,12 @@
     \begin{macro*}{\dbltopfraction}
     \begin{macro*}{\dblfloatpagefraction}
 \begin{MacroCode}{class}
-\renewcommand\topfraction{.75}
-\renewcommand\bottomfraction{.5}
-\renewcommand\textfraction{.25}
-\renewcommand\floatpagefraction{.625}
-\renewcommand\dbltopfraction{.75}
-\renewcommand\dblfloatpagefraction{.625}
+\RenewDocumentCommand\topfraction{}{.75}
+\RenewDocumentCommand\bottomfraction{}{.5}
+\RenewDocumentCommand\textfraction{}{.25}
+\RenewDocumentCommand\floatpagefraction{}{.625}
+\RenewDocumentCommand\dbltopfraction{}{.75}
+\RenewDocumentCommand\dblfloatpagefraction{}{.625}
 \end{MacroCode}
     \end{macro*}
     \end{macro*}
@@ -1269,45 +1291,58 @@
     \begin{macro}{\author}
     \changes{0.10b}{Improved \cs{author} macro}
     The \cs{author} macro is redefined to accept an optional argument
-    and to be used multiple times.
-    \begin{macro*}{\skrapport@email}
+    and to be used multiple times. This will be rewritten to store
+    both author and email in a suitable data structure (probably some
+    kind of token list) instead of simply dumb-appending to a local
+    macro.
+    \begin{macro*}{\__skrapport_email:n}
     The \cs{skrapport@email} helper macro typesets an email address
     using \pkg{hyperref} if that package is used. This is suboptimal,
     the macro behaves differently with respect to special characters
     depending on wether \pkg{hyperref} is loaded or not.
 \begin{MacroCode}{class}
-\ProvideDocumentCommand\skrapport@email{m}{\texttt{#1}}
+\cs_new_nopar:Npn\__skrapport_email:n#1{
+    \texttt{#1}
+}
 \AtBeginDocument{
-    \@ifpackageloaded{hyperref}{%
-        \DeclareDocumentCommand\skrapport@email{m}{%
-            \href{mailto:#1}{\nolinkurl{#1}}%
-        }%
-    }{}%
+    \cs_if_exist:NT\href{
+        \cs_gset_nopar:Npn\__skrapport_email:n#1{
+            \href{mailto:#1}{\nolinkurl{#1}}
+        }
+    }
 }
 \end{MacroCode}{class}
     \end{macro*}
-    \begin{macro*}{\@author}
+    \begin{macro*}{\g__skrapport_author_tl}
 \begin{MacroCode}{class}
-\def\@author{\relax}
-\DeclareDocumentCommand\author{om}{%
-    \def\skrapport@tempi{#2\IfNoValueTF{#1}{}{~$\langle$\skrapport@email{#1}$\rangle$}}
-    \if\@author\relax
-        \xdef\@author{\skrapport@tempi}
-    \else
-        \expandafter\gdef\expandafter\@author\expandafter{\@author\\[0.5ex]\skrapport@tempi}
-    \fi
-}
+\tl_new:N\g__skrapport_author_tl
 \end{MacroCode}
     \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\author{om}{%
+    \tl_set:Nx\l_tmpa_tl{
+        #2 \IfNoValueF{#1}{
+            ~\(\langle\)\__skrapport_email:n{#1}\(\rangle\)
+        }
+    }
+    \tl_if_empty:NF\g__skrapport_author_tl{
+        \tl_gput_right:Nn\g__skrapport_author_tl{\\[0.5ex]}
+    }
+    \tl_gconcat:NNN\g__skrapport_author_tl
+                   \g__skrapport_author_tl\l_tmpa_tl
+}
+\end{MacroCode}
     \end{macro}
 
     \begin{macro}{\regarding}
     This macro defines a variable used by \cs{maketitle} to insert a 
     simple text into the header on the title page.
-    \begin{macro*}{\@regarding}
+    \begin{macro*}{\g__skrapport_regarding_tl}
 \begin{MacroCode}{class}
-\def\@regarding{\relax}
-\newcommand{\regarding}[1]{\gdef\@regarding{#1}}
+\tl_new:N\g__skrapport_regarding_tl
+\DeclareDocumentCommand\regarding{m}{
+    \tl_gset:Nn\g__skrapport_regarding_tl{#1}
+}
 \end{MacroCode}
     \end{macro*}
     \end{macro}
@@ -1316,10 +1351,12 @@
     \changes{0.07}{Added command \cs{license}}
     This macro defines a variable used by \cs{maketitle} to insert a 
     license into the footer on the titlepage.
-    \begin{macro*}{\@copyright}
+    \begin{macro*}{\g__skrapport_copyright_tl}
 \begin{MacroCode}{class}
-\def\@copyright{\relax}
-\newcommand{\license}[1]{\gdef\@copyright{#1}}
+\tl_new:N\g__skrapport_copyright_tl
+\DeclareDocumentCommand\license{m}{
+    \tl_gset:Nn\g__skrapport_copyright_tl{#1}
+}
 \end{MacroCode}
     \end{macro*}
     \end{macro}
@@ -1327,42 +1364,66 @@
     \begin{macro}{\maketitle}
     The standard \cs{maketitle} command as taken from the \pkg{article}
     class but with some basic restyling.
+    \begin{macro*}{\__skrapport_smallprint_style:}
 \begin{MacroCode}{class}
-\let\@smallprintstyle\relax
-\newcommand\maketitle{\par%
-  \begingroup
-    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
-    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
-    \long\def\@makefntext##1{\parindent 1em\noindent%
-      \hb@xt@1.8em{\hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
-    \newpage
-    \global\@topnum\z@
-    \@maketitle
-    \thispagestyle{plain}\@thanks
-  \endgroup
-  \setcounter{footnote}{0}%
+\cs_new:Nn\__skrapport_smallprint_style:{}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\maketitle{}{
+    \par
+    \group_begin:
+        \RenewDocumentCommand\thefootnote{}{
+            \@fnsymbol\c@footnote
+        }
+        \RenewDocumentCommand\@makefnmark{}{
+            \hbox_overlap_right:n{
+                \@textsuperscript{\normalfont\@thefnmark}
+            }
+        }
+        \RenewDocumentCommand\@makefntext{m+}{
+            \parindent 1em\noindent
+            \hbox_to_wd:nn{1.8em}{
+                \hss\@textsuperscript{\normalfont\@thefnmark}
+            }
+            ##1
+        }
+        \newpage
+        \int_gzero:N\@topnum
+        \__skrapport_maketitle:
+        \thispagestyle{plain}
+        \__skrapport_thanks:
+    \group_end:
+    \ctr_gzero:n{footnote}
 }
 \end{MacroCode}
     \end{macro}
-    \begin{macro*}{\@maketitle}
+    \begin{macro*}{\__skrapport_maketitle:}
 \begin{MacroCode}{class}
-\def\@maketitle{%
-  \newpage
-  \null
-  \begin{flushleft}%
+\cs_new:Nn\__skrapport_maketitle:{
+    \newpage
+    \hbox:n{}
+    \begin{flushleft}
         \vspace{-\headsep}
-    {\small%
-      \@smallprintstyle
-      \if\@regarding\relax\else\@regarding{, }\fi%
-      \@date\par%
-    }%
-    \vspace{1.5cm}%
-    {\Huge\@titstyle\@title\par}%
-    \vspace{.125cm}%
-    {\Large\@titstyle\@author}%
-    \vspace{.75cm}%
-  \end{flushleft}%
-  \par%
+        {
+            \small\__skrapport_smallprint_style:
+            \tl_use:N\g__skrapport_regarding_tl
+            \@date\par
+        }
+        \vspace{1.5cm}
+        {
+            \Huge\__skrapport_title_style:
+            \@title
+            \par
+        }
+        \vspace{.125cm}
+        {
+            \Large\__skrapport_title_style:
+            \tl_use:N\g__skrapport_regarding_tl
+        }
+        \vspace{.75cm}
+    \end{flushleft}
+    \par
 }
 \end{MacroCode}
     \end{macro*}
@@ -1371,31 +1432,61 @@
     Standard restyled \env{abstract} environment from the
     \pkg{article} class.
 \begin{MacroCode}{class}
-\newenvironment{abstract}{\newlength\skrapport@abstract@tw\newlength\skrapport@abstract@aw\settowidth{\skrapport@abstract@tw}{\bfseries\abstractname}\setlength{\skrapport@abstract@aw}{\the\textwidth-\the\skrapport@abstract@tw-1em}\begin{minipage}[t]{\skrapport@abstract@tw}\begin{flushright}\leavevmode\bfseries\abstractname\end{flushright}\end{minipage}\hspace{1em}\begin{minipage}[t]{\skrapport@abstract@aw}}{\end{minipage}}
+\dim_const:Nn\c__skrapport_abstract_separator_dim{1em}
+\DeclareDocumentEnvironment{abstract}{}{
+    \dim_set_to_wd:\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set:Nn\l_tmbp_dim
+        {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
+    \begin{minipage}[t]{\l_tmpa_dim}
+        \begin{flushright}
+            \leavevmode\bfseries\abstractname
+        \end{flushright}
+    \end{minipage}
+    \hspace{\c__skrapport_abstract_separator_dim}
+    \begin{minipage}[t]{\l_tmpb_dim}
+}{
+    \end{minipage}
+}
 \end{MacroCode}
     \end{environment}
 
     \begin{environment}{titlepage}
     Titlepage environment.
-    \begin{macro*}{\ps@skrapport@titlepage}
+    \begin{macro*}{\ps@skrapport@titlepage:}
 \begin{MacroCode}{class}
-\newcommand\ps@skrapport@titlepage{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\begin{minipage}{\textwidth}\raggedleft\small\par\@smallprintstyle\@copyright\end{minipage}}\let\@evenfoot\@oddfoot}
+\cs_new:Nn\ps@skrapport@titlepage:{
+    \cs_gset:Nn\@oddhead{}
+    \cs_gset:Nn\@evenhead{}
+    \cs_gset:Nn\@oddfoot{
+        \begin{minipage}{\textwidth}
+            \raggedleft\small\par
+            \__skrapport_smallprint_style:
+            \tl_use:N\g__skrapport_copyright_tl
+        \end{minipage}
+    }
+    \cs_gset_eq:Nn\@evenfoot\@oddfoot
+}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
-\newenvironment{titlepage}{\cleardoublepage\setcounter{page}\@ne}{\thispagestyle{skrapport@titlepage}\cleardoublepage\setcounter{page}\@ne}
+\DeclareDocumentEnvironment{titlepage}{}{
+    \cleardoublepage\ctr_gset:nn{page}{1}
+}{
+    \thispagestyle{skrapport@titlepage}
+    \cleardoublepage\ctr_gset:nn{page}{1}
+}
 \end{MacroCode}
     \end{environment}
 
     \subsubsection{Sectioning}
     Sectioning commands.
 \begin{MacroCode}{class}
-\setcounter{secnumdepth}{3}
-\newcounter{section}
-\newcounter{subsection}[section]
-\newcounter{subsubsection}[subsection]
-\newcounter{paragraph}[subsubsection]
-\newcounter{subparagraph}[paragraph]
+\ctr_gset:nn{c@secnumdepth}{3}
+\ctr_new:n{section}
+\ctr_new:n{subsection}[section]
+\ctr_new:n{subsubsection}[subsection]
+\ctr_new:n{paragraph}[subsubsection]
+\ctr_new:n{subparagraph}[paragraph]
 \end{MacroCode}
     \begin{macro*}{\thesection}
     \begin{macro*}{\thesubsection}
@@ -1403,11 +1494,21 @@
     \begin{macro*}{\theparagraph}
     \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
-\renewcommand\thesection{\@arabic\c@section}
-\renewcommand\thesubsection{\thesection.\@arabic\c@subsection}
-\renewcommand\thesubsubsection{\thesubsection.\@arabic\c@subsubsection}
-\renewcommand\theparagraph{\thesubsubsection.\@arabic\c@paragraph}
-\renewcommand\thesubparagraph{\theparagraph.\@arabic\c@subparagraph}
+\RenewDocumentCommand\thesection{}{
+    \@arabic\c@section
+}
+\RenewDocumentCommand\thesubsection{}{
+    \thesection.\@arabic\c@subsection
+}
+\RenewDocumentCommand\thesubsubsection{}{
+    \thesubsection.\@arabic\c@subsubsection
+}
+\RenewDocumentCommand\theparagraph{}{
+    \thesubsubsection.\@arabic\c@paragraph
+}
+\RenewDocumentCommand\thesubparagraph{}{
+    \theparagraph.\@arabic\c@subparagraph
+}
 \end{MacroCode}
     \end{macro*}
     \end{macro*}
@@ -1416,42 +1517,52 @@
     \end{macro*}
     \begin{macro}{\section}
 \begin{MacroCode}{class}
-\newcommand\section{\@startsection{section}{1}{\z@}%
-  {-4ex \@plus 1ex \@minus -1ex}%
-  {.5ex \@plus.5ex}%
-  {\normalfont\LARGE\@titstyle}}
+\DeclareDocumentCommand\section{}{ % !!! magic happens
+    \@startsection{section}{1}{\z@}
+        {-4ex \@plus 1ex \@minus -1ex}
+        {.5ex \@plus.5ex}
+        {\normalfont\LARGE\@titstyle}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subsection}
 \begin{MacroCode}{class}
-\newcommand\subsection{\@startsection{subsection}{2}{\z@}%
-  {-3ex \@plus 1ex \@minus -1ex}%
-  {.25ex \@plus.25ex}%
-  {\normalfont\Large\@titstyle}}
+\DeclareDocumentCommand\subsection{}{ % !!! magic happens
+    \@startsection{subsection}{2}{\z@}
+        {-3ex \@plus 1ex \@minus -1ex}
+        {.25ex \@plus.25ex}
+        {\normalfont\Large\@titstyle}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subsubsection}
 \begin{MacroCode}{class}
-\newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-  {-2ex \@plus .5ex \@minus -.5ex}%
-  {.125ex \@plus.125ex}%
-  {\normalfont\large\@titstyle}}
+\DeclareDocumentCommand\subsubsection{}{ % !!! magic happens
+    \@startsection{subsubsection}{3}{\z@}
+        {-2ex \@plus .5ex \@minus -.5ex}
+        {.125ex \@plus.125ex}
+        {\normalfont\large\@titstyle}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\paragraph}
 \begin{MacroCode}{class}
-\newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-  {1ex \@plus .25ex \@minus -.25ex}%
-  {-1em}%
-  {\normalfont\normalsize\bfseries}}
+\DeclareDocumentCommand\paragraph{}{ % !!! magic happens
+    \@startsection{paragraph}{4}{\z@}
+        {1ex \@plus .25ex \@minus -.25ex}
+        {-1em}
+        {\normalfont\normalsize\bfseries}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subparagraph}
 \begin{MacroCode}{class}
-\newcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-  {1ex \@plus .25ex \@minus -.25ex}%
-  {-1em}%
-  {\normalfont\normalsize\itshape}}
+\DeclareDocumentCommand\subparagraph{}{ % !!! magic happens
+    \@startsection{subparagraph}{5}{\parindent}
+        {1ex \@plus .25ex \@minus -.25ex}
+        {-1em}
+        {\normalfont\normalsize\itshape}
+}
 \end{MacroCode}
     \end{macro}
 
