@@ -1214,7 +1214,8 @@
 }
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\ctr_new:n}
+    \begin{macro*}{\ctr_new:n}[1]
+        {Counter name}
 \begin{MacroCode}{class}
 \cs_new:Npn\ctr_new:n#1{
     \@definecounter{#1} % !!!
@@ -1222,20 +1223,42 @@
 }
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\ctr_gzero:n}
+    \begin{macro*}{\ctr_gzero:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
 \cs_new:Npn\ctr_gzero:n#1{
     \int_gzero:c{c@#1}
 }
+\end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\ctr_gset:nn}
+    \begin{macro*}{\ctr_gset:nn}[2]
+        {Counter name}
+        {New value}
+\begin{MacroCode}{class}
 \cs_new:Npn\ctr_gset:nn#1#2{
     \int_gset:cn{c@#1}{#2}
 }
+\end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\ctr_incr:n}
-\cs_new:Npn\ctr_incr:n#1{
+    \begin{macro*}{\ctr_gincr:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_gincr:n#1{
     \int_gincr:cn{c@#1}
 }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\ctr_ref_gincr:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_ref_gincr:n#1{
+    \ctr_gincr:n{#1}
+    \cs_gset_protected:Nn\@currentlabel{
+        \cs:w p@#1\cs_end:
+        \cs:w the#1\cs_end:
+    }
+}
+\end{MacroCode}
     \end{macro*}
     
     \subsection{Hidden things}
@@ -1288,14 +1311,17 @@
 
     \subsection{User-level commands}
     \subsubsection{The front page}
-    \begin{macro}{\author}
+    \begin{macro}{\author}[2]
+        {Optional email address}
+        {Author name}
     \changes{0.10b}{Improved \cs{author} macro}
     The \cs{author} macro is redefined to accept an optional argument
     and to be used multiple times. This will be rewritten to store
     both author and email in a suitable data structure (probably some
     kind of token list) instead of simply dumb-appending to a local
     macro.
-    \begin{macro*}{\__skrapport_email:n}
+    \begin{macro*}{\__skrapport_email:n}[1]
+        {Email address}
     The \cs{skrapport@email} helper macro typesets an email address
     using \pkg{hyperref} if that package is used. This is suboptimal,
     the macro behaves differently with respect to special characters
@@ -1334,7 +1360,8 @@
 \end{MacroCode}
     \end{macro}
 
-    \begin{macro}{\regarding}
+    \begin{macro}{\regarding}[1]
+        {Text snippet}
     This macro defines a variable used by \cs{maketitle} to insert a 
     simple text into the header on the title page.
     \begin{macro*}{\g__skrapport_regarding_tl}
@@ -1347,7 +1374,8 @@
     \end{macro*}
     \end{macro}
 
-    \begin{macro}{\license}
+    \begin{macro}{\license}[1]
+        {Short license description}
     \changes{0.07}{Added command \cs{license}}
     This macro defines a variable used by \cs{maketitle} to insert a 
     license into the footer on the titlepage.
@@ -1515,53 +1543,276 @@
     \end{macro*}
     \end{macro*}
     \end{macro*}
-    \begin{macro}{\section}
+    \begin{macro*}{\__skrapport_pre_section:n}[1]
+        {Skip before the section title}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\section{}{ % !!! magic happens
-    \@startsection{section}{1}{\z@}
-        {-4ex \@plus 1ex \@minus -1ex}
-        {.5ex \@plus.5ex}
-        {\normalfont\LARGE\@titstyle}
+\cs_new:Npn\__skrapport_pre_section:n#1{
+    \leavevmode\par
+    \skip_set:Nn\l_tmpa_skip{#1}
+    \@afterindenttrue % !!!
+    \dim_compare:nT{\l_tmpa_skip<0}{
+        \skip_set\l_tmpa_skip{-\l_tmpa_skip}
+        \@afterindentfalse % !!!
+    }
+    \if@nobreak \everypar{} \else
+        \addpenalty\@secpenalty % !!!
+        \skip_vertical:N\l_tmpa_skip
+    \fi
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_post_section:n}[1]
+        {Space after the section title}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_post_section:n#1{
+    \@xsect{#1} % !!!
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_section_star:nnn}[3]
+    \begin{macro*}{\__skrapport_section_star:nnnn}[4]
+        {Indentation of section title}
+        {Styling of the section title}
+        {Actual section title}
+        {Optional code to run in the indentation}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_section_star:nnnn#1#2#3{
+    \__skrapport_section_star:nnnn{#1}{#2}{#3}{}
+}
+\cs_new:Npn\__skrapport_section_star:nnnn#1#2#3#4{
+    \group_begin:
+        #2
+        \hbox_set:Nn\l_tmpa_box{{\skip_horizontal:n{#1}#4}}
+        \hangindent{#1}\box_wd:N\l_tmpa_box
+        \noindent\box_use_clear:N\l_tmpa_box
+        \interlinepenalty\@M % !!!
+        #3\par
+    \group_end:
+}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_section_nostar:nnnnnn}[6]
+        {Section counter name}
+        {Section level}
+        {Indentation of section title}
+        {Styling of the section title}
+        {Actual section title}
+        {Section title for TOC}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
+    \if_int_compare:w #2>\c@secnumdepth % !!!
+        \cs_set:Nn\__skrapport_saved_section:{}
+    \else:
+        \ctr_ref_ginrc:n{#1}
+        \cs_set_protected:Nn\__skrapport_saved_section:{
+            \cs:w #1\cs_end:
+        }
+    \fi:
+    \__skrapport_section_star:nnn
+        {#3}{#4}{#5}{\__skrapport_saved_section:}
+    \cs:w #1mark\cs_end:{#6}
+    \addcontentsline{toc}{#1}{
+        \if_int_compare:w #2>\c@secnumdepth \else: % !!!
+            \protect\numberline{\csname the#1\endcsname} % !!!
+        \fi:
+        #6
+    }
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_pre_section:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_pre_section:n{x}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_post_section:x}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_post_section:n{x}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_section_star:xxn}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_section_star:nnn{xxn}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_section_nostar:nnxxnn}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnxxnn}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_generic_section:nnnnn}[5]
+        {Section counter name}
+        {Section level}
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional argument (or \cs{NoValue})}
+        {Section title text}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_generic_section:nnnnn{
+    \__skrapport_pre_section:x{\cs:w c__skrapport_#1_pre_skip\cs_end:}
+    \IfBooleanTF#3{
+        \__skrapport_section_star:xxn
+            {\cs:w c__skrapport_#1_indent_dim\cs_end:}
+            {\cs:w __skrapport_#1_style:\cs_end:}
+            {#5}
+    }{
+        \IfNoValueTF{#4}{
+            \__skrapport_section_star:nnxxnn
+                {#1}{#2}
+                {\cs:w c__skrapport_#1_indent_dim\cs_end:}
+                {\cs:w __skrapport_#1_style:\cs_end:}
+                {#5}
+                {#5}
+        }{
+            \__skrapport_section_star:nnxxnn
+                {#1}{#2}
+                {\cs:w c__skrapport_#1_indent_dim\cs_end:}
+                {\cs:w __skrapport_#1_style:\cs_end:}
+                {#5}
+                {#4}
+        }
+    }
+    \__skrapport_post_section:x{\cs:w c__skrapport_#1_post_skip\cs_end:}
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro}{\section}
+    \begin{macro*}{\c__skrapport_section_pre_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_section_pre_skip{-4ex plus 1ex minus -1ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_section_post_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_section_post_skip{.5ex plus .5ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_section_indent_dim}
+\begin{MacroCode}{class}
+\dim_const:Nn \c__skrapport_section_indent_dim{\c_zero_dim}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_section_style:}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_section_style:
+    {\normalfont\LARGE\__skrapport_title_style:}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\section{som}{
+    \__skrapport_generic_section:nnnnn{section}{1}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subsection}
+    \begin{macro*}{\c__skrapport_subsection_pre_skip}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\subsection{}{ % !!! magic happens
-    \@startsection{subsection}{2}{\z@}
-        {-3ex \@plus 1ex \@minus -1ex}
-        {.25ex \@plus.25ex}
-        {\normalfont\Large\@titstyle}
+\skip_const:Nn\c__skrapport_subsection_pre_skip{-3ex plus 1ex minus -1ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsection_post_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_subsection_post_skip{.25ex plus .25ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsection_indent_dim}
+\begin{MacroCode}{class}
+\dim_const:Nn \c__skrapport_subsection_indent_dim{\c_zero_dim}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsection_style:}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_subsection_style:
+    {\normalfont\Large\__skrapport_title_style:}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\subsection{som}{
+    \__skrapport_generic_section:nnnnn{subsection}{2}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subsubsection}
+    \begin{macro*}{\c__skrapport_subsubsection_pre_skip}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\subsubsection{}{ % !!! magic happens
-    \@startsection{subsubsection}{3}{\z@}
-        {-2ex \@plus .5ex \@minus -.5ex}
-        {.125ex \@plus.125ex}
-        {\normalfont\large\@titstyle}
+\skip_const:Nn\c__skrapport_subsubsection_pre_skip{-2ex plus .5ex minus -.5ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsubsection_post_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_subsubsection_post_skip{.125ex plus .125ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsubsection_indent_dim}
+\begin{MacroCode}{class}
+\dim_const:Nn \c__skrapport_subsubsection_indent_dim{\c_zero_dim}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subsubsection_style:}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_subsubsection_style:
+    {\normalfont\large\__skrapport_title_style:}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\subsubsection{som}{
+    \__skrapport_generic_section:nnnnn{subsubsection}{3}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\paragraph}
+    \begin{macro*}{\c__skrapport_paragraph_pre_skip}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\paragraph{}{ % !!! magic happens
-    \@startsection{paragraph}{4}{\z@}
-        {1ex \@plus .25ex \@minus -.25ex}
-        {-1em}
-        {\normalfont\normalsize\bfseries}
+\skip_const:Nn\c__skrapport_paragraph_pre_skip{1ex plus .25ex minus -.25ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_paragraph_post_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_paragraph_post_skip{-1em}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_paragraph_indent_dim}
+\begin{MacroCode}{class}
+\dim_const:Nn \c__skrapport_paragraph_indent_dim{\c_zero_dim}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_paragraph_style:}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_paragraph_style:
+    {\normalfont\normalsize\bfseries}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\paragraph{som}{
+    \__skrapport_generic_section:nnnnn{paragraph}{4}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subparagraph}
+    \begin{macro*}{\c__skrapport_subparagraph_pre_skip}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\subparagraph{}{ % !!! magic happens
-    \@startsection{subparagraph}{5}{\parindent}
-        {1ex \@plus .25ex \@minus -.25ex}
-        {-1em}
-        {\normalfont\normalsize\itshape}
+\skip_const:Nn\c__skrapport_subparagraph_pre_skip{1ex plus .25ex minus -.25ex}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subparagraph_post_skip}
+\begin{MacroCode}{class}
+\skip_const:Nn\c__skrapport_subparagraph_post_skip{-1em}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subparagraph_indent_dim}
+\begin{MacroCode}{class}
+\dim_const:Nn \c__skrapport_subparagraph_indent_dim{\parindent}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\c__skrapport_subparagraph_style:}
+\begin{MacroCode}{class}
+\cs_set:Nn\__skrapport_subparagraph_style:
+    {\normalfont\normalsize\itshape}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\subparagraph{som}{
+    \__skrapport_generic_section:nnnnn{subparagraph}{5}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
