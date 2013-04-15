@@ -71,7 +71,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.11a}
+    \version{0.12}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -89,6 +89,7 @@
     \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
     \changes{0.11a}{Added \opt{skdoc} font option and \thm{skdoc} color theme}
+    \changes{0.12}{Deprecated several macros, moved to \LaTeX3}
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -374,12 +375,19 @@
     {\token_to_str:N#1~was~invoked,~but~circumstances~dictate~that~the~
     macro~should~do~nothing.~Will~do~\token_to_str:N\prg_do_nothing:~
     instead.}
+\msg_new:nnnn{skrapport}{old-font-deprecated}{Deprecated~macro~\token_to_str:N#1!}
+    {The~old~font~macro~\token_to_str:N#1~is~deprecated!~Use~
+    \token_to_str:N#2~instead.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
 \begin{MacroCode}{class}
 \msg_new:nnn{skrapport}{not-implemented}
     {Unimplemented~macro~\token_to_str:N#1!}
+\end{MacroCode}
+
+    \subsection{Messages}
+\begin{MacroCode}{class}
 \end{MacroCode}
 
     \subsection{Options}
@@ -2093,43 +2101,52 @@
 \end{MacroCode}
     \end{macro}
 
-    \paragraph{Old font commands}
+    \paragraph{Old font macros}
+    The old font macros have been deprecated. Do not use!
     \begin{macro}{\rm}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareDocumentCommand\rm{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\rm}{\textrm}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sf}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareDocumentCommand\sf{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sf}{\textsf}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\tt}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareDocumentCommand\tt{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\tt}{\texttt}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\bf}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareDocumentCommand\bf{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\bf}{\textbf}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\it}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareDocumentCommand\it{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\it}{\textit}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sl}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareDocumentCommand\sl{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sl}{\textsl}}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\sc}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\DeclareDocumentCommand\sc{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\sc}{\textsc}}
 \end{MacroCode}
     \end{macro}
 
+    \paragraph{Better font macros}
     \begin{macro}{\emph}
     Redefining the \cs{emph} style to be bold when nested.
     \begin{macro*}{\em}
