@@ -1205,7 +1205,7 @@
     hasn't made its way into \pkg{interface3}. This includes counter
     mechanisms (compatible with \LaTeXe\ code), a \cs{settowidth}
     clone and possibly more stuff later.
-    \begin{macro*}{\dim_set_to_wd:Nn}
+    \begin{macro}{\dim_set_to_wd:Nn}
 \begin{MacroCode}{class}
 \cs_new:Npn\dim_set_to_wd:Nn#1#2{
     \hbox_set:Nn\l_tmpa_box{#2}
@@ -1213,8 +1213,8 @@
     \box_clear:N\l_tmpa_box
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\ctr_new:n}[1]
+    \end{macro}
+    \begin{macro}{\ctr_new:n}[1]
         {Counter name}
 \begin{MacroCode}{class}
 \cs_new:Npn\ctr_new:n#1{
@@ -1222,16 +1222,16 @@
     \@ifnextchar[{\@newctr{#1}}{} % !!!
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\ctr_gzero:n}[1]
+    \end{macro}
+    \begin{macro}{\ctr_gzero:n}[1]
         {Counter name}
 \begin{MacroCode}{class}
 \cs_new:Npn\ctr_gzero:n#1{
     \int_gzero:c{c@#1}
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\ctr_gset:nn}[2]
+    \end{macro}
+    \begin{macro}{\ctr_gset:nn}[2]
         {Counter name}
         {New value}
 \begin{MacroCode}{class}
@@ -1239,16 +1239,16 @@
     \int_gset:cn{c@#1}{#2}
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\ctr_gincr:n}[1]
+    \end{macro}
+    \begin{macro}{\ctr_gincr:n}[1]
         {Counter name}
 \begin{MacroCode}{class}
 \cs_new:Npn\ctr_gincr:n#1{
     \int_gincr:cn{c@#1}
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\ctr_ref_gincr:n}[1]
+    \end{macro}
+    \begin{macro}{\ctr_ref_gincr:n}[1]
         {Counter name}
 \begin{MacroCode}{class}
 \cs_new:Npn\ctr_ref_gincr:n#1{
@@ -1288,26 +1288,36 @@
 \ctr_gset:nn{totalnumber}{4}
 \ctr_gset:nn{dbltopnumber}{2}
 \end{MacroCode}
-    \begin{macro*}{\topfraction}
-    \begin{macro*}{\bottomfraction}
-    \begin{macro*}{\textfraction}
-    \begin{macro*}{\floatpagefraction}
-    \begin{macro*}{\dbltopfraction}
-    \begin{macro*}{\dblfloatpagefraction}
+    \begin{macro}{\topfraction}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\topfraction{}{.75}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\bottomfraction}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\bottomfraction{}{.5}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\textfraction}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\textfraction{}{.25}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\floatpagefraction}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\floatpagefraction{}{.625}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\dbltopfraction}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\dbltopfraction{}{.75}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\dblfloatpagefraction}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\dblfloatpagefraction{}{.625}
 \end{MacroCode}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
+    \end{macro}
 
     \subsection{User-level commands}
     \subsubsection{The front page}
@@ -1480,9 +1490,9 @@
 
     \begin{environment}{titlepage}
     Titlepage environment.
-    \begin{macro*}{\ps@skrapport@titlepage:}
+    \begin{macro}{\ps@skrapport@titlepage}
 \begin{MacroCode}{class}
-\cs_new:Nn\ps@skrapport@titlepage:{
+\cs_new:Nn\ps@skrapport@titlepage{
     \cs_gset:Nn\@oddhead{}
     \cs_gset:Nn\@evenhead{}
     \cs_gset:Nn\@oddfoot{
@@ -1495,7 +1505,7 @@
     \cs_gset_eq:Nn\@evenfoot\@oddfoot
 }
 \end{MacroCode}
-    \end{macro*}
+    \end{macro}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{titlepage}{}{
     \cleardoublepage\ctr_gset:nn{page}{1}
@@ -1507,7 +1517,8 @@
     \end{environment}
 
     \subsubsection{Sectioning}
-    Sectioning commands.
+    Sectioning macros. This is kind of messy. We start with creaiting
+    some counters using our homemade \LaTeX3 counter macros.
 \begin{MacroCode}{class}
 \ctr_gset:nn{c@secnumdepth}{3}
 \ctr_new:n{section}
@@ -1516,34 +1527,50 @@
 \ctr_new:n{paragraph}[subsubsection]
 \ctr_new:n{subparagraph}[paragraph]
 \end{MacroCode}
+    Next up, we have macros to display the section numberings.
     \begin{macro*}{\thesection}
-    \begin{macro*}{\thesubsection}
-    \begin{macro*}{\thesubsubsection}
-    \begin{macro*}{\theparagraph}
-    \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\thesection{}{
     \@arabic\c@section
 }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\thesubsection}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\thesubsection{}{
     \thesection.\@arabic\c@subsection
 }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\thesubsubsection}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\thesubsubsection{}{
     \thesubsection.\@arabic\c@subsubsection
 }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\theparagraph}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\theparagraph{}{
     \thesubsubsection.\@arabic\c@paragraph
 }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\thesubparagraph}
+\begin{MacroCode}{class}
 \RenewDocumentCommand\thesubparagraph{}{
     \theparagraph.\@arabic\c@subparagraph
 }
 \end{MacroCode}
     \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \begin{macro*}{\__skrapport_pre_section:n}[1]
+
+    \paragraph{Pre- and post-section spacing}
+    Here comes the tricky part. We define two generic macros that add
+    spacing before and after the section title, to condense the code
+    a bit. Note that many of the following macros constitute a
+    reimplementation of \cs{@startsection}, \cs{@ssect}, \cs{@sect} and
+    friends.
+    \begin{macro}{\__skrapport_pre_section:n}[1]
         {Skip before the section title}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_pre_section:n#1{
@@ -1560,21 +1587,28 @@
     \fi
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\__skrapport_post_section:n}[1]
+    \end{macro}
+    \begin{macro}{\__skrapport_post_section:n}[1]
         {Space after the section title}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_post_section:n#1{
     \@xsect{#1} % !!!
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro*}{\__skrapport_section_star:nnn}[3]
-    \begin{macro*}{\__skrapport_section_star:nnnn}[4]
+    \end{macro}
+
+    \paragraph{Starred sections}
+    These two macros (the first only being an alias for the second with
+    its last argument empty) correspond to unnumbered sections. Or,
+    rather, they do all the typesetting and none of the TOC/counter
+    stuff. This means that starred sections only call this macro, while
+    unstarred ones call other macros in addition to this macro.
+    \begin{macro*}{\__skrapport_section_star:nnn}
+    \begin{macro}{\__skrapport_section_star:nnnn}[4]
         {Indentation of section title}
         {Styling of the section title}
         {Actual section title}
-        {Optional code to run in the indentation}
+        {Optional code to run in the indentation (\emph{i.e.} section number)}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_star:nnnn#1#2#3{
     \__skrapport_section_star:nnnn{#1}{#2}{#3}{}
@@ -1590,9 +1624,16 @@
     \group_end:
 }
 \end{MacroCode}
+    \end{macro}
     \end{macro*}
-    \end{macro*}
-    \begin{macro*}{\__skrapport_section_nostar:nnnnnn}[6]
+
+    \paragraph{Unstarred sections}
+    This macro typesets an unstarred section, \emph{i.e.} a numbered
+    one. It defines a temporary macro containing the section number
+    (maybe, depends on the \cs{c@secnumdepth} counter) which it passes
+    on to \cs{__skrapport_section_star:nnnn}, and then writes some things
+    to the TOC.
+    \begin{macro}{\__skrapport_section_nostar:nnnnnn}[6]
         {Section counter name}
         {Section level}
         {Indentation of section title}
@@ -1620,7 +1661,11 @@
     }
 }
 \end{MacroCode}
-    \end{macro*}
+    \end{macro}
+
+    \paragraph{Generic sectioning macros}
+    We will now set up a generic sectioning macro. First, we need
+    version of the above macros that expand their arguments.
     \begin{macro*}{\__skrapport_pre_section:x}
 \begin{MacroCode}{class}
 \cs_generate_variant:Nn\__skrapport_pre_section:n{x}
@@ -1641,7 +1686,14 @@
 \cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnxxnn}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_generic_section:nnnnn}[5]
+
+    Now, the generic sectioning macro basically takes the sectioning
+    macro arguments straight up (arguments 3--5), additionally
+    requiring a section counter name and a section level. It expects
+    that constant dimensions (see definition of \cs{section} below)
+    and a formatting macro are available, and passes these as arguments
+    to the underlying sectioning macros as appropriate.
+    \begin{macro}{\__skrapport_generic_section:nnnnn}[5]
         {Section counter name}
         {Section level}
         {Star (tested with \cs{IfBooleanTF})}
@@ -1675,36 +1727,57 @@
     \__skrapport_post_section:x{\cs:w c__skrapport_#1_post_skip\cs_end:}
 }
 \end{MacroCode}
-    \end{macro*}
-    \begin{macro}{\section}
+    \end{macro}
+    
+    \paragraph{Public sectioning API}
+    It's time to define the public sectioning macros. They all follow
+    the same format: first, two skips and one dimension (used by
+    \cs{__skrapport_generic_section:nnnnn}) are defined, as well as
+    a macro defining the text style of the section. Then, the actual
+    macro is provided.
+    \begin{macro}{\section}[3]
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional short title (or \cs{NoValue})}
+        {Sectioning title}
     \begin{macro*}{\c__skrapport_section_pre_skip}
+    This is the skip \emph{before} a section title.
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_section_pre_skip{-4ex plus 1ex minus -1ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_section_post_skip}
+    This is the skip \emph{after} a section title.
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_section_post_skip{.5ex plus .5ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_section_indent_dim}
+    This is the \emph{indentation} of a section title.
 \begin{MacroCode}{class}
 \dim_const:Nn \c__skrapport_section_indent_dim{\c_zero_dim}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_section_style:}
+    This is the text style of a section title.
 \begin{MacroCode}{class}
 \cs_set:Nn\__skrapport_section_style:
     {\normalfont\LARGE\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
+    Finally, the public macro is provided.
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\section{som}{
     \__skrapport_generic_section:nnnnn{section}{1}{#1}{#2}{#3}
 }
 \end{MacroCode}
     \end{macro}
-    \begin{macro}{\subsection}
+
+    The other sectioning macros (macros from section to subparagraph are
+    available) are defined in an analogous manner.
+    \begin{macro}{\subsection}[3]
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional short title (or \cs{NoValue})}
+        {Sectioning title}
     \begin{macro*}{\c__skrapport_subsection_pre_skip}
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_subsection_pre_skip{-3ex plus 1ex minus -1ex}
@@ -1732,7 +1805,10 @@
 }
 \end{MacroCode}
     \end{macro}
-    \begin{macro}{\subsubsection}
+    \begin{macro}{\subsubsection}[3]
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional short title (or \cs{NoValue})}
+        {Sectioning title}
     \begin{macro*}{\c__skrapport_subsubsection_pre_skip}
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_subsubsection_pre_skip{-2ex plus .5ex minus -.5ex}
@@ -1760,7 +1836,10 @@
 }
 \end{MacroCode}
     \end{macro}
-    \begin{macro}{\paragraph}
+    \begin{macro}{\paragraph}[3]
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional short title (or \cs{NoValue})}
+        {Sectioning title}
     \begin{macro*}{\c__skrapport_paragraph_pre_skip}
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_paragraph_pre_skip{1ex plus .25ex minus -.25ex}
@@ -1788,7 +1867,10 @@
 }
 \end{MacroCode}
     \end{macro}
-    \begin{macro}{\subparagraph}
+    \begin{macro}{\subparagraph}[3]
+        {Star (tested with \cs{IfBooleanTF})}
+        {Optional short title (or \cs{NoValue})}
+        {Sectioning title}
     \begin{macro*}{\c__skrapport_subparagraph_pre_skip}
 \begin{MacroCode}{class}
 \skip_const:Nn\c__skrapport_subparagraph_pre_skip{1ex plus .25ex minus -.25ex}
@@ -1817,110 +1899,201 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsubsection{Commands from \pkg{article}}
-    Itemization commands.
+    \subsubsection{Macros from \pkg{article}}
+    \paragraph{List environments}
+    First, several dimensions are provided and three penalties defined.
 \begin{MacroCode}{class}
-\setlength\leftmargini{2em}
-\leftmargin\leftmargini
-\setlength\leftmarginii{2em}
-\setlength\leftmarginiii{1.5em}
-\setlength\leftmarginiv{1.5em}
-\setlength\leftmarginv{1em}
-\setlength\leftmarginvi{1em}
-\setlength\labelsep{.5em}
-\setlength\labelwidth{\leftmargini}
-\addtolength\labelwidth{-\labelsep}
-\@beginparpenalty -\@lowpenalty
-\@endparpenalty   -\@lowpenalty
-\@itempenalty     -\@lowpenalty
+\dim_gset:Nn\leftmargini{2em}
+\dim_gset_eq:NN\leftmargin\leftmargini
+\dim_gset:Nn\leftmarginii{2em}
+\dim_gset:Nn\leftmarginiii{1.5em}
+\dim_gset:Nn\leftmarginiv{1.5em}
+\dim_gset:Nn\leftmarginv{1em}
+\dim_gset:Nn\leftmarginvi{1em}
+\dim_gset:Nn\labelsep{.5em}
+\dim_gset_eq:NN\labelwidth\leftmargini
+\dim_gsub:Nn\labelwidth{-\labelsep}
+\int_gset:Nn\@beginparpenalty{-\@lowpenalty}
+\int_gset:Nn\@endparpenalty  {-\@lowpenalty}
+\int_gset:Nn\@itempenalty    {-\@lowpenalty}
 \end{MacroCode}
+
+    Then, we define the appearance of the item numbers.
     \begin{macro*}{\theenumi}
-    \begin{macro*}{\theenumii}
-    \begin{macro*}{\theenumiii}
-    \begin{macro*}{\theenumiv}
+    The first level consists of arabic numbers (\(1,2,3,\dotsc\)).
 \begin{MacroCode}{class}
-\renewcommand\theenumi{\@arabic\c@enumi}
-\renewcommand\theenumii{\@alph\c@enumii}
-\renewcommand\theenumiii{\@roman\c@enumiii}
-\renewcommand\theenumiv{\@Alph\c@enumiv}
+\RenewDocumentCommand\theenumi{}  {\@arabic\c@enumi}
 \end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\theenumii}
+    The second level consists of lower-case alphabetic characters
+    (\(\text{a},\text{b},\text{c},\dotsc\)).
+\begin{MacroCode}{class}
+\RenewDocumentCommand\theenumii{} {\@alph\c@enumii}
+\end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\theenumiii}
+    The third level consists of lower-case roman numerals
+    (\(\text{i},\text{ii},\text{iii},\dotsc\)).
+\begin{MacroCode}{class}
+\RenewDocumentCommand\theenumiii{}{\@roman\c@enumiii}
+\end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\theenumiv}
+    The fourth level consists of upper-case alphabetic characters
+    (\(\text{A},\text{B},\text{C},\dotsc\)).
+\begin{MacroCode}{class}
+\RenewDocumentCommand\theenumiv{} {\@Alph\c@enumiv}
+\end{MacroCode}
     \end{macro*}
+    We also need macros that typeset the actual labels. Here, different
+    levels have a different postfix: all levels except the second are
+    postfixed by a period, while the second level is postfixed by a
+    closing bracket.
     \begin{macro*}{\labelenumi}
+\begin{MacroCode}{class}
+\NewDocumentCommand\labelenumi{\theenumi.}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\labelenumii}
+\begin{MacroCode}{class}
+\NewDocumentCommand\labelenumii{\theenumii)}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\labelenumiii}
+\begin{MacroCode}{class}
+\NewDocumentCommand\labelenumiii{\theenumiii.}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\labelenumiv}
 \begin{MacroCode}{class}
-\newcommand\labelenumi{\theenumi.}
-\newcommand\labelenumii{\theenumii)}
-\newcommand\labelenumiii{\theenumiii.}
-\newcommand\labelenumiv{\theenumiv.}
+\NewDocumentCommand\labelenumiv{\theenumiv.}
 \end{MacroCode}
     \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
+    We also fix the referencing of lower-level items so that one can
+    refer to them properly (\emph{i.e.} as 1b(iii) and so on).
     \begin{macro*}{\p@enumii}
+\begin{MacroCode}{class}
+\RenewDocumentCommand\p@enumii{}{\theenumi}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\p@enumiii}
+\begin{MacroCode}{class}
+\RenewDocumentCommand\p@enumiii{}{\theenumi(\theenumii)}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\p@enumiiv}
 \begin{MacroCode}{class}
-\renewcommand\p@enumii{\theenumi}
-\renewcommand\p@enumiii{\theenumi(\theenumii)}
-\renewcommand\p@enumiv{\p@enumiii\theenumiii}
+\RenewDocumentCommand\p@enumiv{}{\p@enumiii\theenumiii}
 \end{MacroCode}
     \end{macro*}
-    \end{macro*}
-    \end{macro*}
+
+    All that was for numbered lists (\env{enumerate}). Now, we define
+    the \enquote{labels} of \env{itemize} items. In progression, they
+    are a bullet (\textbullet), an open bullet (\textopenbullet),
+    a boldfaced dash ({\normalfont\bfseries\textendash}) and an
+    arrow (\textrightarrow).
     \begin{macro*}{\labelitemi}
-    \begin{macro*}{\labelitemii}
-    \begin{macro*}{\labelitemiii}
-    \begin{macro*}{\labelitemiv}
 \begin{MacroCode}{class}
 \newcommand\labelitemi{\textbullet}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\labelitemii}
+\begin{MacroCode}{class}
 \newcommand\labelitemii{\textopenbullet}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\labelitemiii}
+\begin{MacroCode}{class}
 \newcommand\labelitemiii{\normalfont\bfseries\textendash}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\labelitemiv}
+\begin{MacroCode}{class}
 \newcommand\labelitemiv{\textrightarrow}
 \end{MacroCode}
     \end{macro*}
-    \end{macro*}
-    \end{macro*}
-    \end{macro*}
+
+    The last of the commonly used list environments is \env{description}.
+    Defining it is fairly simple --- we define a list with empty item
+    labels and a bit of hackery for the \cs{makelabel} macro inside.
     \begin{environment}{description}
 \begin{MacroCode}{class}
-\newenvironment{description}
-  {\list{}{\labelwidth\z@\itemindent-\leftmargin
-    \let\makelabel\descriptionlabel}}{\endlist}
-\newcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\bfseries #1}
+\DeclareDocumentEnvironment{description}{}{
+    \list{}{
+        \dim_zero:N\labelwidth
+        \dim_set:Nn\itemindent{-\leftmargin}
+        \cs_set_eq:Nn\makelabel\descriptionlabel
+    }
+}{
+    \endlist
+}
 \end{MacroCode}
+    \begin{macro}{\descriptionlabel}
+    Additionally, the \cs{descriptionlabel} macro is defined.
+\begin{MacroCode}{class}
+\NewDocumentCommand\descriptionlabel{m}{
+    \hspace{\labelsep}\normalfont\bfseries #1
+}
+\end{MacroCode}
+    \end{macro}
     \end{environment}
 
-    Quotation environments.
+    \paragraph{Quotation environments}
+    The quotation environments are also fairly simple --- \env{quote}
+    is just a list with a single item, and \env{quotation} is a
+    \env{quote} with extra skips around it.
     \begin{environment}{quote}
 \begin{MacroCode}{class}
-\newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item\relax\itshape}{\endlist}
+\NewDocumentEnvironment{quote}{}{
+    \list{}{
+        \dim_set_eq:NN\rightmargin\leftmargin
+    }
+    \item\itshape
+}{
+    \endlist
+}
 \end{MacroCode}
     \end{environment}
     \begin{environment}{quotation}
 \begin{MacroCode}{class}
-\newenvironment{quotation}{\bigskip\begin{quote}}{\end{quote}\bigskip}
+\NewDocumentEnvironment{quotation}{
+    \bigskip
+    \quote
+}{
+    \endquote
+    \bigskip
+}
 \end{MacroCode}
     \end{environment}
+    There's a \env{verse} environment, too, but it's just \env{quote}.
     \begin{environment}{verse}
 \begin{MacroCode}{class}
-\newenvironment{verse}{\begin{quote}}{\end{quote}}
+\NewDocumentEnvironment{verse}{
+    \quote
+}{
+    \endquote
+}
 \end{MacroCode}
     \end{environment}
+    \Notice{The only reason for using \cs*{quote} instead of
+    \cs*{begin\{quote\}} here is that the latter breaks the syntax
+    highlighting of my editor.}
 
+    \paragraph{Front- and backmatter}
+    We only define one fron/backmatter macro; \cs{appendix}.
     \begin{macro}{\appendix}
-    Appendix macro.
 \begin{MacroCode}{class}
-\newcommand\appendix{\par\setcounter{section}{0}\setcounter{subsection}{0}\gdef\thesection{\@Alph\c@section}}
+\NewDocumentCommand\appendix{}{
+    \par
+    \ctr_gset:nn{section}{0}
+    \ctr_gset:nn{subsection}{0}
+    \cs_gset:Nn\thesection{\@Alph\c@section}
+}
 \end{MacroCode}
     \end{macro}
 
-    Old font commands.
+    \paragraph{Old font commands}
     \begin{macro}{\rm}
 \begin{MacroCode}{class}
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
