@@ -669,18 +669,21 @@
 
     \begin{option}{color}{true, false}
     \changes{0.09}{Added \opt{color} option}
+    \changes{0.12}{Converted to a key-value option which will load
+                   the specified color theme.}
     \begin{option}{nocolor}
     Declare color options. Note that we explicitly set the boolean
     \cs{g__skrapport_color_bool} as well as setting up the colors
-    through \cs{__skrapport_setup_color:}, so that we can keep track
+    through \cs{__skrapport_setup_color:x}, so that we can keep track
     of the color usage even after the options have been set up.
 \begin{MacroCode}{class}
-    color .choice:,
-    color / true .code:n =
-        {\bool_gset_true:N\g__skrapport_color_bool
-         \__skrapport_setup_color:},
-    color / false .code:n = 
-        {\bool_gset_false:N\g__skrapport_color_bool},
+    color .code:n =
+        {\str_if_eq:nnTF{#1}{false}
+            {\bool_gset_false:N\g__skrapport_color_bool}
+            {\bool_gsettrue:N\g__skrapport_color_bool
+             \str_if_eq:nnTF{#2}{true}
+                {\__skrapport_setup_color:}
+                {\__skrapport_setup_color:n{#1}}}},
     color .default:n = true,
     color .initial:n = true,
     nocolor .meta:n = {color=false},
@@ -1093,6 +1096,22 @@
         \RequirePackage{xcolor}
     }{
         \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_color:}
+        \prg_do_nothing:
+    }
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\__skrapport_setup_color:n}
+    We may also set up a specific color theme using options. This is
+    easily done by first calling \cs{__skrapport_setup_color:}, then
+    calling \cs{colortheme} at \cs{BeginDocument}.
+\begin{MacroCode}
+\cs_new:Npn\__skrapport_setup_color:n#1{
+    \__skrapport_setup_color:
+    \bool_if:NTF\g__skrapport_color_bool{
+        \AtBeginDocument{\colortheme{#1}}
+    }{
+        \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_color:n}
         \prg_do_nothing:
     }
 }
