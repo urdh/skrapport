@@ -721,6 +721,7 @@
 
     \begin{macro}{\__skrapport_setup_paper:n}[1]
         {Paper size (\texttt{a4} or \texttt{a5})}
+    \changes{0.12}{Use \pkg{typearea} to set paper size}
     The paper size is set by loading \pkg{geometry} \emph{and} explicitly
     setting the \cs{paperheight} and \cs{paperwidth} dimensions. Perhaps
     this can be improved.
@@ -728,23 +729,12 @@
 \cs_new:Npn\__skrapport_setup_paper:n#1{
     \str_case:nnn{#1}{
 \end{MacroCode}
-    An A4 paper as defined by ISO216\footcite{ISO216} is
-    \SI{210x297}{\milli\metre}.
+    The two options simply consist of passing the appropriate option
+    to the \pkg{typearea} package. Note that the use of \pkg{typearea}
+    mean that we theoretically could accept more paper size options.
 \begin{MacroCode}{class}
-        {a4}{
-            \RequirePackage[a4paper]{geometry}
-            \dim_gset:Nn\paperheight {297mm}
-            \dim_gset:Nn\paperwidth  {210mm}
-        }
-\end{MacroCode}
-    An A5 paper as defined by ISO216\footcite{ISO216} is
-    \SI{148x210}{\milli\metre}.
-\begin{MacroCode}{class}
-        {a5}{
-            \RequirePackage[a5paper]{geometry}
-            \dim_gset:Nn\paperheight {210mm}
-            \dim_gset:Nn\paperwidth  {148mm}
-        }
+        {a4}{\PassOptionsToPackage{paper=A4}{typearea}}
+        {a5}{\PassOptionsToPackage{paper=A5}{typearea}}
     }{
 \end{MacroCode}
     Invalid paper sizes (such calls should never happen) are
@@ -753,6 +743,17 @@
 \begin{MacroCode}{class}
         \msg_warning:nnn{skrapport}{invalid-paper-size}{#1}
     }
+\end{MacroCode}
+    The \pkg{typearea} package is loaded with the options specified
+    earlier through \cs{PassOptionsToPackage}, and some additional ones.
+\begin{MacroCode}{class}
+    \RequirePackage[DIV=calc]{typearea}
+\end{MacroCode}
+    In case the point size changes later, or two column mode is
+    activated, we recalculate the typearea just before the typesetting
+    begins.
+\begin{MacroCode}{class}
+    \AfterBeginDocument{\recalctypearea}
 }
 \end{MacroCode}
     \end{macro}
@@ -1286,7 +1287,7 @@
     
     \subsection{Hidden things}
     Set some default measurements (should probably be replaced with
-    simply loading \pkg{scrpage2}).
+    simply loading \pkg{typearea}).
 \begin{MacroCode}{class}
 \dim_add:Nn\textwidth{0.5\oddsidemargin}
 \dim_add:Nn\textwidth{0.5\evensidemargin}
@@ -2419,7 +2420,9 @@
     The twocolumn hacks implemented.
 \begin{MacroCode}{class}
 \ifskrapport@twocolumn
-    \AtBeginDocument{
+    \BeforeBeginDocument{  
+        \KOMAoptions{twocolumn=true}
+    }
 \end{MacroCode}
     We include the \pkg{grid} package in two-column mode, because
     it looks way better that way.
