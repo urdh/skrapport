@@ -1115,6 +1115,9 @@
 \cs_new:Nn\__skrapport_setup_color:{
     \bool_if:NTF\g__skrapport_color_bool{
         \RequirePackage{xcolor}
+        \PassOptionsToPackage{
+            labelfont+={bf,color=skrapport@captioncolor}
+        }{caption}
     }{
         \msg_log:nnn{skrapport}{noop-call}{\__skrapport_setup_color:}
         \prg_do_nothing:
@@ -2397,6 +2400,7 @@
 
     Captions.
 \begin{MacroCode}{class}
+\PassOptionsToPackage{font=small,labelfont+=bf,textfont+=it}{caption}
 \let\@captionstyle\relax
 \newlength\abovecaptionskip\setlength\abovecaptionskip{10\p@}
 \newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
