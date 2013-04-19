@@ -878,6 +878,16 @@
             }{
                 \RequirePackage[british,swedish]{babel}
             }
+\end{MacroCode}
+    \begin{macro*}{\__skrapport_and_word:}
+    \begin{macro*}{\__skrapport_Email_word:}
+\begin{MacroCode}{class}
+            \cs_gset:Nn\__skrapport_and_word:{och}
+            \cs_gset:Nn\__skrapport_Email_word:{E-post}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+\begin{MacroCode}{class}
         }
         {en}{
             \bool_if:NTF\g__skrapport_has_polyglossia_bool{
@@ -886,6 +896,16 @@
             }{
                 \RequirePackage[swedish,british]{babel}
             }
+\end{MacroCode}
+    \begin{macro*}{\__skrapport_and_word:}
+    \begin{macro*}{\__skrapport_Email_word:}
+\begin{MacroCode}{class}
+            \cs_gset:Nn\__skrapport_and_word:{and}
+            \cs_gset:Nn\__skrapport_Email_word:{Email}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+\begin{MacroCode}{class}
         }
     }{
 \end{MacroCode}
@@ -1203,7 +1223,7 @@
     \pkg{calc} package, for instance, is essential in later
     definitions.
 \begin{MacroCode}{class}
-\RequirePackage{calc}
+\RequirePackage{calc,isodate}
 \end{MacroCode}
 
     At the end of the class definition we load a couple of very
@@ -1345,15 +1365,54 @@
 
     \subsection{User-level commands}
     \subsubsection{The front page}
+    \begin{macro}{\title}[1]
+        {Title of the document}
+    \begin{macro*}{\g__skrapport_title_tl}
+\begin{MacroCode}{class}
+\tl_new:N\g__skrapport_title_tl
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\title{m}{
+    \tl_gset:Nn\g__skrapport_title_tl{#1}
+}
+\end{MacroCode}
+    \end{macro}
+
+    \begin{macro}{\date}[1]
+        {Date in ISO8601 format}
+    The \cs{date} macro sets the current date of the document. It only
+    accepts dates accepted by \pkg{isodate} (or the special value
+    \enquote{\texttt{today}}). Dates are always printed using the
+    current format as specified by the \pkg{isodate} package.
+    \begin{macro*}{\g__skrapport_title_tl}
+\begin{MacroCode}{class}
+\tl_new:N\g__skrapport_date_tl
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\date{m}{
+    \str_if_eq:nnTF{#1}{today}{
+        \tl_gset:Nn\g__skrapport_date_tl{\today}
+    }{
+        \if_meaning:w \today #1
+            \tl_gset:Nn\g__skrapport_date_tl{\today}
+        \else:
+            \tl_gset:Nn\g__skrapport_date_tl{\printdate{#1}}
+        \fi:
+    }
+    \tl_gset:Nn\g__skrapport_title_tl{#1}
+}
+\end{MacroCode}
+    \end{macro}
+
     \begin{macro}{\author}[2]
         {Optional email address}
         {Author name}
     \changes{0.10b}{Improved \cs{author} macro}
+    \changes{0.12}{Use comma-separated lists instead of token list}
     The \cs{author} macro is redefined to accept an optional argument
-    and to be used multiple times. This will be rewritten to store
-    both author and email in a suitable data structure (probably some
-    kind of token list) instead of simply dumb-appending to a local
-    macro.
+    and to be used multiple times.
     \begin{macro*}{\__skrapport_email:n}[1]
         {Email address}
     The \cs{skrapport@email} helper macro typesets an email address
@@ -1373,25 +1432,61 @@
 }
 \end{MacroCode}{class}
     \end{macro*}
-    \begin{macro*}{\g__skrapport_author_tl}
+    \begin{macro*}{\g__skrapport_author_clist}
 \begin{MacroCode}{class}
-\tl_new:N\g__skrapport_author_tl
+\clist_new:N\g__skrapport_author_clist
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\g__skrapport_email_clist}
+\begin{MacroCode}{class}
+\clist_new:N\g__skrapport_email_clist
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\author{om}{%
-    \tl_set:Nx\l_tmpa_tl{
-        #2 \IfNoValueF{#1}{
-            ~\(\langle\)\__skrapport_email:n{#1}\(\rangle\)
-        }
-    }
-    \tl_if_empty:NF\g__skrapport_author_tl{
-        \tl_gput_right:Nn\g__skrapport_author_tl{\\[0.5ex]}
-    }
-    \tl_gconcat:NNN\g__skrapport_author_tl
-                   \g__skrapport_author_tl\l_tmpa_tl
+    \clist_gput_right:Nn\g__skrapport_author_clist{#2}
+    \clist_gput_right:Nn\g__skrapport_email_clist{#1}
 }
 \end{MacroCode}
+    \begin{macro}{\__skrapport_author_list:}
+    This macro lists all the authors in the comma-separated list
+    \cs{g__skrapport_author_clist}, separating them with a comma
+    or the word \enquote{and} (in the appropriate language).
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_author_list:{
+    \int_zero:N\l_tmpa_int
+    \clist_map_inline:Nn\g__skrapport_author_clist{
+        \int_incr:N\l_tmpa_int
+        \int_compare:nT{\l_tmpa_int>\c_one}{
+            \int_compare:nTF
+                {\l_tmpa_int<\clist_count:N\g__skrapport_author_clist}
+                    {,~}{~\__skrapport_and_word:~}
+        }
+        #1
+    }
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\__skrapport_email_list:}
+    This macro lists the email addresses in the comma-separated list
+    \cs{g__skrapport_email_clist} by applying \cs{__skrapport_email:}
+    if appropriate (or printing an em-dash if no value exists) and
+    separating them with commas.
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_email_list:{
+    \bool_set_false:N\l_tmpa_bool
+    \clist_map_inline:Nn\g__skrapport_email_clist{
+        \bool_if:NF\l_tmpa_bool{,~}
+        \IfNoValueTF{#1}{
+            \textemdash
+        }{
+            \__skrapport_email:n{#2}
+        }
+        \bool_set_true:N\l_tmpa_bool
+    }
+}
+\end{MacroCode}
+    \end{macro}
     \end{macro}
 
     \begin{macro}{\regarding}[1]
@@ -1454,7 +1549,6 @@
         \int_gzero:N\@topnum
         \__skrapport_maketitle:
         \thispagestyle{plain}
-        \__skrapport_thanks:
     \group_end:
     \ctr_gzero:n{footnote}
 }
@@ -1470,21 +1564,40 @@
         {
             \small\__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_regarding_tl
-            \@date\par
+            \tl_use:N\g__skrapport_date_tl\par
         }
         \vspace{1.5cm}
         {
             \Huge\__skrapport_title_style:
-            \@title
+            \tl_use:N\g__skrapport_title_tl
             \par
         }
         \vspace{.125cm}
         {
             \Large\__skrapport_title_style:
-            \tl_use:N\g__skrapport_regarding_tl
+            \__skrapport_author_list:
         }
         \vspace{.75cm}
     \end{flushleft}
+    \par
+\end{MacroCode}
+    This bit (which prints the email addresses) is based on the
+    \env{abstract} environment below and should probably be in the same
+    macro (they have to sync the width of the first minipage, which has
+    to be calculated at the first use).
+\begin{MacroCode}{class}
+    \dim_set_to_wd:\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set:Nn\l_tmbp_dim
+        {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
+    \begin{minipage}[t]{\l_tmpa_dim}
+        \begin{flushright}
+            \leavevmode\bfseries\__skrapport_Email_word:
+        \end{flushright}
+    \end{minipage}
+    \hspace{\c__skrapport_abstract_separator_dim}
+    \begin{minipage}[t]{\l_tmpb_dim}
+        \__skrapport_email_list:
+    \end{minipage}
     \par
 }
 \end{MacroCode}
