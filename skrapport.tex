@@ -881,12 +881,35 @@
 \end{MacroCode}
     \begin{macro*}{\__skrapport_and_word:}
     \begin{macro*}{\__skrapport_Email_word:}
+    \begin{macro*}{\contentsname}
+    \begin{macro*}{\refname}
+    \begin{macro*}{\figurename}
+    \begin{macro*}{\tablename}
+    \begin{macro*}{\appendixname}
+    \begin{macro*}{\abstractname}
+    \begin{macro*}{\today}
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{och}
             \cs_gset:Nn\__skrapport_Email_word:{E-post}
+            \cs_gset:Nn\contentsname{Innehåll}
+            \cs_gset:Nn\refname{Referenser}
+            \cs_gset:Nn\figurename{Figur}
+            \cs_gset:Nn\tablename{Tabell}
+            \cs_gset:Nn\appendixname{Bilaga}
+            \cs_gset:Nn\abstractname{Sammanfattning}
+            \cs_gset:Nn\today
+                {\int_use:N\year--\int_use:N\month--\int_use:N\day}
 \end{MacroCode}
     \end{macro*}
     \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+
 \begin{MacroCode}{class}
         }
         {en}{
@@ -899,10 +922,32 @@
 \end{MacroCode}
     \begin{macro*}{\__skrapport_and_word:}
     \begin{macro*}{\__skrapport_Email_word:}
+    \begin{macro*}{\contentsname}
+    \begin{macro*}{\refname}
+    \begin{macro*}{\figurename}
+    \begin{macro*}{\tablename}
+    \begin{macro*}{\appendixname}
+    \begin{macro*}{\abstractname}
+    \begin{macro*}{\today}
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{and}
             \cs_gset:Nn\__skrapport_Email_word:{Email}
+            \cs_gset:Nn\contentsname{Contents}
+            \cs_gset:Nn\refname{References}
+            \cs_gset:Nn\figurename{Figurr}
+            \cs_gset:Nn\tablename{Table}
+            \cs_gset:Nn\appendixname{Appendix}
+            \cs_gset:Nn\abstractname{Abstract}
+            \cs_gset:Nn\today
+                {\int_use:N\year--\int_use:N\month--\int_use:N\day}
 \end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
     \end{macro*}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -2275,77 +2320,54 @@
 \end{MacroCode}
     \end{macro}
 
-    \paragraph{Better font macros}
+    \paragraph{The emphasis macro}
     \begin{macro}{\emph}
+    \changes{0.12}{Changed definition, may have introduced spacing issues}
     Redefining the \cs{emph} style to be bold when nested.
     \begin{macro*}{\em}
+    \changes{0.12}{Deprecated command}
 \begin{MacroCode}{class}
-\let\@emstyle\relax
-\DeclareRobustCommand\em{%
-    \@nomath\em%
-    \ifdim \fontdimen\@ne\font >\z@%
-        \itshape\bfseries%
-    \else%
-        \itshape%
-    \fi%
-    \@emstyle%
+DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{\emph}}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_emphstyle:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_emphstyle:{
+    \if_dim:w\fontdimen\c_one\font>\c_zero
+        \itshape\bfseries
+    \else:
+        \itshape
+    \fi:
 }
 \end{MacroCode}
     \end{macro*}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\emph{m+}{
+    \ifmmode
+        \text{\__skrapport_emphstyle: #1}
+    \else
+        {\__skrapport_emphstyle: #1}
+    \fi:
+}
+\end{MacroCode}
     \end{macro}
 
+    \paragraph{The footnote rule}
     \begin{macro*}{\footnoterule}
-    Footnote code.
+    \changes{0.12}{Removed footnote rule entirely}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\footnoterule{}{}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\@makefntext}
 \begin{MacroCode}{class}
-\renewcommand\footnoterule{%
-    \kern-3\p@
-    \hrule\@width.4\columnwidth
-    \kern2.6\p@}
-\newcommand\@makefntext[1]{%
-    \parindent 1em%
-    \noindent
-    \hb@xt@1.8em{\hss\@makefnmark}#1}
+\DeclareDocumentCommand\@makefntext{m+}{
+    \parindent 1em\noindent
+    \hbox_to_wd:nn{1.8em}{\hss\@makefnmark}
+    #1
+}
 \end{MacroCode}
     \end{macro*}
-    \end{macro*}
-
-    Basic translatable texts (move to language setup).
-    \begin{macro}{\contentsname}
-\begin{MacroCode}{class}
-\newcommand\contentsname{Innehåll}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\refname}
-\begin{MacroCode}{class}
-\newcommand\refname{Referenser}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\figurename}
-\begin{MacroCode}{class}
-\newcommand\figurename{Figur}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\tablename}
-\begin{MacroCode}{class}
-\newcommand\tablename{Tabell}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\appendixname}
-\begin{MacroCode}{class}
-\newcommand\appendixname{Bilaga}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\abstractname}
-\begin{MacroCode}{class}
-\newcommand\abstractname{Sammanfattning}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\today}
-\begin{MacroCode}{class}
-\def\today{\year--\month--\day}
-\end{MacroCode}
-    \end{macro}
 
     \subsubsection{Floats}
     Figure and table floats.
