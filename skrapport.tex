@@ -2160,13 +2160,13 @@
     \begin{environment}{description}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{description}{}{
-    \list{}{
+    \begin{list}{}{
         \dim_zero:N\labelwidth
         \dim_set:Nn\itemindent{-\leftmargin}
         \cs_set_eq:Nn\makelabel\descriptionlabel
     }
 }{
-    \endlist
+    \end{list}
 }
 \end{MacroCode}
     \begin{macro}{\descriptionlabel}
@@ -2186,12 +2186,12 @@
     \begin{environment}{quote}
 \begin{MacroCode}{class}
 \NewDocumentEnvironment{quote}{}{
-    \list{}{
+    \begin{list}{}{
         \dim_set_eq:NN\rightmargin\leftmargin
     }
     \item\itshape
 }{
-    \endlist
+    \end{list}
 }
 \end{MacroCode}
     \end{environment}
@@ -2199,9 +2199,9 @@
 \begin{MacroCode}{class}
 \NewDocumentEnvironment{quotation}{
     \bigskip
-    \quote
+    \begin{quote}
 }{
-    \endquote
+    \end{quote}
     \bigskip
 }
 \end{MacroCode}
@@ -2210,18 +2210,15 @@
     \begin{environment}{verse}
 \begin{MacroCode}{class}
 \NewDocumentEnvironment{verse}{
-    \quote
+    \begin{quote}
 }{
-    \endquote
+    \end{quote}
 }
 \end{MacroCode}
     \end{environment}
-    \Notice{The only reason for using \cs*{quote} instead of
-    \cs*{begin\{quote\}} here is that the latter breaks the syntax
-    highlighting of my editor.}
 
     \paragraph{Front- and backmatter}
-    We only define one fron/backmatter macro; \cs{appendix}.
+    We only define one front/backmatter macro; \cs{appendix}.
     \begin{macro}{\appendix}
 \begin{MacroCode}{class}
 \NewDocumentCommand\appendix{}{
@@ -2313,7 +2310,7 @@
     \end{macro*}
     \end{macro*}
 
-    Basic translatable texts.
+    Basic translatable texts (move to language setup).
     \begin{macro}{\contentsname}
 \begin{MacroCode}{class}
 \newcommand\contentsname{Innehåll}
@@ -2809,9 +2806,9 @@
     \begin{theme}{Default}
     \changes{0.09}{Added default color theme}
 \begin{MacroCode}{theme-default}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{skrapport-colortheme-default}%
-    [2012/06/07 v1.0 skrapport color theme default]
+\RequirePackage{expl3}
+\ProvidesExplPackage{skrapport-colortheme-default}
+    {2012/06/07}{1.0}{skrapport color theme default}
 \definecolor{skrapport@citecolor}{named}{green}
 \definecolor{skrapport@filecolor}{named}{teal}
 \definecolor{skrapport@linkcolor}{named}{red}
@@ -2832,11 +2829,11 @@
 
     \subsubsection{Unscathed color theme}
     \begin{theme}{Unscathed}
-    \changes{0.09}{Added ``Unschathed'' color theme}
+    \changes{0.09}{Added \enquote{Unschathed} color theme}
 \begin{MacroCode}{theme-unscathed}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{skrapport-colortheme-unscathed}%
-    [2012/06/07 v1.0 skrapport color theme unscathed]
+\RequirePackage{expl3}
+\ProvidesExplPackage{skrapport-colortheme-unscathed}
+    {2012/06/07}{1.0}{skrapport color theme unscathed}
 \definecolor{skrapport@citecolor}{named}{skrapport@defaultcolor}
 \definecolor{skrapport@filecolor}{named}{skrapport@defaultcolor}
 \definecolor{skrapport@menucolor}{named}{skrapport@defaultcolor}
@@ -2854,11 +2851,11 @@
 
     \subsubsection{Cruelwater color theme}
     \begin{theme}{Cruelwater}
-    \changes{0.09}{Added ``Cruelwater'' color theme}
+    \changes{0.09}{Added \enquote{Cruelwater} color theme}
 \begin{MacroCode}{theme-cruelwater}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{skrapport-colortheme-cruelwater}%
-    [2012/06/07 v1.0 skrapport color theme cruelwater]
+\RequirePackage{expl3}
+\ProvidesExplPackage{skrapport-colortheme-cruelwater}
+    {2012/06/07}{1.0}{skrapport color theme cruelwater}
 \definecolor{skrapport@citecolor}{named}{black}
 \definecolor{skrapport@filecolor}{named}{black}
 \definecolor{skrapport@linkcolor}{named}{black}
@@ -2879,11 +2876,11 @@
 
     \subsubsection{Violet color theme}
     \begin{theme}{Violet}
-\changes{0.09}{Added ``Violet'' color theme}
+\changes{0.09}{Added \enquote{Violet} color theme}
 \begin{MacroCode}{theme-violet}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{skrapport-colortheme-violet}%
-    [2012/06/07 v1.0 skrapport color theme violet]
+\RequirePackage{expl3}
+\ProvidesExplPackage{skrapport-colortheme-violet}
+    {2012/06/07}{1.0}{skrapport color theme violet}
 \definecolor{skrapport@citecolor}{HTML}{932444}
 \definecolor{skrapport@filecolor}{HTML}{932444}
 \definecolor{skrapport@linkcolor}{HTML}{932444}
@@ -2904,11 +2901,11 @@
 
     \subsubsection{skdoc color theme}
     \begin{theme}{skdoc}
-\changes{0.11a}{Added ``skdoc'' color theme}
+\changes{0.11a}{Added \enquote{skdoc} color theme}
 \begin{MacroCode}{theme-skdoc}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage{skrapport-colortheme-skdoc}%
-    [2013/04/10 v1.0 skrapport color theme skdoc]
+\RequirePackage{expl3}
+\ProvidesExplPackage{skrapport-colortheme-skdoc}
+    {2013/04/10}{1.0}{skrapport color theme skdoc}
 \definecolor{skrapport@citecolor}{RGB}{140,35,24}
 \definecolor{skrapport@filecolor}{RGB}{73,10,61}
 \definecolor{skrapport@linkcolor}{RGB}{140,35,24}
