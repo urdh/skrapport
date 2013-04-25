@@ -1296,7 +1296,8 @@
     We define useful \LaTeX3 replacements of \LaTeXe\ stuff that
     hasn't made its way into \pkg{interface3}. This includes counter
     mechanisms (compatible with \LaTeXe\ code), a \cs{settowidth}
-    clone and possibly more stuff later.
+    clone and possibly more stuff later. Maybe we should extract the
+    counter macros to its own package or at least its own file?
     \begin{macro}{\dim_set_to_wd:Nn}
 \begin{MacroCode}{class}
 \cs_new:Npn\dim_set_to_wd:Nn#1#2{
@@ -1351,7 +1352,97 @@
     }
 }
 \end{MacroCode}
-    \end{macro*}
+    \end{macro}
+    \begin{macro}{\ctr_use:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use:n#1{
+    \int_use:c{c@#1}
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\ctr_use_arabic:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_arabic:n#1{
+    \exp_args:Nx\int_to_arabic:n{\ctr_use:n{#1}}
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\ctr_use_alph:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_alph:n#1{
+    \exp_args:Nx\int_to_alph:n{\ctr_use:n{#1}}
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\ctr_use_Alph:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_Alph:n#1{
+    \exp_args:Nx\int_to_Alph:n{\ctr_use:n{#1}}
+}
+\end{MacroCode}
+    \end{macro}
+%    \begin{macro}{\ctr_use_binary:n}[1]
+%        {Counter name}
+%\begin{MacroCode}{class}
+%\cs_new:Npn\ctr_use_binary:n#1{
+%    \exp_args:Nx\int_to_binary:n{\ctr_use:n{#1}}
+%}
+%\end{MacroCode}
+%    \end{macro}
+%    \begin{macro}{\ctr_use_hex:n}[1]
+%        {Counter name}
+%\begin{MacroCode}{class}
+%\cs_new:Npn\ctr_use_hex:n#1{
+%    \exp_args:Nx\int_to_hexadecimal:n{\ctr_use:n{#1}}
+%}
+%\end{MacroCode}
+%    \end{macro}
+%    \begin{macro}{\ctr_use_octal:n}[1]
+%        {Counter name}
+%\begin{MacroCode}{class}
+%\cs_new:Npn\ctr_use_octal:n#1{
+%    \exp_args:Nx\int_to_octal:n{\ctr_use:n{#1}}
+%}
+%\end{MacroCode}
+%    \end{macro}
+    \begin{macro}{\ctr_use_roman:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_roman:n#1{
+    \exp_args:Nx\int_to_roman:n{\ctr_use:n{#1}}
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\ctr_use_Roman:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_Roman:n#1{
+    \exp_args:Nx\int_to_Roman:n{\ctr_use:n{#1}}
+}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\ctr_use_fn:n}[1]
+        {Counter name}
+\begin{MacroCode}{class}
+\cs_new:Npn\ctr_use_fn:n#1{
+    \exp_args:Nxnn\int_to_symbols:nnn{\ctr_use:n{#1}}{9}{
+        {1}{*}
+        {2}{\dagger}
+        {3}{\ddagger}
+        {4}{\mathsection}
+        {5}{\mathparagraph}
+        {6}{\|}
+        {7}{**}
+        {8}{\dagger\dagger}
+        {9}{\ddagger}{\ddagger}
+    }
+}
+\end{MacroCode}
+    \end{macro}
     
     \subsection{Hidden things}
     Set some default measurements (should probably be replaced with
@@ -1579,7 +1670,7 @@
     \par
     \group_begin:
         \RenewDocumentCommand\thefootnote{}{
-            \@fnsymbol\c@footnote
+            \ctr_use_fn:n{footnote}
         }
         \RenewDocumentCommand\@makefnmark{}{
             \hbox_overlap_right:n{
@@ -1716,35 +1807,35 @@
     \begin{macro*}{\thesection}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\thesection{}{
-    \@arabic\c@section
+    \ctr_use_arabic:n{section}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsection}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\thesubsection{}{
-    \thesection.\@arabic\c@subsection
+    \thesection.\ctr_use_arabic:n{subsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsubsection}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\thesubsubsection{}{
-    \thesubsection.\@arabic\c@subsubsection
+    \thesubsection.\ctr_use_arabic:n{subsubsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theparagraph}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\theparagraph{}{
-    \thesubsubsection.\@arabic\c@paragraph
+    \thesubsubsection.\ctr_use_arabic:n{paragraph}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
 \RenewDocumentCommand\thesubparagraph{}{
-    \theparagraph.\@arabic\c@subparagraph
+    \theparagraph.\ctr_use_arabic:n{subparagraph}
 }
 \end{MacroCode}
     \end{macro*}
@@ -1827,7 +1918,7 @@
         {Section title for TOC}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
-    \if_int_compare:w #2>\c@secnumdepth % !!!
+    \if_int_compare:w #2>\ctr_use:n{secnumdepth} % !!!
         \cs_set:Nn\__skrapport_saved_section:{}
     \else:
         \ctr_ref_ginrc:n{#1}
@@ -1839,7 +1930,7 @@
         {#3}{#4}{#5}{\__skrapport_saved_section:}
     \cs:w #1mark\cs_end:{#6}
     \addcontentsline{toc}{#1}{
-        \if_int_compare:w #2>\c@secnumdepth \else: % !!!
+        \if_int_compare:w #2>\ctr_use:n{secnumdepth} \else: % !!!
             \protect\numberline{\csname the#1\endcsname} % !!!
         \fi:
         #6
@@ -2107,28 +2198,28 @@
     \begin{macro*}{\theenumi}
     The first level consists of arabic numbers (\(1,2,3,\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumi{}  {\@arabic\c@enumi}
+\RenewDocumentCommand\theenumi{}  {\ctr_use_arabic:n{enumi}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumii}
     The second level consists of lower-case alphabetic characters
     (\(\text{a},\text{b},\text{c},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumii{} {\@alph\c@enumii}
+\RenewDocumentCommand\theenumii{} {\ctr_use_alph:n{enumii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiii}
     The third level consists of lower-case roman numerals
     (\(\text{i},\text{ii},\text{iii},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumiii{}{\@roman\c@enumiii}
+\RenewDocumentCommand\theenumiii{}{\ctr_use_roman:n{enumiii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiv}
     The fourth level consists of upper-case alphabetic characters
     (\(\text{A},\text{B},\text{C},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumiv{} {\@Alph\c@enumiv}
+\RenewDocumentCommand\theenumiv{} {\ctr_use_Alph:n{enumiv}}
 \end{MacroCode}
     \end{macro*}
     We also need macros that typeset the actual labels. Here, different
@@ -2270,7 +2361,7 @@
     \par
     \ctr_gset:nn{section}{0}
     \ctr_gset:nn{subsection}{0}
-    \cs_gset:Nn\thesection{\@Alph\c@section}
+    \cs_gset:Nn\thesection{\ctr_use_Alph:n{section}}
 }
 \end{MacroCode}
     \end{macro}
@@ -2370,77 +2461,124 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \end{macro*}
 
     \subsubsection{Floats}
-    Figure and table floats.
+    \paragraph{Table- and box-related lengths}
 \begin{MacroCode}{class}
-\setlength\arraycolsep{5\p@}
-\setlength\tabcolsep{6\p@}
-\setlength\arrayrulewidth{.4\p@}
-\setlength\doublerulesep{2\p@}
-\setlength\tabbingsep{\labelsep}
-\skip\@mpfootins=\skip\footins
-\setlength\fboxsep{3\p@}
-\setlength\fboxrule{.4\p@}
+\dim_gset:Nn\arraycolsep    {5pt}
+\dim_gset:Nn\tabcolsep      {6pt}
+\dim_gset:Nn\arrayrulewidth{.4pt}
+\dim_gset:Nn\doublerulesep  {2pt}
+\dim_gset_eq:NN\tabbingsep\labelsep
+\skip_gset_eq:NN\@mpfootins\footins
+\dim_gset:Nn\fboxsep        {3pt}
+\dim_gset:Nn\fboxrule      {.4pt}
+\end{MacroCode}
+
+    \paragraph{Counters}
+\begin{MacroCode}{class}
+\ctr_new:n{figure}
+\ctr_new:n{table}
 \end{MacroCode}
     \begin{macro*}{\theequation}
 \begin{MacroCode}{class}
-\renewcommand\theequation{\@arabic\c@equation}
+\DeclareDocumentCommand\theequation{}{\ctr_use_arabic:n{equation}}
 \end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\thefigure}
 \begin{MacroCode}{class}
-\newcounter{figure}\renewcommand\thefigure{\@arabic\c@figure}
-\def\fps@figure{tb}
-\def\ftype@figure{1}
-\def\ext@figure{lof}
-\def\fnum@figure{\figurename~\thefigure}
+\DeclareDocumentCommand\thefigure{}{\ctr_use_arabic:n{figure}}
 \end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\thetable}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\thetable{}{\ctr_use_arabic:n{table}}
+\end{MacroCode}
+    \end{macro*}
+
+    \paragraph{Defaults}
+    The default placement, list extension and caption text of all floats.
+\begin{MacroCode}{class}
+\cs_new:Nn  \fps@figure{tb}
+\cs_new:Nn\ftype@figure{1}
+\cs_new:Nn  \ext@figure{lof}
+\cs_new:Nn \fnum@figure{\figurename~\thefigure}
+\cs_new:Nn  \fps@table {tb}
+\cs_new:Nn\ftype@table {2}
+\cs_new:Nn  \ext@table {lot}
+\cs_new:Nn \fnum@table {\tablename~\thetable}
+\end{MacroCode}
+
+    \paragraph{Environments}
     \begin{environment}{figure}
     \begin{environment*}{figure*}
 \begin{MacroCode}{class}
-\newenvironment{figure}{\@float{figure}}{\end@float}
-\newenvironment{figure*}{\@dblfloat{figure}}{\end@dblfloat}
+\newenvironment{figure}{\@float{figure}}{\end@float} % !!!
+\newenvironment{figure*}{\@dblfloat{figure}}{\end@dblfloat} % !!!
 \end{MacroCode}
     \end{environment*}
     \end{environment}
-\begin{MacroCode}{class}
-\newcounter{table}\renewcommand\thetable{\@arabic\c@table}
-\def\fps@table{tb}
-\def\ftype@table{2}
-\def\ext@table{lot}
-\def\fnum@table{\tablename~\thetable}
-\end{MacroCode}
     \begin{environment}{table}
     \begin{environment*}{table*}
 \begin{MacroCode}{class}
-\newenvironment{table}{\@float{table}}{\end@float}
-\newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat}
+\newenvironment{table}{\@float{table}}{\end@float} % !!!
+\newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat} % !!!
 \end{MacroCode}
     \end{environment*}
     \end{environment}
 
-    Captions.
+    \paragraph{Captions}
+    Before we begin, we pass options to \pkg{caption}, in case the user
+    is loading it or another package based upon it. This fixes an issue
+    where the custom caption style was overwritten with the ugly default
+    \pkg{article} caption style.
 \begin{MacroCode}{class}
 \PassOptionsToPackage{font=small,labelfont+=bf,textfont+=it}{caption}
-\let\@captionstyle\relax
-\newlength\abovecaptionskip\setlength\abovecaptionskip{10\p@}
-\newlength\belowcaptionskip\setlength\belowcaptionskip{10\p@}
+\end{MacroCode}
+    \begin{macro*}{\__skrapport_caption_name_style:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_caption_name_style:{\small\bfseries}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_caption_text_style:}
+\begin{MacroCode}{class}
+\cs_new:Nn\__skrapport_caption_text_style:{\small\itshape}
+\end{MacroCode}
+    \end{macro*}
+\begin{MacroCode}{class}
+\skip_new:N\abovecaptionskip
+\skip_set:Nn\abovecaptionskip{10pt}
+\skip_new:N\belowcaptionskip
+\skip_set:Nn\belowcaptionskip{10pt}
 \end{MacroCode}
     \begin{macro*}{\@makecaption}
     \changes{0.10c}{Fix missing coloring command for some captions}
+    \changes{0.12}{Split \cs{@captionstyle} into two macros}
 \begin{MacroCode}{class}
-\long\def\@makecaption#1#2{%
-    \vskip\abovecaptionskip
-    \sbox\@tempboxa{\small{\bfseries\@captionstyle#1:} \itshape#2}%
-    \ifdim \wd\@tempboxa >\hsize
-        \small{\bfseries\@captionstyle#1:} \itshape#2\par
-    \else
-        \global \@minipagefalse
-        \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
-    \fi
-    \vskip\belowcaptionskip}
+\cs_new:Npn\@makecaption#1#2{
+    \skip_vertical:N\abovecaptionskip
+    \hbox_set:Nn\l_tmpa_box{
+        \color@setgroup % !!!
+        {\__skrapport_caption_name_style:#1:~}
+        {\__skrapport_caption_name_style:#2}
+        \color@endgroup % !!!
+    }
+    \if_dim:w\box_wd:N\l_tmpa_box>\hsize
+        {\__skrapport_caption_name_style:#1:~}
+        {\__skrapport_caption_name_style:#2}
+        \par
+    \else:
+        \global\@minipagefalse % !!!
+        \hbox_to_wd:nn{\hsize}{
+            \hfil
+            \box_use_clear:N\l_tmpa_box
+            \hfil
+        }
+    \fi:
+    \skip_vertical:N\belowcaptionskip
+}
 \end{MacroCode}
     \end{macro*}
 
-    \subsubsection{Table of contents}
+    \subsubsection{Table of contents} % CONTINUE
 \begin{MacroCode}{class}
 \newcommand\@pnumwidth{1.55em}
 \newcommand\@tocrmarg{2em}
