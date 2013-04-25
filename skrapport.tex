@@ -722,9 +722,12 @@
     \begin{macro}{\__skrapport_setup_paper:n}[1]
         {Paper size (\texttt{a4} or \texttt{a5})}
     \changes{0.12}{Use \pkg{typearea} to set paper size}
-    The paper size is set by loading \pkg{geometry} \emph{and} explicitly
-    setting the \cs{paperheight} and \cs{paperwidth} dimensions. Perhaps
-    this can be improved.
+    Note the extra integer, which is set up for use with \pkg{grid}.
+    \begin{macro*}{\g__skrapport_grid_lines_int}
+\begin{MacroCode}{class}
+\int_new:N\g__skrapport_grid_lines_int
+\end{MacroCode}
+    \end{macro*}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_paper:n#1{
     \str_case:nnn{#1}{
@@ -733,8 +736,14 @@
     to the \pkg{typearea} package. Note that the use of \pkg{typearea}
     mean that we theoretically could accept more paper size options.
 \begin{MacroCode}{class}
-        {a4}{\PassOptionsToPackage{paper=A4}{typearea}}
-        {a5}{\PassOptionsToPackage{paper=A5}{typearea}}
+        {a4}{
+            \PassOptionsToPackage{paper=A4}{typearea}
+            \int_gset:Nn\g__skrapport_grid_lines_int{40}
+        }
+        {a5}{
+            \PassOptionsToPackage{paper=A5}{typearea}
+            \int_gset:Nn\g__skrapport_grid_lines_int{28}
+        }
     }{
 \end{MacroCode}
     Invalid paper sizes (such calls should never happen) are
@@ -791,15 +800,162 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_twocolumn:}
-    Setting up for twocolumn mode isn't implemented yet. Note that this
+    Setting up for twocolumn mode is slightly compliacted. Note that this
     macro should be called from \cs{AtEndClass} to ensure that we patch
     everything correctly. Note also that \pkg{multicol} is always loaded
     as it is used for the \env{theindex} environment.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
-    \msg_fatal:nnn{skrapport}{not-implemented}
-        {\__skrapport_setup_twocolumn:}
+    \BeforeBeginDocument{  
+        \KOMAoptions{twocolumn=true}
+    }
+\end{MacroCode}
+    We include the \pkg{grid} package in two-column mode, because
+    it looks way better that way.
+\begin{MacroCode}{class}
+    \int_set:Nn\l_tmpa_int{1\c__skrapport_ptsize_token}
+    \int_set:Nn\l_tmpb_int{1.2*\l_tmpa_int}
+    \RequirePackage[fontsize=\l_tmpa_int pt,
+                    baseline=\l_tmpb_int pt,
+                    lines=\g__skrapport_grid_lines_int]{grid}
+\end{MacroCode}
+    Now, we patch commands. First up is \env{abstract}.
+\begin{MacroCode}{class}
+    \RenewDocumentEnvironment{abstract}{}{\section*{\abstractname}}{}
+\end{MacroCode}
+    Then \env{document} (kind of, at least) and \cs{maketitle}.
+\begin{MacroCode}{class}
+    \AfterEndPreamble{\begin{multicols}{2}}
+    \AtEndDocument{\end{multicols}}
+    \pretocmd{\maketitle}{\end{multicols}}{}{}
+    \apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
+\end{MacroCode}
+    Always typeset \env{equation} and friends outside the grid:
+\begin{MacroCode}{class}
+    \BeforeBeginEnvironment{equation}{\begin{gridenv}}
+    \AfterEndEnvironment{equation}{\end{gridenv}}
+    \BeforeBeginEnvironment{equation*}{\begin{gridenv}}
+    \AfterEndEnvironment{equation*}{\end{gridenv}}
+    \BeforeBeginEnvironment{multline}{\begin{gridenv}}
+    \AfterEndEnvironment{multline}{\end{gridenv}}
+    \BeforeBeginEnvironment{multline*}{\begin{gridenv}}
+    \AfterEndEnvironment{multline*}{\end{gridenv}}
+    \BeforeBeginEnvironment{gather}{\begin{gridenv}}
+    \AfterEndEnvironment{gather}{\end{gridenv}}
+    \BeforeBeginEnvironment{gather*}{\begin{gridenv}}
+    \AfterEndEnvironment{gather*}{\end{gridenv}}
+    \BeforeBeginEnvironment{align}{\begin{gridenv}}
+    \AfterEndEnvironment{align}{\end{gridenv}}
+    \BeforeBeginEnvironment{align*}{\begin{gridenv}}
+    \AfterEndEnvironment{align*}{\end{gridenv}}
+    \BeforeBeginEnvironment{flalign}{\begin{gridenv}}
+    \AfterEndEnvironment{flalign}{\end{gridenv}}
+    \BeforeBeginEnvironment{flalign*}{\begin{gridenv}}
+    \AfterEndEnvironment{flalign*}{\end{gridenv}}
+    \BeforeBeginEnvironment{alignat}{\begin{gridenv}}
+    \AfterEndEnvironment{alignat}{\end{gridenv}}
+    \BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
+    \AfterEndEnvironment{alignat*}{\end{gridenv}}
+\end{MacroCode}
+    The \env{figure} environment is patched\ldots
+\begin{MacroCode}{class}
+    \cs_set_eq:Nc\__skrapport_old_figurest:{figure*}
+    \cs_set_eq:Nc\__skrapport_old_endfigurest:{endfigure*}
+    \RenewDocumentEnvironment{figure}{o}{
+        \begin{gridenv}
+            \vspace{\intextsep}
+            \begin{minipage}{\linewidth}
+                \cs_set:Nn\@captype{figure}
+    }{
+            \end{minipage}
+            \vspace{\intextsep}
+        \end{gridenv}
+    }
+    \RenewDocumentEnvironment{figure*}{o}{
+        \__skrapport_old_figurest:
+    }{
+        \__skrapport_old_endfigurest:
+    }
+\end{MacroCode}
+    \ldots as is \env{table}.
+\begin{MacroCode}{class}
+    \cs_set_eq:Nc\__skrapport_old_tablest:{table*}
+    \cs_set_eq:Nc\__skrapport_old_endtablest:{endtable*}
+    \RenewDocumentEnvironment{table}{o}{%
+        \begin{gridenv}
+            \vspace{\intextsep}
+            \begin{minipage}{\linewidth}
+                \cs_set:Nn\@captype{table}
+                \cs_set_eq:NN\__skrapport_old_caption:\caption
+                \RenewDocumentCommand{\caption}{om}{%
+                    \skip_set_eq:NN\l_tmpa_skip\abovecaptionskip
+                    \skip_set_eq:NN\abovecaptionskip\belowcaptionskip
+                    \skip_set_eq:NN\belowcaptionskip\l_tmpa_skip
+                    \vspace{\abovecaptionskip}
+                    \__skrapport_old_caption:[##1]{##2}
+                    \vspace{\belowcaptionskip}
+                }
+    }{
+            \end{minipage}
+            \vspace{\intextsep}
+        \end{gridenv}
+    }
+    \cs_set_eq:NN\__skrapport_old_tablest:\__skrapport_old_old_tablest:
+    \cs_set:Nn\__skrapport_old_tablest:{
+        \__skrapport_old_old_tablest:
+        \cs_set_eq:NN\__skrapport_old_caption:\caption
+        \RenewDocumentCommand{\caption}{om}{%
+            \skip_set_eq:NN\l_tmpa_skip\abovecaptionskip
+            \skip_set_eq:NN\abovecaptionskip\belowcaptionskip
+            \skip_set_eq:NN\belowcaptionskip\l_tmpa_skip
+            \vspace{\abovecaptionskip}
+            \__skrapport_old_caption:[##1]{##2}
+            \vspace{\belowcaptionskip}
+        }
+    }
+    \RenewDocumentEnvironment{table*}{o}{
+        \__skrapport_old_tablest:
+    }{
+        \__skrapport_old_endtablest:
+    }
+\end{MacroCode}
+    \begin{environment}{onecol}
+    \changes{0.10}{Fixed, now not completely broken}
+    Finally, we define an environment \env{onecol} that typesets
+    arbitrary material in a single column. This is a bit tricky to
+    do, and probably cargo-cult as well. We define the start of the
+    environment to immediately end itself (with the empty ending),
+    then end the \env{multiols} environment, redefine our end macro
+    to start \env{multicols} as well as redefining the start of
+    \env{onecol} to simply reset itself, then start the environment
+    again only to have it ended at once.
+
+    Basically, we trick \LaTeX\ into thinking that we have an empty
+    \env{onecol} environment at the end of the first \env{multicols},
+    then some content inside a fake \env{onecol}, then an empty
+    \env{onecol} at the start of the next \env{multicols}. Voilá, no
+    wierd group errors!
+\begin{MacroCode}{class}
+    \DeclareDocumentEnvironment{onecol}{
+        \end{onecol}
+        \end{multicols}
+        \group_begin:
+        \cs_set:Nn\endonecol{
+            \group_end:
+            \begin{multicols}{2}
+            \cs_set_eq:NN\__skrapport_old_onecol:\onecol
+            \cs_set:Nn\onecol{
+                \cs_set_eq:NN\onecol\__skrapport_old_onecol:
+            }
+            \begin{onecol}
+        }
+        \cs_set:Nn\onecol{}
+        \begin{onecol}
+    }{}
+\end{MacroCode}
+    \end{environment}
+\begin{MacroCode}{class}
 }
 \end{MacroCode}
     \end{macro}
@@ -2741,171 +2897,6 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
 }
 \end{MacroCode}
     \end{macro*}
-
-    \subsubsection{Two-column mode}
-    The twocolumn hacks implemented.
-\begin{MacroCode}{class}
-\ifskrapport@twocolumn
-    \BeforeBeginDocument{  
-        \KOMAoptions{twocolumn=true}
-    }
-\end{MacroCode}
-    We include the \pkg{grid} package in two-column mode, because
-    it looks way better that way.
-\begin{MacroCode}{class}
-        \IfStrEq{\skrapport@paper}{a4paper}
-            {\def\@@@lines{40}}{\def\@@@lines{28}}
-        \IfStrEq{\skrapport@ptsize}{10pt}{
-            \RequirePackage[fontsize=10pt,%
-                            baseline=12pt,%
-                            lines=\@@@lines]{grid}
-        }{
-            \IfStrEq{\skrapport@ptsize}{11pt}{
-                \RequirePackage[fontsize=11pt,%
-                                baseline=13.2pt,%
-                                lines=\@@@lines]{grid}
-            }{
-                \RequirePackage[fontsize=12pt,%
-                                baseline=14.4pt,%
-                                lines=\@@@lines]{grid}
-            }   
-        }
-\end{MacroCode}
-    Now, we patch commands. First up is \env{abstract}.
-\begin{MacroCode}{class}
-        \renewenvironment{abstract}{\section*{\abstractname}}{}
-\end{MacroCode}
-    Then \env{document} and \cs{maketitle}.
-\begin{MacroCode}{class}
-        \AfterEndPreamble{\begin{multicols}{2}}
-        \AtEndDocument{\end{multicols}}
-        \pretocmd{\maketitle}{\end{multicols}}{}{}
-        \apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
-\end{MacroCode}
-    Always typeset \env{equation} and friends outside the grid:
-\begin{MacroCode}{class}
-        \BeforeBeginEnvironment{equation}{\begin{gridenv}}
-        \AfterEndEnvironment{equation}{\end{gridenv}}
-        \BeforeBeginEnvironment{equation*}{\begin{gridenv}}
-        \AfterEndEnvironment{equation*}{\end{gridenv}}
-        \BeforeBeginEnvironment{multline}{\begin{gridenv}}
-        \AfterEndEnvironment{multline}{\end{gridenv}}
-        \BeforeBeginEnvironment{multline*}{\begin{gridenv}}
-        \AfterEndEnvironment{multline*}{\end{gridenv}}
-        \BeforeBeginEnvironment{gather}{\begin{gridenv}}
-        \AfterEndEnvironment{gather}{\end{gridenv}}
-        \BeforeBeginEnvironment{gather*}{\begin{gridenv}}
-        \AfterEndEnvironment{gather*}{\end{gridenv}}
-        \BeforeBeginEnvironment{align}{\begin{gridenv}}
-        \AfterEndEnvironment{align}{\end{gridenv}}
-        \BeforeBeginEnvironment{align*}{\begin{gridenv}}
-        \AfterEndEnvironment{align*}{\end{gridenv}}
-        \BeforeBeginEnvironment{flalign}{\begin{gridenv}}
-        \AfterEndEnvironment{flalign}{\end{gridenv}}
-        \BeforeBeginEnvironment{flalign*}{\begin{gridenv}}
-        \AfterEndEnvironment{flalign*}{\end{gridenv}}
-        \BeforeBeginEnvironment{alignat}{\begin{gridenv}}
-        \AfterEndEnvironment{alignat}{\end{gridenv}}
-        \BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
-        \AfterEndEnvironment{alignat*}{\end{gridenv}}
-\end{MacroCode}
-    The \env{figure} environment is patched...
-\begin{MacroCode}{class}
-        \expandafter\let\expandafter
-                    \old@figurest\csname figure*\endcsname
-        \expandafter\let\expandafter
-                    \old@endfigurest\csname endfigure*\endcsname
-        \RenewDocumentEnvironment{figure}{o}{%
-            \begin{gridenv}%
-            \vspace{\intextsep}%
-            \begin{minipage}{\linewidth}%
-            \def\@captype{figure}%
-        }{%
-            \end{minipage}%
-            \vspace{\intextsep}%
-            \end{gridenv}%
-        }
-        \RenewDocumentEnvironment{figure*}{o}{\old@figurest}%
-                                             {\old@endfigurest}
-\end{MacroCode}
-    ...as is \env{table}.
-\begin{MacroCode}{class}
-        \expandafter\let\expandafter
-                    \old@tablest\csname table*\endcsname
-        \expandafter\let\expandafter
-                    \old@endtablest\csname endtable*\endcsname
-        \RenewDocumentEnvironment{table}{o}{%
-            \begin{gridenv}%
-            \vspace{\intextsep}%
-            \begin{minipage}{\linewidth}%
-            \def\@captype{table}%
-            \let\@old@caption\caption%
-            \renewcommand{\caption}[1]{%
-                \setlength{\@tempdima}{\abovecaptionskip}%
-                \setlength{\abovecaptionskip}{\belowcaptionskip}%
-                \setlength{\belowcaptionskip}{\@tempdima}%
-                \@old@caption{##1}%
-                \vspace{\belowcaptionskip}%
-            }%
-        }{%
-            \end{minipage}%
-            \vspace{\intextsep}%
-            \end{gridenv}%
-        }
-        \let\oldoldtablest\oldtablest
-        \renewcommand{\oldtablest}{%
-            \oldoldtablest%
-            \let\@old@caption\caption%
-            \renewcommand{\caption}[1]{%
-                \setlength{\@tempdima}{\abovecaptionskip}%
-                \setlength{\abovecaptionskip}{\belowcaptionskip}%
-                \setlength{\belowcaptionskip}{\@tempdima}%
-                \@old@caption{##1}%
-                \vspace{\belowcaptionskip}%
-            }%
-        }
-        \RenewDocumentEnvironment{table*}{o}{\old@tablest}%
-                                            {\old@endtablest}
-\end{MacroCode}
-    \begin{environment}{onecol}
-    \changes{0.10}{Fixed, now not completely broken}
-    Finally, we define an environment \env{onecol} that typesets
-    arbitrary material in a single column. This is a bit tricky to
-    do, and probably cargo-cult as well. We define the start of the
-    environment to immediately end itself (with the empty ending),
-    then end the \env{multiols} environment, redefine our end macro
-    to start \env{multicols} as well as redefining the start of
-    \env{onecol} to simply reset itself, then start the environment
-    again only to have it ended at once.
-
-    Basically, we trick \LaTeX\ into thinking that we have an empty
-    \env{onecol} environment at the end of the first \env{multicols},
-    then some content inside a fake \env{onecol}, then an empty
-    \env{onecol} at the start of the next \env{multicols}. Voilá, no
-    wierd group errors!
-\begin{MacroCode}{class}
-        \newenvironment{onecol}{
-            \end{onecol}
-            \end{multicols}
-            \begingroup
-            \def\endonecol{
-                \endgroup
-                \begin{multicols}{2}
-                \let\old@onecol\onecol
-                \def\onecol{
-                    \let\onecol\old@onecol
-                }
-                \begin{onecol}
-            }
-            \def\onecol{}
-            \begin{onecol}
-        }{}
-    }
-\end{MacroCode}
-    \end{environment}
-\begin{MacroCode}{class}
-\fi
-\end{MacroCode}
 
     \subsubsection{Miscellaneous}
     A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let 
