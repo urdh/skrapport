@@ -793,11 +793,11 @@
     \begin{macro}{\__skrapport_setup_twocolumn:}
     Setting up for twocolumn mode isn't implemented yet. Note that this
     macro should be called from \cs{AtEndClass} to ensure that we patch
-    everything correctly.
+    everything correctly. Note also that \pkg{multicol} is always loaded
+    as it is used for the \env{theindex} environment.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
-    \RequirePackage{multicol}
     \msg_fatal:nnn{skrapport}{not-implemented}
         {\__skrapport_setup_twocolumn:}
 }
@@ -1271,7 +1271,7 @@
     \pkg{calc} package, for instance, is essential in later
     definitions.
 \begin{MacroCode}{class}
-\RequirePackage{calc,isodate}
+\RequirePackage{calc,isodate,multicol}
 \end{MacroCode}
 
     At the end of the class definition we load a couple of very
@@ -2271,22 +2271,22 @@
     arrow (\textrightarrow).
     \begin{macro*}{\labelitemi}
 \begin{MacroCode}{class}
-\newcommand\labelitemi{\textbullet}
+\DeclareDocumentCommand\labelitemi{}{\textbullet}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemii}
 \begin{MacroCode}{class}
-\newcommand\labelitemii{\textopenbullet}
+\DeclareDocumentCommand\labelitemii{}{\textopenbullet}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemiii}
 \begin{MacroCode}{class}
-\newcommand\labelitemiii{\normalfont\bfseries\textendash}
+\DeclareDocumentCommand\labelitemiii{}{\normalfont\bfseries\textendash}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemiv}
 \begin{MacroCode}{class}
-\newcommand\labelitemiv{\textrightarrow}
+\DeclareDocumentCommand\labelitemiv{}{\textrightarrow}
 \end{MacroCode}
     \end{macro*}
 
@@ -2511,16 +2511,36 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \begin{environment}{figure}
     \begin{environment*}{figure*}
 \begin{MacroCode}{class}
-\newenvironment{figure}{\@float{figure}}{\end@float} % !!!
-\newenvironment{figure*}{\@dblfloat{figure}}{\end@dblfloat} % !!!
+\DeclareDocumentEnvironment{figure}{o}{
+    \exp_args:Nnx\@float{figure} % !!!
+    \IfNoValueTF{#1}{[\fps@figure]}{[#1]}
+}{
+    \end@float
+}
+\DeclareDocumentEnvironment{figure*}{o}{
+    \exp_args:Nnx\@dblfloat{figure} % !!!
+    \IfNoValueTF{#1}{[\fps@figure]}{[#1]}
+}{
+    \end@dblfloat
+}
 \end{MacroCode}
     \end{environment*}
     \end{environment}
     \begin{environment}{table}
     \begin{environment*}{table*}
 \begin{MacroCode}{class}
-\newenvironment{table}{\@float{table}}{\end@float} % !!!
-\newenvironment{table*}{\@dblfloat{table}}{\end@dblfloat} % !!!
+\DeclareDocumentEnvironment{table}{o}{
+    \exp_args:Nnx\@float{table} % !!!
+    \IfNoValueTF{#1}{[\fps@table]}{[#1]}
+}{
+    \end@float
+}
+\DeclareDocumentEnvironment{table*}{o}{
+    \exp_args:Nnx\@dblfloat{table} % !!!
+    \IfNoValueTF{#1}{[\fps@table]}{[#1]}
+}{
+    \end@dblfloat
+}
 \end{MacroCode}
     \end{environment*}
     \end{environment}
@@ -2552,6 +2572,7 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \begin{macro*}{\@makecaption}
     \changes{0.10c}{Fix missing coloring command for some captions}
     \changes{0.12}{Split \cs{@captionstyle} into two macros}
+    This should possibly be redefined already at the \cs{caption} level.
 \begin{MacroCode}{class}
 \cs_new:Npn\@makecaption#1#2{
     \skip_vertical:N\abovecaptionskip
@@ -2580,113 +2601,144 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
 
     \subsubsection{Table of contents} % CONTINUE
 \begin{MacroCode}{class}
-\newcommand\@pnumwidth{1.55em}
-\newcommand\@tocrmarg{2em}
-\newcommand\@dotsep{1.7}
-\setcounter{tocdepth}{5}
+\cs_new:Nn\@pnumwidth{1.55em}
+\cs_new:Nn\@tocrmarg{2em}
+\cs_new:Nn\@dotsep{1.7}
+\ctr_gset:nn{tocdepth}{5}
 \end{MacroCode}
     \begin{macro}{\tableofcontents}
+    \changes{0.12}{Removed spacing and \cs{@mkboth} call}
 \begin{MacroCode}{class}
-\newcommand\tableofcontents{%
-  \section*{\contentsname
-    \@mkboth{\MakeUppercase\contentsname}{\MakeUppercase\contentsname}
-  }%
-    \vskip\baselineskip%
-  \@starttoc{toc}%
+\DeclareDocumentCommand\tableofcontents{}{
+  \section*{\contentsname}
+  \@starttoc{toc}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro*}{\l@section}
-    \begin{macro*}{\l@subsection}
-    \begin{macro*}{\l@subsubsection}
-    \begin{macro*}{\l@paragraph}
-    \begin{macro*}{\l@subparagraph}
 \begin{MacroCode}{class}
-\newcommand*\l@section{\@dottedtocline{1}{0em}{1.3em}}
-\newcommand*\l@subsection{\@dottedtocline{2}{1.3em}{2em}}
-\newcommand*\l@subsubsection{\@dottedtocline{3}{3.3em}{3.15em}}
-\newcommand*\l@paragraph{\@dottedtocline{4}{6.45em}{4.15em}}
-\newcommand*\l@subparagraph{\@dottedtocline{5}{10.6em}{5.15em}}
+\DeclareDocumentCommand\l@section{mm}{
+    \@dottedtocline{1}{0em}{1.3em}{#1}{#2}
+}
 \end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\l@subsection}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\l@subsection{mm}{
+    \@dottedtocline{2}{1.3em}{2em}{#1}{#2}
+}
+\end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\l@subsubsection}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\l@subsubsection{mm}{
+    \@dottedtocline{3}{3.3em}{3.15em}{#1}{#2}
+}
+\end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\l@paragraph}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\l@paragraph{mm}{
+    \@dottedtocline{4}{6.45em}{4.15em}{#1}{#2}
+}
+\end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\l@subparagraph}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\l@subparagraph{mm}{
+    \@dottedtocline{5}{10.6em}{5.15em}{#1}{#2}
+}
+\end{MacroCode}
     \end{macro*}
 
     Fix for \emph{e.g.}~\pkg{tocloft} package.
 \begin{MacroCode}{class}
-\let\l@figure\@empty
-\let\l@table\@empty
+\cs_set:Nn\l@figure{}
+\cs_set:Nn\l@table{}
 \end{MacroCode}
 
     \subsubsection{Basic bibliography support}
 \begin{MacroCode}{class}
-\newdimen\bibindent
-\setlength\bibindent{2em}
+\dim_new:N\bibindent
+\dim_set:Nn\bibindent{2em}
 \end{MacroCode}
     \begin{environment}{thebibliography}
+    \changes{0.12}{Removed \cs{@mkboth}, \cs{@openbib@code} and
+                   \cs{@noitemerr}}
 \begin{MacroCode}{class}
-\newenvironment{thebibliography}[1]
-    {\section*{\refname}%
-        \@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}%
-        \list{\@biblabel{\@arabic\c@enumiv}}%
-            {\settowidth\labelwidth{\@biblabel{#1}}%
-                \leftmargin\labelwidth
-                \advance\leftmargin\labelsep
-                \@openbib@code
-                \usecounter{enumiv}%
-                \let\p@enumiv\@empty
-                \renewcommand\theenumiv{\@arabic\c@enumiv}}%
-        \sloppy
-        \clubpenalty4000
-        \@clubpenalty \clubpenalty
-        \widowpenalty4000}%
-    {\def\@noitemerr
-        {\@latex@warning{Empty ‘thebibliography’ environment}}%
-        \endlist}
+\DeclareDocumentEnvironment{thebibliography}{m}{
+    \section*{\refname}
+    \list{\@biblabel{\ctr_use_arabic:n{enumiv}}}{
+        \dim_set_to_wd:Nn\labelwidth{\@biblabel{#1}}
+        \dim_set_eq:NN\leftmargin\labelwidth
+        \dim_add:Nn\leftmargin{\labelsep}
+        \usecounter{enumiv} % !!!
+        \cs_set:Nn\p@enumiv{}
+        \RenewDocumentCommand\theenumiv{}{\ctr_use_arabic:n{enumiv}}
+    }
+    \sloppy
+    \int_set:Nn\clubpenalty{4000}
+    \int_set_eq:NN\@clubpenalty\clubpenalty
+    \int_set:Nn\widowpenalty{4000}
+}{
+    \cs_set:Nn\@noitemerr{}
+    \endlist
+}
 \end{MacroCode}
     \end{environment}
     \begin{macro*}{\newblock}
 \begin{MacroCode}{class}
-\newcommand\newblock{\hskip .11em\@plus.33em\@minus.07em}
+\DeclareDocumentCommand\newblock{}{
+    \skip_horizontal:n{.11em plus .33em minus .07em}
+}
 \end{MacroCode}
     \end{macro*}
-\begin{MacroCode}{class}
-\let\@openbib@code\@empty
-\end{MacroCode}
     \begin{environment}{theindex}
+    \changes{0.12}{Use \pkg{multicol} instead of \cs{twocolumn} mode,
+                   removed \cs{@mkboth} call}
 \begin{MacroCode}{class}
-\newenvironment{theindex}
-    {\twocolumn[\section*{\indexname}]%
-        \@mkboth{\MakeUppercase\indexname}%
-            {\MakeUppercase\indexname}%
-        \thispagestyle{plain}\parindent\z@
-        \parskip\z@ \@plus .3\p@\relax
-        \columnseprule \z@
-        \columnsep 35\p@
-        \let\item\@idxitem}
-    {\onecolumn}
+\DeclareDocumentEnvironment{theindex}{}{
+    \begin{multicols}{2}[\section*{\indexname}]
+    \thispagestyle{plain}
+    \dim_zero:N\parindent
+    \skip_set:N\parskip{\c_zero_skip plus .3pt}
+    \dim_zero:N\columnseprule
+    \dim_set:Nn\columnsep{35pt}
+    \cs_set_eq:NN\item\@idxitem
+}{
+    \end{multicols}
+}
 \end{MacroCode}
     \end{environment}
     \begin{macro*}{\@idxitem}
 \begin{MacroCode}{class}
-\newcommand\@idxitem{\par\hangindent 40\p@}
+\DeclareDocumentCommand\@idxitem{}{
+    \par\hangindent{40pt}
+}
 \end{MacroCode}
     \end{macro*}
     \begin{macro}{\subitem}
 \begin{MacroCode}{class}
-\newcommand\subitem{\@idxitem \hspace*{20\p@}}
+\DeclareDocumentCommand\subitem{}{
+    \@idxitem
+    \hspace*{20pt}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\subsubitem}
 \begin{MacroCode}{class}
-\newcommand\subsubitem{\@idxitem \hspace*{30\p@}}
+\DeclareDocumentCommand\subsubitem{}{
+    \@idxitem
+    \hspace*{30pt}
+}
 \end{MacroCode}
     \end{macro}
     \begin{macro*}{\indexspace}
 \begin{MacroCode}{class}
-\newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
+\DeclareDocumentCommand\indexspace{}{
+    \par
+    \skip_vertical:n{10pt plus 5pt minus 3pt}
+}
 \end{MacroCode}
     \end{macro*}
 
