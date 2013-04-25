@@ -378,6 +378,9 @@
 \msg_new:nnnn{skrapport}{old-font-deprecated}{Deprecated~macro~\token_to_str:N#1!}
     {The~old~font~macro~\token_to_str:N#1~is~deprecated!~Use~
     \token_to_str:N#2~instead.}
+\msg_new:nnnn{skrapport}{color-patch-failed}{Could~not~patch~macro~\token_to_str:N#1!}
+    {The~macro~\token_to_str:N#1~could~not~be~patched!~Color~theme~
+    support~may~be~incomplete.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -674,7 +677,7 @@
     \begin{option}{nocolor}
     Declare color options. Note that we explicitly set the boolean
     \cs{g__skrapport_color_bool} as well as setting up the colors
-    through \cs{__skrapport_setup_color:x}, so that we can keep track
+    through \cs{__skrapport_setup_color:n}, so that we can keep track
     of the color usage even after the options have been set up.
 \begin{MacroCode}{class}
     color .code:n =
@@ -1037,6 +1040,7 @@
 \end{MacroCode}
     \begin{macro*}{\__skrapport_and_word:}
     \begin{macro*}{\__skrapport_Email_word:}
+    \begin{macro*}{\__skrapport_Comment_word:}
     \begin{macro*}{\contentsname}
     \begin{macro*}{\refname}
     \begin{macro*}{\figurename}
@@ -1047,6 +1051,7 @@
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{och}
             \cs_gset:Nn\__skrapport_Email_word:{E-post}
+            \cs_gset:Nn\__skrapport_Comment_word:{Kommentar}
             \cs_gset:Nn\contentsname{Innehåll}
             \cs_gset:Nn\refname{Referenser}
             \cs_gset:Nn\figurename{Figur}
@@ -1056,6 +1061,7 @@
             \cs_gset:Nn\today
                 {\int_use:N\year--\int_use:N\month--\int_use:N\day}
 \end{MacroCode}
+    \end{macro*}
     \end{macro*}
     \end{macro*}
     \end{macro*}
@@ -1078,6 +1084,7 @@
 \end{MacroCode}
     \begin{macro*}{\__skrapport_and_word:}
     \begin{macro*}{\__skrapport_Email_word:}
+    \begin{macro*}{\__skrapport_Comment_word:}
     \begin{macro*}{\contentsname}
     \begin{macro*}{\refname}
     \begin{macro*}{\figurename}
@@ -1088,6 +1095,7 @@
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{and}
             \cs_gset:Nn\__skrapport_Email_word:{Email}
+            \cs_gset:Nn\__skrapport_Comment_word:{Comment}
             \cs_gset:Nn\contentsname{Contents}
             \cs_gset:Nn\refname{References}
             \cs_gset:Nn\figurename{Figurr}
@@ -1097,6 +1105,7 @@
             \cs_gset:Nn\today
                 {\int_use:N\year--\int_use:N\month--\int_use:N\day}
 \end{MacroCode}
+    \end{macro*}
     \end{macro*}
     \end{macro*}
     \end{macro*}
@@ -2755,7 +2764,7 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
 \end{MacroCode}
     \end{macro*}
 
-    \subsubsection{Table of contents} % CONTINUE
+    \subsubsection{Table of contents}
 \begin{MacroCode}{class}
 \cs_new:Nn\@pnumwidth{1.55em}
 \cs_new:Nn\@tocrmarg{2em}
@@ -2901,20 +2910,20 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \subsubsection{Miscellaneous}
     A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let 
     the user add comments and notes to the document.
-    \begin{macro}{\@comment}
+    \begin{macro}{\__skrapport_comment:n}
 \begin{MacroCode}{class}
-\NewDocumentCommand\@comment{m}{%
-    {\textbf{Comment:} #1}%
+\cs_new:Npn\__skrapport_comment:n#1{
+    {\textbf{\__skrapport_Comment_word:}~#1}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\comment}
     \changes{0.10}{Added macro for comments}
 \begin{MacroCode}{class}
-\NewDocumentCommand\comment{sm}{%
-    \IfBooleanTF{#1}%
-        {\colorbox{red!50}{\@comment{#2}}}%
-        {\marginpar{\@comment{#2}}}%
+\DeclareDocumentCommand\comment{sm}{
+    \IfBooleanTF{#1}
+        {\colorbox{red!50}{\__skrapport_comment:n{#2}}}
+        {\marginpar{\__skrapport_comment:n{#2}}}
 }
 \end{MacroCode}
     \end{macro}
@@ -2922,9 +2931,9 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \begin{macro}{\note}
     \changes{0.10b}{Fixed a silly error in \cs{com} and \cs{note}}
 \begin{MacroCode}{class}
-\ProvideDocumentCommand\com{sm}%
+\ProvideDocumentCommand\com{sm}
     {\IfBooleanTF{#1}{\comment*{#2}}{\comment{#2}}}
-\ProvideDocumentCommand\note{sm}%
+\ProvideDocumentCommand\note{sm}
     {\IfBooleanTF{#1}{\comment*{#2}}{\comment{#2}}}
 \end{MacroCode}
     \end{macro}
@@ -2936,30 +2945,51 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     quote environments and sections headings, different colors
     for the different sectioning levels.
 \begin{MacroCode}{class}
-\ifskrapport@color
-    \apptocmd{\bfseries}{\color{skrapport@boldcolor}}{}{\ClassError{skrapport}{Could not patch \protect\bfseries}{}}
-    \apptocmd{\itshape}{\color{skrapport@italiccolor}}{}{\ClassError{skrapport}{Could not patch \protect\itshape}{}}
-    \apptocmd{\@titstyle}{\color{skrapport@titlecolor}}{}{\ClassError{skrapport}{Could not patch \protect\@titstyle}{}}
-    \def\@smallprintstyle{\color{skrapport@smallprintcolor}}
-    \AtBeginDocument{%
-        \let\@abstractname\abstractname
-        \def\abstractname{\color{skrapport@titlecolor}\@abstractname}
+\bool_if:NT\g__skrapport_color_bool{
+    \apptocmd{\bfseries}
+        {\color{skrapport@boldcolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\bfseries}}
+    \apptocmd{\itshape}
+        {\color{skrapport@italiccolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\itshape}}
+    \apptocmd{\__skrapport_title_style:}
+        {\color{skrapport@titlecolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_title_style:}}
+    \apptocmd{\__skrapport_smallprint_style:}
+        {\color{skrapport@smallprintcolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_smallprint_style:}}
+    \AtBeginDocument{
+        \cs_gset_eq:NN\__skrapport_old_abstractname:\abstractname
+        \cs_set:Nn\abstractname{
+            \color{skrapport@titlecolor}
+            \__skrapport_old_abstractname:
+        }
     }
-    \apptocmd{\quote}{\color{skrapport@quotecolor}}{}{}
-    \def\@captionstyle{\color{skrapport@captioncolor}}
-    \def\@emstyle{\color{skrapport@emphcolor}}
-    \ifskrapport@twocolumn\AtBeginDocument{%
-        \renewcommand\section{\@startsection {section}{1}{\z@}%
-            {-.999\baselineskip}{0.001\baselineskip}{\bfseries\mathversion{bold}\color{skrapport@titlecolor}}}
-        \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-            {\baselineskip}{-.35\baselineskip}{\bfseries\color{skrapport@titlecolor}\unskip}}
-        \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-            {\baselineskip}{-.35\baselineskip}{\itshape\color{skrapport@titlecolor}\unskip}}
-    }\fi
-    \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\bfseries\color{skrapport@titlecolor}}}
-    \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\itshape\color{skrapport@titlecolor}}}
+    \apptocmd{\quote}
+        {\color{skrapport@quotecolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\quote}}
+    \apptocmd{\__skrapport_caption_name_style:}
+        {\color{skrapport@captioncolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_caption_name_style:}}
+    \apptocmd{\__skrapport_emphstyle:}
+        {\color{skrapport@emphcolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_emphstyle:}}
+\end{MacroCode}
+% I have no idea why this was here or what difference it makes. These
+% things should be using \__skrapport_title_style:.
+%    \ifskrapport@twocolumn\AtBeginDocument{%
+%        \renewcommand\section{\@startsection {section}{1}{\z@}%
+%            {-.999\baselineskip}{0.001\baselineskip}{\bfseries\mathversi%on{bold}\color{skrapport@titlecolor}}}
+%        \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+%            {\baselineskip}{-.35\baselineskip}{\bfseries\color{skrapport@titlecolor}\unskip}}
+%        \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+%            {\baselineskip}{-.35\baselineskip}{\itshape\color{skrapport@titlecolor}\unskip}}
+%    }\fi
+%    \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+%        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\bfseries\color{skrapport@titlecolor}}}
+%    \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+%        {1ex \@plus .25ex \@minus -.25ex}{-1em}{\normalfont\normalsize\itshape\color{skrapport@titlecolor}}}
+\begin{MacroCode}{class}
     \AtBeginDocument{\@ifpackageloaded{hyperref}{%
         \hypersetup{%
             citebordercolor=skrapport@citecolor,citecolor=skrapport@citecolor,%
@@ -2977,12 +3007,14 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     (described later) to customize the colors of the document when the
     class is loaded with the \opt{color} option.
 \begin{MacroCode}{class}
-    \newcommand\colortheme[1]{\usepackage{skrapport-colortheme-#1}}
+    \DeclareDocumentCommand\colortheme{m}{
+        \usepackage{skrapport-colortheme-#1}
+    }
 \end{MacroCode}
     \end{macro}
 \begin{MacroCode}{class}
     \colortheme{default}
-\fi
+}
 \end{MacroCode}
 
     \subsection{Final class setup}
@@ -2991,8 +3023,8 @@ DeclareDocumentCommand\em{}{\msg_error:nnn{skrapport}{old-font-deprecated}{\em}{
     \cs{onexolumn} (since we always do all the two-column stuff
     ourselves anyway).
 \begin{MacroCode}{class}
-\setlength\columnsep{10\p@}
-\setlength\columnseprule{0\p@}
+\dim_set:Nn\columnsep{10pt}
+\dim_zero:N\columnseprule
 \pagestyle{plain}
 \pagenumbering{arabic}
 \raggedbottom
