@@ -1,4 +1,4 @@
-%% chscite Skånings rapportklass
+%% skrapport Skånings rapportklass
 %%
 %% Copyright (C) 2012-2013 by Simon Sigurdhsson <sigurdhsson@gmail.com>
 %% 
@@ -16,8 +16,8 @@
 %% 
 %% This work consists of the file skrapport.tex and the 
 %% derived files skrapport.cls, skrapport-colortheme-default.sty,
-%% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
-%% and skrapport-colortheme-cruelwater.sty.
+%% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty,
+%% skrapport-colortheme-cruelwater.sty and skrapport-colortheme-skdoc.sty
 \documentclass{skdoc}
 \let\SI\relax
 \usepackage{siunitx}
@@ -1436,7 +1436,7 @@
     \pkg{calc} package, for instance, is essential in later
     definitions.
 \begin{MacroCode}{class}
-\RequirePackage{calc,isodate,multicol}
+\RequirePackage{calc,isodate,multicol,l3ctr2e}
 \end{MacroCode}
 
     At the end of the class definition we load a couple of very
@@ -1459,152 +1459,14 @@
 
     \subsection{Utilities}
     We define useful \LaTeX3 replacements of \LaTeXe\ stuff that
-    hasn't made its way into \pkg{interface3}. This includes counter
-    mechanisms (compatible with \LaTeXe\ code), a \cs{settowidth}
-    clone and possibly more stuff later. Maybe we should extract the
-    counter macros to its own package or at least its own file?
+    hasn't made its way into \pkg{interface3}. This includes
+    a \cs{settowidth} clone and possibly more stuff later.
     \begin{macro}{\dim_set_to_wd:Nn}
 \begin{MacroCode}{class}
 \cs_new:Npn\dim_set_to_wd:Nn#1#2{
     \hbox_set:Nn\l_tmpa_box{#2}
     \dim_set:Nn#1{\box_wd:N\l_tmpa_box}
     \box_clear:N\l_tmpa_box
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_new:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_new:n#1{
-    \@definecounter{#1} % !!!
-    \@ifnextchar[{\@newctr{#1}}{} % !!!
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_gzero:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_gzero:n#1{
-    \int_gzero:c{c@#1}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_gset:nn}[2]
-        {Counter name}
-        {New value}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_gset:nn#1#2{
-    \int_gset:cn{c@#1}{#2}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_gincr:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_gincr:n#1{
-    \int_gincr:cn{c@#1}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_ref_gincr:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_ref_gincr:n#1{
-    \ctr_gincr:n{#1}
-    \cs_gset_protected:Nn\@currentlabel{
-        \cs:w p@#1\cs_end:
-        \cs:w the#1\cs_end:
-    }
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use:n#1{
-    \int_use:c{c@#1}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use_arabic:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_arabic:n#1{
-    \exp_args:Nx\int_to_arabic:n{\ctr_use:n{#1}}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use_alph:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_alph:n#1{
-    \exp_args:Nx\int_to_alph:n{\ctr_use:n{#1}}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use_Alph:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_Alph:n#1{
-    \exp_args:Nx\int_to_Alph:n{\ctr_use:n{#1}}
-}
-\end{MacroCode}
-    \end{macro}
-%    \begin{macro}{\ctr_use_binary:n}[1]
-%        {Counter name}
-%\begin{MacroCode}{class}
-%\cs_new:Npn\ctr_use_binary:n#1{
-%    \exp_args:Nx\int_to_binary:n{\ctr_use:n{#1}}
-%}
-%\end{MacroCode}
-%    \end{macro}
-%    \begin{macro}{\ctr_use_hex:n}[1]
-%        {Counter name}
-%\begin{MacroCode}{class}
-%\cs_new:Npn\ctr_use_hex:n#1{
-%    \exp_args:Nx\int_to_hexadecimal:n{\ctr_use:n{#1}}
-%}
-%\end{MacroCode}
-%    \end{macro}
-%    \begin{macro}{\ctr_use_octal:n}[1]
-%        {Counter name}
-%\begin{MacroCode}{class}
-%\cs_new:Npn\ctr_use_octal:n#1{
-%    \exp_args:Nx\int_to_octal:n{\ctr_use:n{#1}}
-%}
-%\end{MacroCode}
-%    \end{macro}
-    \begin{macro}{\ctr_use_roman:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_roman:n#1{
-    \exp_args:Nx\int_to_roman:n{\ctr_use:n{#1}}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use_Roman:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_Roman:n#1{
-    \exp_args:Nx\int_to_Roman:n{\ctr_use:n{#1}}
-}
-\end{MacroCode}
-    \end{macro}
-    \begin{macro}{\ctr_use_fn:n}[1]
-        {Counter name}
-\begin{MacroCode}{class}
-\cs_new:Npn\ctr_use_fn:n#1{
-    \exp_args:Nxnn\int_to_symbols:nnn{\ctr_use:n{#1}}{9}{
-        {1}{*}
-        {2}{\dagger}
-        {3}{\ddagger}
-        {4}{\mathsection}
-        {5}{\mathparagraph}
-        {6}{\|}
-        {7}{**}
-        {8}{\dagger\dagger}
-        {9}{\ddagger}{\ddagger}
-    }
 }
 \end{MacroCode}
     \end{macro}
