@@ -2043,12 +2043,12 @@
     \else:
         \ctr_ref_ginrc:n{#1}
         \cs_set_protected:Nn\__skrapport_saved_section:{
-            \cs:w #1\cs_end:
+            \use:c{#1}
         }
     \fi:
     \__skrapport_section_star:nnn
         {#3}{#4}{#5}{\__skrapport_saved_section:}
-    \cs:w #1mark\cs_end:{#6}
+    \use:c{#1mark}{#6}
     \addcontentsline{toc}{#1}{
         \if_int_compare:w #2>\ctr_use:n{secnumdepth} \else: % !!!
             \protect\numberline{\csname the#1\endcsname} % !!!
@@ -2097,30 +2097,30 @@
         {Section title text}
 \begin{MacroCode}{class}
 \cs_set:Nn\__skrapport_generic_section:nnnnn{
-    \__skrapport_pre_section:x{\cs:w c__skrapport_#1_pre_skip\cs_end:}
+    \__skrapport_pre_section:x{\use:c{c__skrapport_#1_pre_skip}}
     \IfBooleanTF#3{
         \__skrapport_section_star:xxn
-            {\cs:w c__skrapport_#1_indent_dim\cs_end:}
-            {\cs:w __skrapport_#1_style:\cs_end:}
+            {\use:c{c__skrapport_#1_indent_dim}}
+            {\use:c{__skrapport_#1_style:}}
             {#5}
     }{
         \IfNoValueTF{#4}{
             \__skrapport_section_star:nnxxnn
                 {#1}{#2}
-                {\cs:w c__skrapport_#1_indent_dim\cs_end:}
-                {\cs:w __skrapport_#1_style:\cs_end:}
+                {\use:c{c__skrapport_#1_indent_dim}}
+                {\use:c{__skrapport_#1_style:}}
                 {#5}
                 {#5}
         }{
             \__skrapport_section_star:nnxxnn
                 {#1}{#2}
-                {\cs:w c__skrapport_#1_indent_dim\cs_end:}
-                {\cs:w __skrapport_#1_style:\cs_end:}
+                {\use:c{c__skrapport_#1_indent_dim}}
+                {\use:c{__skrapport_#1_style:}}
                 {#5}
                 {#4}
         }
     }
-    \__skrapport_post_section:x{\cs:w c__skrapport_#1_post_skip\cs_end:}
+    \__skrapport_post_section:x{\use:c{c__skrapport_#1_post_skip}}
 }
 \end{MacroCode}
     \end{macro}
