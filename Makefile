@@ -2,7 +2,7 @@ TEXMFHOME ?= $(shell kpsewhich -var-value TEXMFHOME)
 .PHONY: all clean distclean install dist
 all: skrapport.pdf
 clean:
-	rm -f *.cls *.sty
+	rm -f *.cls *.sty *.clo
 distclean: clean
 
 %.pdf: %.tex %.cls
@@ -17,8 +17,11 @@ distclean: clean
 
 %.sty: skrapport.cls
 
+%.clo: skrapport.cls
+
 install: all
 	install -m 0644 skrapport-*.sty $(TEXMFHOME)/tex/latex/skrapport/
+	install -m 0644 skrapport-*.clo $(TEXMFHOME)/tex/latex/skrapport/
 	install -m 0644 skrapport.cls $(TEXMFHOME)/tex/latex/skrapport/skrapport.cls
 	install -m 0644 skrapport.pdf $(TEXMFHOME)/doc/latex/skrapport/skrapport.pdf
 	install -m 0644 skrapport.tex $(TEXMFHOME)/source/latex/skrapport/skrapport.tex
@@ -28,6 +31,7 @@ install: all
 skrapport.tds.zip: skrapport.tex skrapport.pdf skrapport.cls
 	mkdir -p skrapport/{tex,doc,source}/latex/skrapport
 	cp skrapport-*.sty skrapport/tex/latex/skrapport/
+	cp skrapport-*.clo skrapport/tex/latex/skrapport/
 	cp skrapport.cls skrapport/tex/latex/skrapport/skrapport.cls
 	cp skrapport.pdf skrapport/doc/latex/skrapport/skrapport.pdf
 	cp skrapport.tex skrapport/source/latex/skrapport/skrapport.tex
