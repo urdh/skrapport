@@ -708,9 +708,9 @@
         \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced
                         \cs{relax} with \cs{rmfamily}}
 \begin{MacroCode}{class}
-        {rm}{\cs_new:Nn\__skrapport_title_style:{\rmfamily}}
-        {bf}{\cs_new:Nn\__skrapport_title_style:{\bfseries}}
-        {sf}{\cs_new:Nn\__skrapport_title_style:{\sffamily}}
+        {rm}{\cs_new_protected:Nn\__skrapport_title_style:{\rmfamily}}
+        {bf}{\cs_new_protected:Nn\__skrapport_title_style:{\bfseries}}
+        {sf}{\cs_new_protected:Nn\__skrapport_title_style:{\sffamily}}
 \end{MacroCode}
     \end{macro*}
     The fall-back for incorrect parameters is an informational message
@@ -1738,11 +1738,11 @@
 \cs_new:Nn\__skrapport_email_list:{
     \bool_set_false:N\l_tmpa_bool
     \clist_map_inline:Nn\g__skrapport_email_clist{
-        \bool_if:NF\l_tmpa_bool{,~}
+        \bool_if:NT\l_tmpa_bool{,~}
         \IfNoValueTF{##1}{
             \textemdash
         }{
-            \__skrapport_email:n{##2}
+            \__skrapport_email:n{##1}
         }
         \bool_set_true:N\l_tmpa_bool
     }
@@ -1785,7 +1785,7 @@
     class but with some basic restyling.
     \begin{macro*}{\__skrapport_smallprint_style:}
 \begin{MacroCode}{class}
-\cs_new:Nn\__skrapport_smallprint_style:{}
+\cs_new_protected:Nn\__skrapport_smallprint_style:{}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -1976,8 +1976,8 @@
     \leavevmode\par
     \skip_set:Nn\l_tmpa_skip{#1}
     \@afterindenttrue % !!!
-    \dim_compare:nT{\l_tmpa_skip<0}{
-        \skip_set\l_tmpa_skip{-\l_tmpa_skip}
+    \dim_compare:nT{\l_tmpa_skip<\c_zero_skip}{
+        \skip_set:Nn\l_tmpa_skip{-\l_tmpa_skip}
         \@afterindentfalse % !!!
     }
     \if@nobreak \everypar{} \else
@@ -2016,7 +2016,7 @@
     \group_begin:
         #2
         \hbox_set:Nn\l_tmpa_box{{\skip_horizontal:n{#1}#4}}
-        \hangindent{#1}\box_wd:N\l_tmpa_box
+        \dim_set:Nn\hangindent{#1+\box_wd:N\l_tmpa_box}
         \noindent\box_use_clear:N\l_tmpa_box
         \interlinepenalty\@M % !!!
         #3\par
@@ -2044,7 +2044,7 @@
     \if_int_compare:w #2>\ctr_use:n{secnumdepth} % !!!
         \cs_set:Nn\__skrapport_saved_section:{}
     \else:
-        \ctr_ref_ginrc:n{#1}
+        \ctr_ref_gincr:n{#1}
         \cs_set_protected:Nn\__skrapport_saved_section:{
             \use:c{#1}
         }
@@ -2108,14 +2108,14 @@
             {#5}
     }{
         \IfNoValueTF{#4}{
-            \__skrapport_section_star:nnxxnn
+            \__skrapport_section_nostar:nnxxnn
                 {#1}{#2}
                 {\use:c{c__skrapport_#1_indent_dim}}
                 {\use:c{__skrapport_#1_style:}}
                 {#5}
                 {#5}
         }{
-            \__skrapport_section_star:nnxxnn
+            \__skrapport_section_nostar:nnxxnn
                 {#1}{#2}
                 {\use:c{c__skrapport_#1_indent_dim}}
                 {\use:c{__skrapport_#1_style:}}
@@ -2159,7 +2159,7 @@
     \begin{macro*}{\c__skrapport_section_style:}
     This is the text style of a section title.
 \begin{MacroCode}{class}
-\cs_set:Nn\__skrapport_section_style:
+\cs_set_protected:Nn\__skrapport_section_style:
     {\normalfont\LARGE\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
@@ -2194,7 +2194,7 @@
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsection_style:}
 \begin{MacroCode}{class}
-\cs_set:Nn\__skrapport_subsection_style:
+\cs_set_protected:Nn\__skrapport_subsection_style:
     {\normalfont\Large\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
@@ -2225,7 +2225,7 @@
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsubsection_style:}
 \begin{MacroCode}{class}
-\cs_set:Nn\__skrapport_subsubsection_style:
+\cs_set_protected:Nn\__skrapport_subsubsection_style:
     {\normalfont\large\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
@@ -2256,7 +2256,7 @@
     \end{macro*}
     \begin{macro*}{\c__skrapport_paragraph_style:}
 \begin{MacroCode}{class}
-\cs_set:Nn\__skrapport_paragraph_style:
+\cs_set_protected:Nn\__skrapport_paragraph_style:
     {\normalfont\normalsize\bfseries}
 \end{MacroCode}
     \end{macro*}
@@ -2287,7 +2287,7 @@
     \end{macro*}
     \begin{macro*}{\c__skrapport_subparagraph_style:}
 \begin{MacroCode}{class}
-\cs_set:Nn\__skrapport_subparagraph_style:
+\cs_set_protected:Nn\__skrapport_subparagraph_style:
     {\normalfont\normalsize\itshape}
 \end{MacroCode}
     \end{macro*}
@@ -2678,12 +2678,12 @@
 \end{MacroCode}
     \begin{macro*}{\__skrapport_caption_name_style:}
 \begin{MacroCode}{class}
-\cs_new:Nn\__skrapport_caption_name_style:{\small\bfseries}
+\cs_new_protected:Nn\__skrapport_caption_name_style:{\small\bfseries}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\__skrapport_caption_text_style:}
 \begin{MacroCode}{class}
-\cs_new:Nn\__skrapport_caption_text_style:{\small\itshape}
+\cs_new_protected:Nn\__skrapport_caption_text_style:{\small\itshape}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -2836,7 +2836,8 @@
     \begin{macro*}{\@idxitem}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\@idxitem{}{
-    \par\hangindent{40pt}
+    \par
+    \dim_set:Nn\hangindent{40pt}
 }
 \end{MacroCode}
     \end{macro*}
