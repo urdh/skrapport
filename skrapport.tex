@@ -1577,8 +1577,10 @@
 \dim_gset:Nn\normallineskip{1pt}
 \end{MacroCode}
     \begin{macro}{\baselinestretch}
+    Note that we can't use \cs{RenewDocumentCommand} as that yields an
+    infinite loop before or at \env{document}.
 \begin{MacroCode}{class}
-\RenewDocumentCommand\baselinestretch{}{}
+\cs_set:Npn\baselinestretch{}
 \end{MacroCode}
     \end{macro}
 
@@ -1846,8 +1848,8 @@
     macro (they have to sync the width of the first minipage, which has
     to be calculated at the first use).
 \begin{MacroCode}{class}
-    \dim_set_to_wd:\l_tmpa_dim{\bfseries\abstractname}
-    \dim_set:Nn\l_tmbp_dim
+    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
@@ -1869,8 +1871,8 @@
 \begin{MacroCode}{class}
 \dim_const:Nn\c__skrapport_abstract_separator_dim{1em}
 \DeclareDocumentEnvironment{abstract}{}{
-    \dim_set_to_wd:\l_tmpa_dim{\bfseries\abstractname}
-    \dim_set:Nn\l_tmbp_dim
+    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
@@ -3171,7 +3173,7 @@
     \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 2pt}
     \skip_gset:Nn   \belowdisplayshortskip {4pt   plus 2pt minus 2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{4pt plus 2pt minus 2pt}
         \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
@@ -3188,7 +3190,7 @@
     \skip_gset:Nn   \abovedisplayshortskip {0pt plus 1pt}
     \skip_gset:Nn   \belowdisplayshortskip {3pt plus 1pt minus 2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{3pt plus 1pt minus 1pt}
         \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
@@ -3360,7 +3362,7 @@
     \skip_gset:Nn   \abovedisplayshortskip {0pt  plus 2pt}
     \skip_gset:Nn   \belowdisplayshortskip {6pt  plus 3pt minus 3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{6pt plus 2pt minus 2pt}
         \skip_gset:Nn\parsep{3pt plus 2pt minus 1pt}
@@ -3377,7 +3379,7 @@
     \skip_gset:Nn   \abovedisplayshortskip {0pt plus 1pt}
     \skip_gset:Nn   \belowdisplayshortskip {4pt plus 2pt minus 2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{4pt plus 2pt minus 2pt}
         \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
@@ -3549,7 +3551,7 @@
     \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 3pt}
     \skip_gset:Nn   \belowdisplayshortskip {6.5pt plus 3.5pt minus 3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{  9pt plus 3pt minus 5pt}
         \skip_gset:Nn\parsep{4.5pt plus 2pt minus 1pt}
@@ -3566,7 +3568,7 @@
     \skip_gset:Nn   \abovedisplayshortskip { 0pt plus 3pt}
     \skip_gset:Nn   \belowdisplayshortskip { 6pt plus 3pt minus 3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
-    \cs_gset:Nn\@listi{
+    \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
         \skip_gset:Nn\topsep{6pt plus 2pt minus 2pt}
         \skip_gset:Nn\parsep{3pt plus 2pt minus 1pt}
