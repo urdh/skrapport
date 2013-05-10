@@ -1991,7 +1991,32 @@
         {Space after the section title}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_post_section:n#1{
-    \@xsect{#1} % !!!
+    \skip_set:Nn\l_tmpa_skip{#1}
+    \int_compare:nTF{\l_tmpa_skip>\c_zero}{
+        \par\nobreak
+        \skip_vertical:N\l_tmpa_skip
+        \@afterheading % !!!
+    }{
+        \@nobreakfalse
+        \global\@noskipsectrue
+        \everypar{
+            \if@noskipsec
+                \global\@noskipsecfalse
+                {\box_set_to_last:N\c_zero}
+                \clubpenalty\@M % !!!
+                \group_begin:
+                    \cs_if_exist_use:N\__skrapport_saved_section:
+                \group_end:
+                \unskip
+                \skip_set:Nn\l_tmpa_skip{-#1}
+                \skip_horizontal:N\l_tmpa_skip
+            \else
+                \clubpenalty\@clubpenalty % !!!
+                \everypar{}
+            \fi
+        }
+    }
+    \ignorespaces
 }
 \end{MacroCode}
     \end{macro}
@@ -2041,21 +2066,18 @@
         {Section title for TOC}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
-    \if_int_compare:w #2>\ctr_use:n{secnumdepth} % !!!
-        \cs_set:Nn\__skrapport_saved_section:{}
-    \else:
+    \cs_set:Nn\__skrapport_saved_section:{}
+    \int_compare:nF{#2>\ctr_use:n{secnumdepth}}{
         \ctr_ref_gincr:n{#1}
-        \cs_set_protected:Nn\__skrapport_saved_section:{
-            \use:c{#1}
-        }
-    \fi:
-    \__skrapport_section_star:nnn
+        \cs_set:Nn\__skrapport_saved_section:{\use:c{the#1}~}
+    }
+    \__skrapport_section_star:nnnn
         {#3}{#4}{#5}{\__skrapport_saved_section:}
     \use:c{#1mark}{#6}
     \addcontentsline{toc}{#1}{
-        \if_int_compare:w #2>\ctr_use:n{secnumdepth} \else: % !!!
+        \int_compare:nF{#2>\ctr_use:n{secnumdepth}}{
             \protect\numberline{\csname the#1\endcsname} % !!!
-        \fi:
+        }
         #6
     }
 }
@@ -2065,24 +2087,24 @@
     \paragraph{Generic sectioning macros}
     We will now set up a generic sectioning macro. First, we need
     version of the above macros that expand their arguments.
-    \begin{macro*}{\__skrapport_pre_section:x}
+    \begin{macro*}{\__skrapport_pre_section:c}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_pre_section:n{x}
+\cs_generate_variant:Nn\__skrapport_pre_section:n{c}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_post_section:x}
+    \begin{macro*}{\__skrapport_post_section:c}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_post_section:n{x}
+\cs_generate_variant:Nn\__skrapport_post_section:n{c}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_section_star:xxn}
+    \begin{macro*}{\__skrapport_section_star:ccn}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_section_star:nnn{xxn}
+\cs_generate_variant:Nn\__skrapport_section_star:nnn{ccn}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_section_nostar:nnxxnn}
+    \begin{macro*}{\__skrapport_section_nostar:nnccnn}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnxxnn}
+\cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnccnn}
 \end{MacroCode}
     \end{macro*}
 
@@ -2100,30 +2122,30 @@
         {Section title text}
 \begin{MacroCode}{class}
 \cs_set:Nn\__skrapport_generic_section:nnnnn{
-    \__skrapport_pre_section:x{\use:c{c__skrapport_#1_pre_skip}}
+    \__skrapport_pre_section:c{c__skrapport_#1_pre_skip}
     \IfBooleanTF#3{
-        \__skrapport_section_star:xxn
-            {\use:c{c__skrapport_#1_indent_dim}}
-            {\use:c{__skrapport_#1_style:}}
+        \__skrapport_section_star:ccn
+            {c__skrapport_#1_indent_dim}
+            {__skrapport_#1_style:}
             {#5}
     }{
         \IfNoValueTF{#4}{
-            \__skrapport_section_nostar:nnxxnn
+            \__skrapport_section_nostar:nnccnn
                 {#1}{#2}
-                {\use:c{c__skrapport_#1_indent_dim}}
-                {\use:c{__skrapport_#1_style:}}
+                {c__skrapport_#1_indent_dim}
+                {__skrapport_#1_style:}
                 {#5}
                 {#5}
         }{
-            \__skrapport_section_nostar:nnxxnn
+            \__skrapport_section_nostar:nnccnn
                 {#1}{#2}
-                {\use:c{c__skrapport_#1_indent_dim}}
-                {\use:c{__skrapport_#1_style:}}
+                {c__skrapport_#1_indent_dim}
+                {__skrapport_#1_style:}
                 {#5}
                 {#4}
         }
     }
-    \__skrapport_post_section:x{\use:c{c__skrapport_#1_post_skip}}
+    \__skrapport_post_section:c{c__skrapport_#1_post_skip}
 }
 \end{MacroCode}
     \end{macro}
@@ -2422,7 +2444,7 @@
     \begin{list}{}{
         \dim_zero:N\labelwidth
         \dim_set:Nn\itemindent{-\leftmargin}
-        \cs_set_eq:Nn\makelabel\descriptionlabel
+        \cs_set_eq:NN\makelabel\descriptionlabel
     }
 }{
     \end{list}
