@@ -927,9 +927,9 @@
     half-lifted from \pkg{parskip} and converted to \LaTeX3.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_parskip:{
-    \skip_gset:Nn\parskip{0.5\baselineskip plus 2pt}
+    \skip_gset:Nn\parskip{0.5\baselineskip~plus~2pt}
     \dim_gzero:N\parindent
-    \skip_gset:Nn\parfillskip{30pt plus 1fil}
+    \skip_gset:Nn\parfillskip{30pt~plus~1fil}
 \end{MacroCode}
     \begin{macro*}{\@listI}
     \begin{macro*}{\@listi}
@@ -1646,10 +1646,12 @@
     The \cs{date} macro sets the current date of the document. It only
     accepts dates accepted by \pkg{isodate} (or the special value
     \enquote{\texttt{today}}). Dates are always printed using the
-    current format as specified by the \pkg{isodate} package.
+    current format as specified by the \pkg{isodate} package. The default
+    value of the date (if \cs{date} isn't used) is \cs{today}.
     \begin{macro*}{\g__skrapport_title_tl}
 \begin{MacroCode}{class}
 \tl_new:N\g__skrapport_date_tl
+\tl_gset:Nn\g__skrapport_date_tl{\today}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -1826,6 +1828,7 @@
         {
             \small\__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_regarding_tl
+            \tl_if_empty:NF\g__skrapport_regarding_tl{,~}
             \tl_use:N\g__skrapport_date_tl\par
         }
         \vspace{1.5cm}
@@ -2163,13 +2166,13 @@
     \begin{macro*}{\c__skrapport_section_pre_skip}
     This is the skip \emph{before} a section title.
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_section_pre_skip{-4ex plus 1ex minus -1ex}
+\skip_const:Nn\c__skrapport_section_pre_skip{-4ex~plus~1ex~minus~-1ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_section_post_skip}
     This is the skip \emph{after} a section title.
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_section_post_skip{.5ex plus .5ex}
+\skip_const:Nn\c__skrapport_section_post_skip{.5ex~plus~.5ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_section_indent_dim}
@@ -2201,12 +2204,12 @@
         {Sectioning title}
     \begin{macro*}{\c__skrapport_subsection_pre_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_subsection_pre_skip{-3ex plus 1ex minus -1ex}
+\skip_const:Nn\c__skrapport_subsection_pre_skip{-3ex~plus~1ex~minus~-1ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsection_post_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_subsection_post_skip{.25ex plus .25ex}
+\skip_const:Nn\c__skrapport_subsection_post_skip{.25ex~plus~.25ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsection_indent_dim}
@@ -2232,12 +2235,12 @@
         {Sectioning title}
     \begin{macro*}{\c__skrapport_subsubsection_pre_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_subsubsection_pre_skip{-2ex plus .5ex minus -.5ex}
+\skip_const:Nn\c__skrapport_subsubsection_pre_skip{-2ex~plus~.5ex~minus~-.5ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsubsection_post_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_subsubsection_post_skip{.125ex plus .125ex}
+\skip_const:Nn\c__skrapport_subsubsection_post_skip{.125ex~plus~.125ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_subsubsection_indent_dim}
@@ -2263,7 +2266,7 @@
         {Sectioning title}
     \begin{macro*}{\c__skrapport_paragraph_pre_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_paragraph_pre_skip{1ex plus .25ex minus -.25ex}
+\skip_const:Nn\c__skrapport_paragraph_pre_skip{1ex~plus~.25ex~minus~-.25ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_paragraph_post_skip}
@@ -2294,7 +2297,7 @@
         {Sectioning title}
     \begin{macro*}{\c__skrapport_subparagraph_pre_skip}
 \begin{MacroCode}{class}
-\skip_const:Nn\c__skrapport_subparagraph_pre_skip{1ex plus .25ex minus -.25ex}
+\skip_const:Nn\c__skrapport_subparagraph_pre_skip{1ex~plus~.25ex~minus~-.25ex}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\c__skrapport_subparagraph_post_skip}
@@ -2834,7 +2837,7 @@
     \begin{macro*}{\newblock}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\newblock{}{
-    \skip_horizontal:n{.11em plus .33em minus .07em}
+    \skip_horizontal:n{.11em~plus~.33em~minus~.07em}
 }
 \end{MacroCode}
     \end{macro*}
@@ -2846,7 +2849,7 @@
     \begin{multicols}{2}[\section*{\indexname}]
     \thispagestyle{plain}
     \dim_zero:N\parindent
-    \skip_set:N\parskip{\c_zero_skip plus .3pt}
+    \skip_set:N\parskip{\c_zero_skip~plus~.3pt}
     \dim_zero:N\columnseprule
     \dim_set:Nn\columnsep{35pt}
     \cs_set_eq:NN\item\@idxitem
@@ -2883,7 +2886,7 @@
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\indexspace{}{
     \par
-    \skip_vertical:n{10pt plus 5pt minus 3pt}
+    \skip_vertical:n{10pt~plus~5pt~minus~3pt}
 }
 \end{MacroCode}
     \end{macro*}
@@ -3159,6 +3162,7 @@
 \begin{MacroCode}{size-common}
 \cs_new:Npn\__skrapport_set_font_size:nn#1#2{
     \fontsize{#1}{#2} % !!!
+    \selectfont
 }
 \end{MacroCode}
     \end{macro}
@@ -3177,9 +3181,9 @@
 \begin{MacroCode}{size-10}
 \RenewDocumentCommand\normalsize{}{
     \__skrapport_set_font_size:nn{10}{12}
-    \skip_gset:Nn   \abovedisplayskip      {10pt plus 2pt minus 5pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt  plus 3pt}
-    \skip_gset:Nn   \belowdisplayshortskip {6pt  plus 3pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {10pt~plus~2pt~minus~5pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt ~plus~3pt}
+    \skip_gset:Nn   \belowdisplayshortskip {6pt ~plus~3pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset_eq:NN\@listi\@listI
 }
@@ -3192,14 +3196,14 @@
 \begin{MacroCode}{size-10}
 \NewDocumentCommand\small{}{
     \__skrapport_set_font_size:nn{9}{11}
-    \skip_gset:Nn   \abovedisplayskip      {8.5pt plus 3pt minus 4pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 2pt}
-    \skip_gset:Nn   \belowdisplayshortskip {4pt   plus 2pt minus 2pt}
+    \skip_gset:Nn   \abovedisplayskip      {8.5pt~plus~3pt~minus~4pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt  ~plus~2pt}
+    \skip_gset:Nn   \belowdisplayshortskip {4pt  ~plus~2pt~minus~2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{4pt plus 2pt minus 2pt}
-        \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
+        \skip_gset:Nn\topsep{4pt~plus~2pt~minus~2pt}
+        \skip_gset:Nn\parsep{2pt~plus~1pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3209,14 +3213,14 @@
 \begin{MacroCode}{size-10}
 \NewDocumentCommand\footnotesize{}{
     \__skrapport_set_font_size:nn{8}{9.5}
-    \skip_gset:Nn   \abovedisplayskip      {6pt plus 2pt minus 4pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt plus 1pt}
-    \skip_gset:Nn   \belowdisplayshortskip {3pt plus 1pt minus 2pt}
+    \skip_gset:Nn   \abovedisplayskip      {6pt~plus~2pt~minus~4pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt~plus~1pt}
+    \skip_gset:Nn   \belowdisplayshortskip {3pt~plus~1pt~minus~2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{3pt plus 1pt minus 1pt}
-        \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
+        \skip_gset:Nn\topsep{3pt~plus~1pt~minus~1pt}
+        \skip_gset:Nn\parsep{2pt~plus~1pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3273,9 +3277,9 @@
     \end{macro}
 \begin{MacroCode}{size-10}
 \dim_set:Nn\parindent {15pt}
-\skip_set:Nn\smallskipamount{ 3pt plus 1pt minus 1pt}
-\skip_set:Nn\medskipamount  { 6pt plus 2pt minus 2pt}
-\skip_set:Nn\bigskipamount  {12pt plus 4pt minus 4pt}
+\skip_set:Nn\smallskipamount{ 3pt~plus~1pt~minus~1pt}
+\skip_set:Nn\medskipamount  { 6pt~plus~2pt~minus~2pt}
+\skip_set:Nn\bigskipamount  {12pt~plus~4pt~minus~4pt}
 \dim_set:Nn\headheight{12pt}
 \dim_set:Nn\headsep   {25pt}
 \dim_set:Nn\topskip   {10pt}
@@ -3299,45 +3303,45 @@
                       -\textheight-\footskip
                       -.5\topmargin}
 \dim_set:Nn\footnotesep{6.65pt}
-\skip_set:Nn{\skip\footins} { 9pt plus 4pt minus 2pt}
-\skip_set:Nn\floatsep       {12pt plus 2pt minus 2pt}
-\skip_set:Nn\textfloatsep   {20pt plus 2pt minus 4pt}
-\skip_set:Nn\intextsep      {12pt plus 2pt minus 2pt}
-\skip_set:Nn\dblfloatsep    {12pt plus 2pt minus 2pt}
-\skip_set:Nn\dbltextfloatsep{20pt plus 2pt minus 4pt}
+\skip_set:Nn{\skip\footins} { 9pt~plus~4pt~minus~2pt}
+\skip_set:Nn\floatsep       {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\textfloatsep   {20pt~plus~2pt~minus~4pt}
+\skip_set:Nn\intextsep      {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\dblfloatsep    {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\dbltextfloatsep{20pt~plus~2pt~minus~4pt}
 \end{MacroCode}
     These six have been changed slightly compared to \file{size10.clo}.
 \begin{MacroCode}{size-10}
 \skip_set:Nn\@fptop{ 5pt}
-\skip_set:Nn\@fpsep{10pt plus 2fil}
+\skip_set:Nn\@fpsep{10pt~plus~2fil}
 \skip_set:Nn\@fpbot{ 5pt}
 \skip_set:Nn\@dblfptop{ 5pt}
-\skip_set:Nn\@dblfpsep{10pt plus 2fil}
+\skip_set:Nn\@dblfpsep{10pt~plus~2fil}
 \skip_set:Nn\@dblfpbot{ 5pt}
 \end{MacroCode}
 \begin{MacroCode}{size-10}
-\skip_set:Nn\partopsep{2pt plus 1pt minus 1pt}
+\skip_set:Nn\partopsep{2pt~plus~1pt~minus~1pt}
 \cs_new:Npn\@listi{
     \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep {4pt plus 2pt minus 1pt}
-    \skip_gset:Nn\topsep {8pt plus 2pt minus 4pt}
-    \skip_gset:Nn\itemsep{4pt plus 2pt minus 1pt}
+    \skip_gset:Nn\parsep {4pt~plus~2pt~minus~1pt}
+    \skip_gset:Nn\topsep {8pt~plus~2pt~minus~4pt}
+    \skip_gset:Nn\itemsep{4pt~plus~2pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
 \@listi
 \cs_new:Npn\@listii{
     \dim_gset_eq:NN\leftmargin\leftmarginii
     \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {2pt plus 1pt minus 1pt}
-    \skip_gset:Nn\topsep {4pt plus 2pt minus 1pt}
+    \skip_gset:Nn\parsep {2pt~plus~1pt~minus~1pt}
+    \skip_gset:Nn\topsep {4pt~plus~2pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
     \dim_gset_eq:NN\leftmargin\leftmarginiii
     \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2pt plus 1pt minus 1pt}
-    \skip_gset:Nn\partopsep{1pt plus 0pt minus 1pt}
+    \skip_gset:Nn\topsep   {2pt~plus~1pt~minus~1pt}
+    \skip_gset:Nn\partopsep{1pt~plus~0pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
@@ -3366,9 +3370,9 @@
 \begin{MacroCode}{size-11}
 \RenewDocumentCommand\normalsize{}{
     \__skrapport_set_font_size:nn{11}{13.2}
-    \skip_gset:Nn   \abovedisplayskip      {11pt  plus 3pt   minus 6pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 3pt}
-    \skip_gset:Nn   \belowdisplayshortskip {6.5pt plus 3.5pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {11pt ~plus~3pt  ~minus~6pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt  ~plus~3pt}
+    \skip_gset:Nn   \belowdisplayshortskip {6.5pt~plus~3.5pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset_eq:NN\@listi\@listI
 }
@@ -3381,14 +3385,14 @@
 \begin{MacroCode}{size-11}
 \NewDocumentCommand\small{}{
     \__skrapport_set_font_size:nn{10}{12}
-    \skip_gset:Nn   \abovedisplayskip      {10pt plus 2pt minus 5pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt  plus 2pt}
-    \skip_gset:Nn   \belowdisplayshortskip {6pt  plus 3pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {10pt~plus~2pt~minus~5pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt ~plus~2pt}
+    \skip_gset:Nn   \belowdisplayshortskip {6pt ~plus~3pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{6pt plus 2pt minus 2pt}
-        \skip_gset:Nn\parsep{3pt plus 2pt minus 1pt}
+        \skip_gset:Nn\topsep{6pt~plus~2pt~minus~2pt}
+        \skip_gset:Nn\parsep{3pt~plus~2pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3398,14 +3402,14 @@
 \begin{MacroCode}{size-11}
 \NewDocumentCommand\footnotesize{}{
     \__skrapport_set_font_size:nn{9}{11}
-    \skip_gset:Nn   \abovedisplayskip      {8pt plus 2pt minus 4pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt plus 1pt}
-    \skip_gset:Nn   \belowdisplayshortskip {4pt plus 2pt minus 2pt}
+    \skip_gset:Nn   \abovedisplayskip      {8pt~plus~2pt~minus~4pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt~plus~1pt}
+    \skip_gset:Nn   \belowdisplayshortskip {4pt~plus~2pt~minus~2pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{4pt plus 2pt minus 2pt}
-        \skip_gset:Nn\parsep{2pt plus 1pt minus 1pt}
+        \skip_gset:Nn\topsep{4pt~plus~2pt~minus~2pt}
+        \skip_gset:Nn\parsep{2pt~plus~1pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3462,9 +3466,9 @@
     \end{macro}
 \begin{MacroCode}{size-11}
 \dim_set:Nn\parindent {17pt}
-\skip_set:Nn\smallskipamount{ 3pt plus 1pt minus 1pt}
-\skip_set:Nn\medskipamount  { 6pt plus 2pt minus 2pt}
-\skip_set:Nn\bigskipamount  {12pt plus 4pt minus 4pt}
+\skip_set:Nn\smallskipamount{ 3pt~plus~1pt~minus~1pt}
+\skip_set:Nn\medskipamount  { 6pt~plus~2pt~minus~2pt}
+\skip_set:Nn\bigskipamount  {12pt~plus~4pt~minus~4pt}
 \dim_set:Nn\headheight{12pt}
 \dim_set:Nn\headsep   {25pt}
 \dim_set:Nn\topskip   {10pt}
@@ -3488,45 +3492,45 @@
                       -\textheight-\footskip
                       -.5\topmargin}
 \dim_set:Nn\footnotesep{7.7pt}
-\skip_set:Nn{\skip\footins} {10pt plus 4pt minus 2pt}
-\skip_set:Nn\floatsep       {12pt plus 2pt minus 2pt}
-\skip_set:Nn\textfloatsep   {20pt plus 2pt minus 4pt}
-\skip_set:Nn\intextsep      {12pt plus 2pt minus 2pt}
-\skip_set:Nn\dblfloatsep    {12pt plus 2pt minus 2pt}
-\skip_set:Nn\dbltextfloatsep{20pt plus 2pt minus 4pt}
+\skip_set:Nn{\skip\footins} {10pt~plus~4pt~minus~2pt}
+\skip_set:Nn\floatsep       {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\textfloatsep   {20pt~plus~2pt~minus~4pt}
+\skip_set:Nn\intextsep      {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\dblfloatsep    {12pt~plus~2pt~minus~2pt}
+\skip_set:Nn\dbltextfloatsep{20pt~plus~2pt~minus~4pt}
 \end{MacroCode}
     These six have been changed slightly compared to \file{size11.clo}.
 \begin{MacroCode}{size-11}
 \skip_set:Nn\@fptop{5.5pt}
-\skip_set:Nn\@fpsep{ 11pt plus 2fil}
+\skip_set:Nn\@fpsep{ 11pt~plus~2fil}
 \skip_set:Nn\@fpbot{5.5pt}
 \skip_set:Nn\@dblfptop{5.5pt}
-\skip_set:Nn\@dblfpsep{ 11pt plus 2fil}
+\skip_set:Nn\@dblfpsep{ 11pt~plus~2fil}
 \skip_set:Nn\@dblfpbot{5.5pt}
 \end{MacroCode}
 \begin{MacroCode}{size-11}
-\skip_set:Nn\partopsep{3pt plus 1pt minus 1pt}
+\skip_set:Nn\partopsep{3pt~plus~1pt~minus~1pt}
 \cs_new:Npn\@listi{
     \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep {4.5pt plus 2pt minus 1pt}
-    \skip_gset:Nn\topsep {  9pt plus 3pt minus 5pt}
-    \skip_gset:Nn\itemsep{4.5pt plus 2pt minus 1pt}
+    \skip_gset:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
+    \skip_gset:Nn\topsep {  9pt~plus~3pt~minus~5pt}
+    \skip_gset:Nn\itemsep{4.5pt~plus~2pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
 \@listi
 \cs_new:Npn\@listii{
     \dim_gset_eq:NN\leftmargin\leftmarginii
     \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {  2pt plus 1pt minus 1pt}
-    \skip_gset:Nn\topsep {4.5pt plus 2pt minus 1pt}
+    \skip_gset:Nn\parsep {  2pt~plus~1pt~minus~1pt}
+    \skip_gset:Nn\topsep {4.5pt~plus~2pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
     \dim_gset_eq:NN\leftmargin\leftmarginiii
     \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2pt plus 1pt minus 1pt}
-    \skip_gset:Nn\partopsep{1pt plus 0pt minus 1pt}
+    \skip_gset:Nn\topsep   {2pt~plus~1pt~minus~1pt}
+    \skip_gset:Nn\partopsep{1pt~plus~0pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
@@ -3555,9 +3559,9 @@
 \begin{MacroCode}{size-12}
 \RenewDocumentCommand\normalsize{}{
     \__skrapport_set_font_size:nn{12}{14.5}
-    \skip_gset:Nn   \abovedisplayskip      {12pt  plus 3pt   minus 7pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 3pt}
-    \skip_gset:Nn   \belowdisplayshortskip {6.5pt plus 3.5pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {12pt ~plus~3pt  ~minus~7pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt  ~plus~3pt}
+    \skip_gset:Nn   \belowdisplayshortskip {6.5pt~plus~3.5pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset_eq:NN\@listi\@listI
 }
@@ -3570,14 +3574,14 @@
 \begin{MacroCode}{size-12}
 \NewDocumentCommand\small{}{
     \__skrapport_set_font_size:nn{11}{13.6}
-    \skip_gset:Nn   \abovedisplayskip      {11pt  plus 3pt   minus 6pt}
-    \skip_gset:Nn   \abovedisplayshortskip {0pt   plus 3pt}
-    \skip_gset:Nn   \belowdisplayshortskip {6.5pt plus 3.5pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {11pt ~plus~3pt  ~minus~6pt}
+    \skip_gset:Nn   \abovedisplayshortskip {0pt  ~plus~3pt}
+    \skip_gset:Nn   \belowdisplayshortskip {6.5pt~plus~3.5pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{  9pt plus 3pt minus 5pt}
-        \skip_gset:Nn\parsep{4.5pt plus 2pt minus 1pt}
+        \skip_gset:Nn\topsep{  9pt~plus~3pt~minus~5pt}
+        \skip_gset:Nn\parsep{4.5pt~plus~2pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3587,14 +3591,14 @@
 \begin{MacroCode}{size-12}
 \NewDocumentCommand\footnotesize{}{
     \__skrapport_set_font_size:nn{10}{12}
-    \skip_gset:Nn   \abovedisplayskip      {10pt plus 2pt minus 5pt}
-    \skip_gset:Nn   \abovedisplayshortskip { 0pt plus 3pt}
-    \skip_gset:Nn   \belowdisplayshortskip { 6pt plus 3pt minus 3pt}
+    \skip_gset:Nn   \abovedisplayskip      {10pt~plus~2pt~minus~5pt}
+    \skip_gset:Nn   \abovedisplayshortskip { 0pt~plus~3pt}
+    \skip_gset:Nn   \belowdisplayshortskip { 6pt~plus~3pt~minus~3pt}
     \skip_gset_eq:NN\belowdisplayskip      \abovedisplayskip
     \cs_gset:Npn\@listi{
         \dim_gset_eq:NN\leftmargin\leftmargini
-        \skip_gset:Nn\topsep{6pt plus 2pt minus 2pt}
-        \skip_gset:Nn\parsep{3pt plus 2pt minus 1pt}
+        \skip_gset:Nn\topsep{6pt~plus~2pt~minus~2pt}
+        \skip_gset:Nn\parsep{3pt~plus~2pt~minus~1pt}
         \skip_gset_eq:NN\itemsep\parsep
     }
 }
@@ -3652,9 +3656,9 @@
     \end{macro}
 \begin{MacroCode}{size-12}
 \dim_set:Nn\parindent{1.5em}
-\skip_set:Nn\smallskipamount{ 3pt plus 1pt minus 1pt}
-\skip_set:Nn\medskipamount  { 6pt plus 2pt minus 2pt}
-\skip_set:Nn\bigskipamount  {12pt plus 4pt minus 4pt}
+\skip_set:Nn\smallskipamount{ 3pt~plus~1pt~minus~1pt}
+\skip_set:Nn\medskipamount  { 6pt~plus~2pt~minus~2pt}
+\skip_set:Nn\bigskipamount  {12pt~plus~4pt~minus~4pt}
 \dim_set:Nn\headheight{12pt}
 \dim_set:Nn\headsep   {25pt}
 \dim_set:Nn\topskip   {10pt}
@@ -3678,45 +3682,45 @@
                       -\textheight-\footskip
                       -.5\topmargin}
 \dim_set:Nn\footnotesep{8.4pt}
-\skip_set:Nn{\skip\footins} {10.8pt plus 4pt minus 2pt}
-\skip_set:Nn\floatsep       {12pt   plus 2pt minus 4pt}
-\skip_set:Nn\textfloatsep   {20pt   plus 2pt minus 4pt}
-\skip_set:Nn\intextsep      {14pt   plus 4pt minus 4pt}
-\skip_set:Nn\dblfloatsep    {14pt   plus 2pt minus 4pt}
-\skip_set:Nn\dbltextfloatsep{20pt   plus 2pt minus 4pt}
+\skip_set:Nn{\skip\footins} {10.8pt~plus~4pt~minus~2pt}
+\skip_set:Nn\floatsep       {12pt  ~plus~2pt~minus~4pt}
+\skip_set:Nn\textfloatsep   {20pt  ~plus~2pt~minus~4pt}
+\skip_set:Nn\intextsep      {14pt  ~plus~4pt~minus~4pt}
+\skip_set:Nn\dblfloatsep    {14pt  ~plus~2pt~minus~4pt}
+\skip_set:Nn\dbltextfloatsep{20pt  ~plus~2pt~minus~4pt}
 \end{MacroCode}
     These six have been changed slightly compared to \file{size11.clo}.
 \begin{MacroCode}{size-11}
 \skip_set:Nn\@fptop{ 6pt}
-\skip_set:Nn\@fpsep{12pt plus 2fil}
+\skip_set:Nn\@fpsep{12pt~plus~2fil}
 \skip_set:Nn\@fpbot{ 6pt}
 \skip_set:Nn\@dblfptop{ 6pt}
-\skip_set:Nn\@dblfpsep{12pt plus 2fil}
+\skip_set:Nn\@dblfpsep{12pt~plus~2fil}
 \skip_set:Nn\@dblfpbot{ 6pt}
 \end{MacroCode}
 \begin{MacroCode}{size-11}
-\skip_set:Nn\partopsep{3pt plus 2pt minus 2pt}
+\skip_set:Nn\partopsep{3pt~plus~2pt~minus~2pt}
 \cs_new:Npn\@listi{
     \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep { 5pt plus 2.5pt minus 1pt}
-    \skip_gset:Nn\topsep {10pt plus 4pt   minus 6pt}
-    \skip_gset:Nn\itemsep{ 5pt plus 2.5pt minus 1pt}
+    \skip_gset:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
+    \skip_gset:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
+    \skip_gset:Nn\itemsep{ 5pt~plus~2.5pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
 \@listi
 \cs_new:Npn\@listii{
     \dim_gset_eq:NN\leftmargin\leftmarginii
     \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {2.5pt plus 1pt   minus 1pt}
-    \skip_gset:Nn\topsep {  5pt plus 2.5pt minus 1pt}
+    \skip_gset:Nn\parsep {2.5pt~plus~1pt  ~minus~1pt}
+    \skip_gset:Nn\topsep {  5pt~plus~2.5pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
     \dim_gset_eq:NN\leftmargin\leftmarginiii
     \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2.5pt plus 1pt minus 1pt}
-    \skip_gset:Nn\partopsep{  1pt plus 0pt minus 1pt}
+    \skip_gset:Nn\topsep   {2.5pt~plus~1pt~minus~1pt}
+    \skip_gset:Nn\partopsep{  1pt~plus~0pt~minus~1pt}
     \skip_gset_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
