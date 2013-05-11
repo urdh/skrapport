@@ -1895,16 +1895,16 @@
     \begin{macro}{\ps@skrapport@titlepage}
 \begin{MacroCode}{class}
 \cs_new:Npn\ps@skrapport@titlepage{
-    \cs_gset:Nn\@oddhead{}
-    \cs_gset:Nn\@evenhead{}
-    \cs_gset:Nn\@oddfoot{
+    \cs_gset:Npn\@oddhead{}
+    \cs_gset:Npn\@evenhead{}
+    \cs_gset:Npn\@oddfoot{
         \begin{minipage}{\textwidth}
             \raggedleft\small\par
             \__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_copyright_tl
         \end{minipage}
     }
-    \cs_gset_eq:Nn\@evenfoot\@oddfoot
+    \cs_gset_eq:NN\@evenfoot\@oddfoot
 }
 \end{MacroCode}
     \end{macro}
@@ -2660,14 +2660,14 @@
     \begin{environment*}{figure*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{figure}{o}{
-    \exp_args:Nnx\@float{figure} % !!!
-    \IfNoValueTF{#1}{[\fps@figure]}{[#1]}
+    \exp_args:Nno\@float{figure} % !!!
+    {\IfNoValueTF{#1}{[\fps@figure]}{[#1]}}
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{figure*}{o}{
-    \exp_args:Nnx\@dblfloat{figure} % !!!
-    \IfNoValueTF{#1}{[\fps@figure]}{[#1]}
+    \exp_args:Nno\@dblfloat{figure} % !!!
+    {\IfNoValueTF{#1}{[\fps@figure]}{[#1]}}
 }{
     \end@dblfloat
 }
@@ -2678,14 +2678,14 @@
     \begin{environment*}{table*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{table}{o}{
-    \exp_args:Nnx\@float{table} % !!!
-    \IfNoValueTF{#1}{[\fps@table]}{[#1]}
+    \exp_args:Nno\@float{table} % !!!
+    {\IfNoValueTF{#1}{[\fps@table]}{[#1]}}
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{table*}{o}{
-    \exp_args:Nnx\@dblfloat{table} % !!!
-    \IfNoValueTF{#1}{[\fps@table]}{[#1]}
+    \exp_args:Nno\@dblfloat{table} % !!!
+    {\IfNoValueTF{#1}{[\fps@table]}{[#1]}}
 }{
     \end@dblfloat
 }
