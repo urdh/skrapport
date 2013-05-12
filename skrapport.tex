@@ -393,6 +393,9 @@
 \msg_new:nnnn{skrapport}{color-patch-failed}{Could~not~patch~macro~\token_to_str:N#1!}
     {The~macro~\token_to_str:N#1~could~not~be~patched!~Color~theme~
     support~may~be~incomplete.}
+\msg_new:nnnn{skrapport}{license-not-printed}{Detected~\token_to_str:N\license~but~no~`titlepage'!}
+    {The~text~provided~by~\token_to_str:N\license~is~only~printed~when~
+    the~`titlepage'~environment~is~used,~but~it~seems~to~be~missing.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -1772,11 +1775,21 @@
     \changes{0.07}{Added command \cs{license}}
     This macro defines a variable used by \cs{maketitle} to insert a 
     license into the footer on the titlepage.
+    \begin{macro*}{\g__skrapport_copyright_unprinted_bool}
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_copyright_unprinted_bool
+\AtEndDocument{
+    \bool_if:NT\g__skrapport_copyright_unprinted_bool
+        {\msg_warning:nn{skrapport}{license-not-printed}}
+}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\g__skrapport_copyright_tl}
 \begin{MacroCode}{class}
 \tl_new:N\g__skrapport_copyright_tl
 \DeclareDocumentCommand\license{m}{
     \tl_gset:Nn\g__skrapport_copyright_tl{#1}
+    \bool_gset_true:N\g__skrapport_copyright_unprinted_bool
 }
 \end{MacroCode}
     \end{macro*}
@@ -1912,6 +1925,7 @@
 \DeclareDocumentEnvironment{titlepage}{}{
     \cleardoublepage\ctr_gset:nn{page}{1}
 }{
+    \bool_gset_false:N\g__skrapport_copyright_unprinted_bool
     \thispagestyle{skrapport@titlepage}
     \cleardoublepage\ctr_gset:nn{page}{1}
 }
