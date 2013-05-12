@@ -584,9 +584,11 @@
         \end{gridenv}
     }
     \RenewDocumentEnvironment{figure*}{o}{
+        \begin{onecol}
         \__skrapport_old_figurest:
     }{
         \__skrapport_old_endfigurest:
+        \end{onecol}
     }
 \end{MacroCode}
     \ldots as is \env{table}.
@@ -626,9 +628,11 @@
         }
     }
     \RenewDocumentEnvironment{table*}{o}{
+        \begin{onecol}
         \__skrapport_old_tablest:
     }{
         \__skrapport_old_endtablest:
+        \end{onecol}
     }
 \end{MacroCode}
     \begin{environment}{onecol}
@@ -1741,15 +1745,17 @@
     separating them with commas.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_email_list:{
-    \bool_set_false:N\l_tmpa_bool
-    \clist_map_inline:Nn\g__skrapport_email_clist{
-        \bool_if:NT\l_tmpa_bool{,~}
-        \IfNoValueTF{##1}{
-            \textemdash
-        }{
-            \__skrapport_email:n{##1}
+    \int_compare:nT{\clist_count:N\g__skrapport_author_clist>\c_zero}{
+        \bool_set_false:N\l_tmpa_bool
+        \clist_map_inline:Nn\g__skrapport_email_clist{
+            \bool_if:NT\l_tmpa_bool{\\}
+            \IfNoValueTF{##1}{
+                \textemdash
+            }{
+                \__skrapport_email:n{##1}
+            }
+            \bool_set_true:N\l_tmpa_bool
         }
-        \bool_set_true:N\l_tmpa_bool
     }
 }
 \end{MacroCode}
@@ -1915,16 +1921,16 @@
     \begin{macro}{\ps@skrapport@titlepage}
 \begin{MacroCode}{class}
 \cs_new:Npn\ps@skrapport@titlepage{
-    \cs_gset:Npn\@oddhead{}
-    \cs_gset:Npn\@evenhead{}
-    \cs_gset:Npn\@oddfoot{
+    \cs_set:Npn\@oddhead{}
+    \cs_set:Npn\@evenhead{}
+    \cs_set:Npn\@oddfoot{
         \begin{minipage}{\textwidth}
             \raggedleft\small\par
             \__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_copyright_tl
         \end{minipage}
     }
-    \cs_gset_eq:NN\@evenfoot\@oddfoot
+    \cs_set_eq:NN\@evenfoot\@oddfoot
 }
 \end{MacroCode}
     \end{macro}
@@ -1953,35 +1959,35 @@
     Next up, we have macros to display the section numberings.
     \begin{macro*}{\thesection}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\thesection{}{
+\cs_gset:Npn\thesection{
     \ctr_use_arabic:n{section}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsection}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\thesubsection{}{
+\cs_gset:Npn\thesubsection{
     \thesection.\ctr_use_arabic:n{subsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsubsection}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\thesubsubsection{}{
+\cs_gset:Npn\thesubsubsection{
     \thesubsection.\ctr_use_arabic:n{subsubsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theparagraph}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theparagraph{}{
+\cs_gset:Npn\theparagraph{
     \thesubsubsection.\ctr_use_arabic:n{paragraph}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\thesubparagraph{}{
+\cs_gset:Npn\thesubparagraph{
     \theparagraph.\ctr_use_arabic:n{subparagraph}
 }
 \end{MacroCode}
@@ -2088,10 +2094,6 @@
         {Styling of the section title}
         {Actual section title}
         {Section title for TOC}
-    There is a bug in this macro; the call to \cs{addcontentsline}
-    doesn't expand the argument to \cs{numberline} as it should. This
-    means that all section numbers are 0 in the TOC since the TOC file
-    contains \emph{e.g.} \cs{thesubsection} instead of \enquote{1.1}.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
     \cs_set:Nn\__skrapport_saved_section:{}
@@ -2104,7 +2106,7 @@
     \use:c{#1mark}{#6}
     \addcontentsline{toc}{#1}{
         \int_compare:nF{#2>\ctr_use:n{secnumdepth}}{
-            \protect\numberline{\csname the#1\endcsname} % !!!
+            \protect\numberline{\use:c{the#1}}
         }
         #6
     }
@@ -2681,20 +2683,30 @@
 \end{MacroCode}
 
     \paragraph{Environments}
+    \begin{macro}{\__skrapport_xfloat:nn}
+    \begin{macro*}{\__skrapport_xfloat:nx}
+    This is a helper macro basically replacing the \cs{@float} macro
+    used by \LaTeXe.
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_xfloat:nn#1#2{\@xfloat{#1}[#2]}
+\cs_generate_variant:Nn\__skrapport_xfloat:nn{nx}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro}
     \begin{environment}{figure}
     \begin{environment*}{figure*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{figure}{o}{
-    \exp_args:Nno\@float{figure} % !!!
-    {\IfNoValueTF{#1}{[\fps@figure]}{[#1]}}
+    \__skrapport_xfloat:nx{figure}
+        {\IfNoValueTF{#1}{\fps@figure}{#1}}
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{figure*}{o}{
-    \exp_args:Nno\@dblfloat{figure} % !!!
-    {\IfNoValueTF{#1}{[\fps@figure]}{[#1]}}
+    \__skrapport_xfloat:nx{figure}
+        {\IfNoValueTF{#1}{tp}{#1}}
 }{
-    \end@dblfloat
+    \end@float
 }
 \end{MacroCode}
     \end{environment*}
@@ -2703,16 +2715,16 @@
     \begin{environment*}{table*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{table}{o}{
-    \exp_args:Nno\@float{table} % !!!
-    {\IfNoValueTF{#1}{[\fps@table]}{[#1]}}
+    \__skrapport_xfloat:nx{table}
+        {\IfNoValueTF{#1}{\fps@table}{#1}}
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{table*}{o}{
-    \exp_args:Nno\@dblfloat{table} % !!!
-    {\IfNoValueTF{#1}{[\fps@table]}{[#1]}}
+    \__skrapport_xfloat:nx{table}
+        {\IfNoValueTF{#1}{tp}{#1}}
 }{
-    \end@dblfloat
+    \end@float
 }
 \end{MacroCode}
     \end{environment*}
