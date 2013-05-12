@@ -1668,7 +1668,6 @@
             \tl_gset:Nn\g__skrapport_date_tl{\printdate{#1}}
         \fi:
     }
-    \tl_gset:Nn\g__skrapport_title_tl{#1}
 }
 \end{MacroCode}
     \end{macro}
@@ -1722,14 +1721,15 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_author_list:{
     \int_zero:N\l_tmpa_int
+    \int_set:Nn\l_tmpb_int{\clist_count:N\g__skrapport_author_clist}
     \clist_map_inline:Nn\g__skrapport_author_clist{
-        \int_incr:N\l_tmpa_int
-        \int_compare:nT{\l_tmpa_int>\c_one}{
-            \int_compare:nTF
-                {\l_tmpa_int<\clist_count:N\g__skrapport_author_clist}
-                    {,~}{~\__skrapport_and_word:~}
-        }
+        \int_compare:nT{\l_tmpa_int>\c_zero}{~}
         ##1
+        \int_incr:N\l_tmpa_int
+        \int_compare:nT{\l_tmpa_int<\l_tmpb_int}{
+            \int_compare:nTF{\l_tmpa_int=\l_tmpb_int-1}
+                {~\__skrapport_and_word:}{,}
+        }
     }
 }
 \end{MacroCode}
@@ -1803,6 +1803,11 @@
 \cs_new_protected:Nn\__skrapport_smallprint_style:{}
 \end{MacroCode}
     \end{macro*}
+    \begin{macro*}{\__skrapport_abstract_style:}
+\begin{MacroCode}{class}
+\cs_new_protected:Nn\__skrapport_abstract_style:{}
+\end{MacroCode}
+    \end{macro*}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\maketitle{}{
     \par
@@ -1869,7 +1874,8 @@
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
-            \leavevmode\bfseries\__skrapport_Email_word:
+            \leavevmode\bfseries\__skrapport_abstract_style:
+            \__skrapport_Email_word:
         \end{flushright}
     \end{minipage}
     \hspace{\c__skrapport_abstract_separator_dim}
@@ -1892,7 +1898,8 @@
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
-            \leavevmode\bfseries\abstractname
+            \leavevmode\bfseries\__skrapport_abstract_style:
+            \abstractname
         \end{flushright}
     \end{minipage}
     \hspace{\c__skrapport_abstract_separator_dim}
@@ -2081,6 +2088,10 @@
         {Styling of the section title}
         {Actual section title}
         {Section title for TOC}
+    There is a bug in this macro; the call to \cs{addcontentsline}
+    doesn't expand the argument to \cs{numberline} as it should. This
+    means that all section numbers are 0 in the TOC since the TOC file
+    contains \emph{e.g.} \cs{thesubsection} instead of \enquote{1.1}.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
     \cs_set:Nn\__skrapport_saved_section:{}
@@ -2523,7 +2534,7 @@
     \par
     \ctr_gset:nn{section}{0}
     \ctr_gset:nn{subsection}{0}
-    \cs_gset:Nn\thesection{\ctr_use_Alph:n{section}}
+    \cs_gset:Npn\thesection{\ctr_use_Alph:n{section}}
 }
 \end{MacroCode}
     \end{macro}
@@ -2773,7 +2784,9 @@
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\tableofcontents{}{
   \section*{\contentsname}
+  \makeatletter
   \@starttoc{toc}
+  \makeatother
 }
 \end{MacroCode}
     \end{macro}
@@ -2911,7 +2924,7 @@
     \begin{macro}{\__skrapport_comment:n}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_comment:n#1{
-    {\textbf{\__skrapport_Comment_word:}~#1}
+    {\textbf{\__skrapport_Comment_word: :}~#1}
 }
 \end{MacroCode}
     \end{macro}
@@ -2957,10 +2970,8 @@
         {\color{skrapport@smallprintcolor}}{}
         {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_smallprint_style:}}
     \AtBeginDocument{
-        \cs_gset_eq:NN\__skrapport_old_abstractname:\abstractname
-        \cs_set:Npn\abstractname{
+        \cs_set_protected:Npn\__skrapport_abstract_style:{
             \color{skrapport@titlecolor}
-            \__skrapport_old_abstractname:
         }
     }
     \apptocmd{\quote}
