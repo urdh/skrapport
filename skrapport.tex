@@ -1878,13 +1878,8 @@
         \vspace{.75cm}
     \end{flushleft}
     \par
-\end{MacroCode}
-    This bit (which prints the email addresses) is based on the
-    \env{abstract} environment below and should probably be in the same
-    macro (they have to sync the width of the first minipage, which has
-    to be calculated at the first use).
-\begin{MacroCode}{class}
-    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
+    \bool_gset_false:N\g__skrapport_abstract_used
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
@@ -1902,13 +1897,48 @@
 \end{MacroCode}
     \end{macro*}
 
+    \begin{macro*}{\g__skrapport_abstract_used}
+    This boolean keeps track of wether the \env{abstract} environment has
+    been used, and is set accordingly in the main auxillary file.
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_abstract_used
+\AtEndDocument{
+    \iow_shipout:Nx\@mainaux{ % !!!
+        \exp_not:N\ExplSyntaxOn
+        \bool_if:NTF\g__skrapport_abstract_used
+            {\exp_not:n{\bool_gset_true:N\g__skrapport_abstract_used}}
+            {\exp_not:n{\bool_gset_false:N\g__skrapport_abstract_used}}
+        \exp_not:N\ExplSyntaxOff
+    }
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\dim_set_to_abstract_or_email_wd:N}[1]
+        {Dimension register}
+    This macro sets a dimension to either the width of the email word
+    or the width of the abstract word depending on the state of
+    \cs{g__skrapport_abstract_used}.
+\begin{MacroCode}{class}
+\cs_new:Npn\dim_set_to_abstract_or_email_wd:N#1{
+    \dim_set_to_wd:Nn\l_tmpa_dim
+        {\bfseries\abstractname\__skrapport_abstract_style:}
+    \dim_set_to_wd:Nn\l_tmpb_dim
+        {\bfseries\__skrapport_Email_word:\__skrapport_abstract_style:}
+    \bool_if:NTF\g__skrapport_abstract_used
+        {\dim_set:Nn#1{\dim_max:nn{\l_tmpa_dim}{\l_tmpb_dim}}}
+        {\dim_set_eq:NN#1\l_tmpb_dim}
+}
+\end{MacroCode}
+    \end{macro*}
+
     \begin{environment}{abstract}
     Standard restyled \env{abstract} environment from the
     \pkg{article} class.
 \begin{MacroCode}{class}
 \dim_const:Nn\c__skrapport_abstract_separator_dim{1em}
 \DeclareDocumentEnvironment{abstract}{}{
-    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \bool_gset_true:N\g__skrapport_abstract_used
+    \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
