@@ -34,6 +34,7 @@
 *.tdo
 *.cls
 *.sty
+*.clo
 *.bst
 *.pdf
 *.fls
