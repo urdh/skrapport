@@ -2599,11 +2599,8 @@
     \begin{macro*}{\__skrapport_emphstyle:}
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_emphstyle:{
-    \if_dim:w\fontdimen\c_one\font>\c_zero
-        \itshape\bfseries
-    \else:
-        \itshape
-    \fi:
+    \itshape
+    \dim_compare:nT{\fontdimen\c_one\font>\c_zero}{\bfseries}
 }
 \end{MacroCode}
     \end{macro*}
@@ -2613,7 +2610,7 @@
         \text{\__skrapport_emphstyle: #1}
     \else
         {\__skrapport_emphstyle: #1}
-    \fi:
+    \fi
 }
 \end{MacroCode}
     \end{macro}
@@ -2767,18 +2764,18 @@
         {\__skrapport_caption_name_style:#2}
         \color@endgroup % !!!
     }
-    \if_dim:w\box_wd:N\l_tmpa_box>\hsize
+    \dim_compare:nTF{\box_wd:N\l_tmpa_box>\hsize}{
         {\__skrapport_caption_name_style:#1:~}
         {\__skrapport_caption_name_style:#2}
         \par
-    \else:
+    }{
         \global\@minipagefalse % !!!
         \hbox_to_wd:nn{\hsize}{
             \hfil
             \box_use_clear:N\l_tmpa_box
             \hfil
         }
-    \fi:
+    }
     \skip_vertical:N\belowcaptionskip
 }
 \end{MacroCode}
