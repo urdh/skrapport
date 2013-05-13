@@ -943,39 +943,42 @@
     \begin{macro*}{\@listi}
 \begin{MacroCode}{class}
     \cs_gset:Npn\@listI{
-        \dim_gset_eq:NN\leftmargin\leftmargini
-        \dim_gset_eq:NN\parsep\parskip
-        \dim_gzero:N\topsep
-        \dim_gzero:N\itemsep
+        \dim_set_eq:NN\leftmargin\leftmargini
+        \dim_set_eq:NN\parsep\parskip
+        \dim_zero:N\topsep
+        \dim_zero:N\itemsep
     }
     \cs_gset_eq:NN\@listi\@listI
 \end{MacroCode}
     \end{macro*}
     \end{macro*}
 \begin{MacroCode}{class}
-    \@listi
+    \dim_gset_eq:NN\leftmargin\leftmargini
+    \dim_gset_eq:NN\parsep\parskip
+    \dim_gzero:N\topsep
+    \dim_gzero:N\itemsep
 \end{MacroCode}
     \begin{macro*}{\@listii}
 \begin{MacroCode}{class}
     \cs_gset:Npn\@listii{
-        \dim_gset_eq:NN\leftmargin\leftmarginii
-        \dim_gset_eq:NN\labelwidth\leftmarginii
-        \dim_gset_eq:NN\parsep\parskip
-        \dim_gsub:Nn\labelwidth{-\labelsep}
-        \dim_gzero:N\topsep
-        \dim_gzero:N\itemsep
+        \dim_set_eq:NN\leftmargin\leftmarginii
+        \dim_set_eq:NN\labelwidth\leftmarginii
+        \dim_set_eq:NN\parsep\parskip
+        \dim_sub:Nn\labelwidth{-\labelsep}
+        \dim_zero:N\topsep
+        \dim_zero:N\itemsep
     }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\@listiii}
 \begin{MacroCode}{class}
     \cs_gset:Npn\@listiii{
-        \dim_gset_eq:NN\leftmargin\leftmarginiii
-        \dim_gset_eq:NN\labelwidth\leftmarginiii
-        \dim_gset_eq:NN\parsep\parskip
-        \dim_gsub:Nn\labelwidth{-\labelsep}
-        \dim_gzero:N\topsep
-        \dim_gzero:N\itemsep
+        \dim_set_eq:NN\leftmargin\leftmarginiii
+        \dim_set_eq:NN\labelwidth\leftmarginiii
+        \dim_set_eq:NN\parsep\parskip
+        \dim_sub:Nn\labelwidth{-\labelsep}
+        \dim_zero:N\topsep
+        \dim_zero:N\itemsep
     }
 \end{MacroCode}
     \end{macro*}
@@ -987,7 +990,7 @@
 \begin{MacroCode}{class}
     \RenewDocumentCommand\@starttoc{m}{
         \group_begin:
-        \dim_gzero:N\parskip
+        \dim_zero:N\parskip
         \file_if_exist:nT{\c_job_name_tl.##1}{
             \file_input:n{\c_job_name_tl.##1}
         }
@@ -2358,28 +2361,28 @@
     \begin{macro*}{\theenumi}
     The first level consists of arabic numbers (\(1,2,3,\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumi{}  {\ctr_use_arabic:n{enumi}}
+\cs_set:Npn\theenumi  {\ctr_use_arabic:n{enumi}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumii}
     The second level consists of lower-case alphabetic characters
     (\(\text{a},\text{b},\text{c},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumii{} {\ctr_use_alph:n{enumii}}
+\cs_set:Npn\theenumii {\ctr_use_alph:n{enumii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiii}
     The third level consists of lower-case roman numerals
     (\(\text{i},\text{ii},\text{iii},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumiii{}{\ctr_use_roman:n{enumiii}}
+\cs_set:Npn\theenumiii{\ctr_use_roman:n{enumiii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiv}
     The fourth level consists of upper-case alphabetic characters
     (\(\text{A},\text{B},\text{C},\dotsc\)).
 \begin{MacroCode}{class}
-\RenewDocumentCommand\theenumiv{} {\ctr_use_Alph:n{enumiv}}
+\cs_set:Npn\theenumiv {\ctr_use_Alph:n{enumiv}}
 \end{MacroCode}
     \end{macro*}
     We also need macros that typeset the actual labels. Here, different
@@ -2388,65 +2391,64 @@
     closing bracket.
     \begin{macro*}{\labelenumi}
 \begin{MacroCode}{class}
-\NewDocumentCommand\labelenumi{}{\theenumi.}
+\cs_new:Npn\labelenumi{\theenumi.}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelenumii}
 \begin{MacroCode}{class}
-\NewDocumentCommand\labelenumii{}{\theenumii)}
+\cs_new:Npn\labelenumii{\theenumii)}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelenumiii}
 \begin{MacroCode}{class}
-\NewDocumentCommand\labelenumiii{}{\theenumiii.}
+\cs_new:Npn\labelenumiii{\theenumiii.}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelenumiv}
 \begin{MacroCode}{class}
-\NewDocumentCommand\labelenumiv{}{\theenumiv.}
+\cs_new:Npn\labelenumiv{\theenumiv.}
 \end{MacroCode}
     \end{macro*}
     We also fix the referencing of lower-level items so that one can
     refer to them properly (\emph{i.e.} as 1b(iii) and so on).
     \begin{macro*}{\p@enumii}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\p@enumii{}{\theenumi}
+\cs_set:Npn\p@enumii{\theenumi}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\p@enumiii}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\p@enumiii{}{\theenumi(\theenumii)}
+\cs_set:Npn\p@enumiii{\theenumi(\theenumii)}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\p@enumiiv}
 \begin{MacroCode}{class}
-\RenewDocumentCommand\p@enumiv{}{\p@enumiii\theenumiii}
+\cs_set:Npn\p@enumiv{\p@enumiii\theenumiii}
 \end{MacroCode}
     \end{macro*}
 
     All that was for numbered lists (\env{enumerate}). Now, we define
-    the \enquote{labels} of \env{itemize} items. In progression, they
-    are a bullet (\textbullet), an open bullet (\textopenbullet),
-    a boldfaced dash ({\normalfont\bfseries\textendash}) and an
-    arrow (\textrightarrow).
+    the \enquote{labels} of \env{itemize} items. Alternately, they
+    are a bullet (\textbullet) and a boldfaced dash
+    ({\normalfont\bfseries\textendash}).
     \begin{macro*}{\labelitemi}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\labelitemi{}{\textbullet}
+\cs_set:Npn\labelitemi{\textbullet}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemii}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\labelitemii{}{\textopenbullet}
+\cs_set:Npn\labelitemii{\normalfont\bfseries\textendash}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemiii}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\labelitemiii{}{\normalfont\bfseries\textendash}
+\cs_set:Npn\labelitemiii{\textbullet}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\labelitemiv}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\labelitemiv{}{\textrightarrow}
+\cs_set:Npn\labelitemiv{\normalfont\bfseries\textendash}
 \end{MacroCode}
     \end{macro*}
 
@@ -3341,39 +3343,42 @@
 \begin{MacroCode}{size-10}
 \skip_set:Nn\partopsep{2pt~plus~1pt~minus~1pt}
 \cs_new:Npn\@listi{
-    \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep {4pt~plus~2pt~minus~1pt}
-    \skip_gset:Nn\topsep {8pt~plus~2pt~minus~4pt}
-    \skip_gset:Nn\itemsep{4pt~plus~2pt~minus~1pt}
+    \dim_set_eq:NN\leftmargin\leftmargini
+    \skip_set:Nn\parsep {4pt~plus~2pt~minus~1pt}
+    \skip_set:Nn\topsep {8pt~plus~2pt~minus~4pt}
+    \skip_set:Nn\itemsep{4pt~plus~2pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
-\@listi
+\dim_gset_eq:NN\leftmargin\leftmargini
+\skip_gset:Nn\parsep {4pt~plus~2pt~minus~1pt}
+\skip_gset:Nn\topsep {8pt~plus~2pt~minus~4pt}
+\skip_gset:Nn\itemsep{4pt~plus~2pt~minus~1pt}
 \cs_new:Npn\@listii{
-    \dim_gset_eq:NN\leftmargin\leftmarginii
-    \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {2pt~plus~1pt~minus~1pt}
-    \skip_gset:Nn\topsep {4pt~plus~2pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\parsep
+    \dim_set_eq:NN\leftmargin\leftmarginii
+    \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
+    \skip_set:Nn\parsep {2pt~plus~1pt~minus~1pt}
+    \skip_set:Nn\topsep {4pt~plus~2pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
-    \dim_gset_eq:NN\leftmargin\leftmarginiii
-    \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
-    \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2pt~plus~1pt~minus~1pt}
-    \skip_gset:Nn\partopsep{1pt~plus~0pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\topsep
+    \dim_set_eq:NN\leftmargin\leftmarginiii
+    \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
+    \skip_set_eq:NN\parsep\c_zero_skip
+    \skip_set:Nn\topsep   {2pt~plus~1pt~minus~1pt}
+    \skip_set:Nn\partopsep{1pt~plus~0pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
-    \dim_gset_eq:NN\leftmargin\leftmarginiv
-    \dim_gset:Nn\labelwidth{\leftmarginiv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginiv
+    \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
 \cs_new:Npn\@listv{
-    \dim_gset_eq:NN\leftmargin\leftmarginv
-    \dim_gset:Nn\labelwidth{\leftmarginv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginv
+    \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
 \cs_new:Npn\@listvi{
-    \dim_gset_eq:NN\leftmargin\leftmarginvi
-    \dim_gset:Nn\labelwidth{\leftmarginvi-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginvi
+    \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
 \endinput
 \end{MacroCode}
@@ -3530,39 +3535,42 @@
 \begin{MacroCode}{size-11}
 \skip_set:Nn\partopsep{3pt~plus~1pt~minus~1pt}
 \cs_new:Npn\@listi{
-    \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
-    \skip_gset:Nn\topsep {  9pt~plus~3pt~minus~5pt}
-    \skip_gset:Nn\itemsep{4.5pt~plus~2pt~minus~1pt}
+    \dim_set_eq:NN\leftmargin\leftmargini
+    \skip_set:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
+    \skip_set:Nn\topsep {  9pt~plus~3pt~minus~5pt}
+    \skip_set:Nn\itemsep{4.5pt~plus~2pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
-\@listi
+\dim_gset_eq:NN\leftmargin\leftmargini
+\skip_gset:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
+\skip_gset:Nn\topsep {  9pt~plus~3pt~minus~5pt}
+\skip_gset:Nn\itemsep{4.5pt~plus~2pt~minus~1pt}
 \cs_new:Npn\@listii{
-    \dim_gset_eq:NN\leftmargin\leftmarginii
-    \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {  2pt~plus~1pt~minus~1pt}
-    \skip_gset:Nn\topsep {4.5pt~plus~2pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\parsep
+    \dim_set_eq:NN\leftmargin\leftmarginii
+    \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
+    \skip_set:Nn\parsep {  2pt~plus~1pt~minus~1pt}
+    \skip_set:Nn\topsep {4.5pt~plus~2pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
-    \dim_gset_eq:NN\leftmargin\leftmarginiii
-    \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
-    \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2pt~plus~1pt~minus~1pt}
-    \skip_gset:Nn\partopsep{1pt~plus~0pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\topsep
+    \dim_set_eq:NN\leftmargin\leftmarginiii
+    \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
+    \skip_set_eq:NN\parsep\c_zero_skip
+    \skip_set:Nn\topsep   {2pt~plus~1pt~minus~1pt}
+    \skip_set:Nn\partopsep{1pt~plus~0pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
-    \dim_gset_eq:NN\leftmargin\leftmarginiv
-    \dim_gset:Nn\labelwidth{\leftmarginiv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginiv
+    \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
 \cs_new:Npn\@listv{
-    \dim_gset_eq:NN\leftmargin\leftmarginv
-    \dim_gset:Nn\labelwidth{\leftmarginv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginv
+    \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
 \cs_new:Npn\@listvi{
-    \dim_gset_eq:NN\leftmargin\leftmarginvi
-    \dim_gset:Nn\labelwidth{\leftmarginvi-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginvi
+    \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
 \endinput
 \end{MacroCode}
@@ -3720,39 +3728,42 @@
 \begin{MacroCode}{size-11}
 \skip_set:Nn\partopsep{3pt~plus~2pt~minus~2pt}
 \cs_new:Npn\@listi{
-    \dim_gset_eq:NN\leftmargin\leftmargini
-    \skip_gset:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
-    \skip_gset:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
-    \skip_gset:Nn\itemsep{ 5pt~plus~2.5pt~minus~1pt}
+    \dim_set_eq:NN\leftmargin\leftmargini
+    \skip_set:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
+    \skip_set:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
+    \skip_set:Nn\itemsep{ 5pt~plus~2.5pt~minus~1pt}
 }
 \cs_set_eq:NN\@listI\@listi
-\@listi
+\dim_gset_eq:NN\leftmargin\leftmargini
+\skip_gset:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
+\skip_gset:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
+\skip_gset:Nn\itemsep{ 5pt~plus~2.5pt~minus~1pt}
 \cs_new:Npn\@listii{
-    \dim_gset_eq:NN\leftmargin\leftmarginii
-    \dim_gset:Nn\labelwidth{\leftmarginii-\labelsep}
-    \skip_gset:Nn\parsep {2.5pt~plus~1pt  ~minus~1pt}
-    \skip_gset:Nn\topsep {  5pt~plus~2.5pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\parsep
+    \dim_set_eq:NN\leftmargin\leftmarginii
+    \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
+    \skip_set:Nn\parsep {2.5pt~plus~1pt  ~minus~1pt}
+    \skip_set:Nn\topsep {  5pt~plus~2.5pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\parsep
 }
 \cs_new:Npn\@listiii{
-    \dim_gset_eq:NN\leftmargin\leftmarginiii
-    \dim_gset:Nn\labelwidth{\leftmarginiii-\labelsep}
-    \skip_gset_eq:NN\parsep\c_zero_skip
-    \skip_gset:Nn\topsep   {2.5pt~plus~1pt~minus~1pt}
-    \skip_gset:Nn\partopsep{  1pt~plus~0pt~minus~1pt}
-    \skip_gset_eq:NN\itemsep\topsep
+    \dim_set_eq:NN\leftmargin\leftmarginiii
+    \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
+    \skip_set_eq:NN\parsep\c_zero_skip
+    \skip_set:Nn\topsep   {2.5pt~plus~1pt~minus~1pt}
+    \skip_set:Nn\partopsep{  1pt~plus~0pt~minus~1pt}
+    \skip_set_eq:NN\itemsep\topsep
 }
 \cs_new:Npn\@listiv{
-    \dim_gset_eq:NN\leftmargin\leftmarginiv
-    \dim_gset:Nn\labelwidth{\leftmarginiv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginiv
+    \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
 \cs_new:Npn\@listv{
-    \dim_gset_eq:NN\leftmargin\leftmarginv
-    \dim_gset:Nn\labelwidth{\leftmarginv-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginv
+    \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
 \cs_new:Npn\@listvi{
-    \dim_gset_eq:NN\leftmargin\leftmarginvi
-    \dim_gset:Nn\labelwidth{\leftmarginvi-\labelsep}
+    \dim_set_eq:NN\leftmargin\leftmarginvi
+    \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
 \endinput
 \end{MacroCode}
