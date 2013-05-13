@@ -2587,7 +2587,7 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_emphstyle:{
     \itshape
-    \dim_compare:nT{\fontdimen\c_one\font>\c_zero}{\bfseries}
+    \dim_compare:nF{\fontdimen\c_one\font>\c_zero_dim}{\bfseries}
 }
 \end{MacroCode}
     \end{macro*}
@@ -3342,7 +3342,7 @@
 \end{MacroCode}
 \begin{MacroCode}{size-10}
 \skip_set:Nn\partopsep{2pt~plus~1pt~minus~1pt}
-\cs_new:Npn\@listi{
+\cs_set:Npn\@listi{
     \dim_set_eq:NN\leftmargin\leftmargini
     \skip_set:Nn\parsep {4pt~plus~2pt~minus~1pt}
     \skip_set:Nn\topsep {8pt~plus~2pt~minus~4pt}
@@ -3353,14 +3353,14 @@
 \skip_gset:Nn\parsep {4pt~plus~2pt~minus~1pt}
 \skip_gset:Nn\topsep {8pt~plus~2pt~minus~4pt}
 \skip_gset:Nn\itemsep{4pt~plus~2pt~minus~1pt}
-\cs_new:Npn\@listii{
+\cs_set:Npn\@listii{
     \dim_set_eq:NN\leftmargin\leftmarginii
     \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
     \skip_set:Nn\parsep {2pt~plus~1pt~minus~1pt}
     \skip_set:Nn\topsep {4pt~plus~2pt~minus~1pt}
     \skip_set_eq:NN\itemsep\parsep
 }
-\cs_new:Npn\@listiii{
+\cs_set:Npn\@listiii{
     \dim_set_eq:NN\leftmargin\leftmarginiii
     \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_set_eq:NN\parsep\c_zero_skip
@@ -3368,15 +3368,15 @@
     \skip_set:Nn\partopsep{1pt~plus~0pt~minus~1pt}
     \skip_set_eq:NN\itemsep\topsep
 }
-\cs_new:Npn\@listiv{
+\cs_set:Npn\@listiv{
     \dim_set_eq:NN\leftmargin\leftmarginiv
     \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
-\cs_new:Npn\@listv{
+\cs_set:Npn\@listv{
     \dim_set_eq:NN\leftmargin\leftmarginv
     \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
-\cs_new:Npn\@listvi{
+\cs_set:Npn\@listvi{
     \dim_set_eq:NN\leftmargin\leftmarginvi
     \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
@@ -3534,7 +3534,7 @@
 \end{MacroCode}
 \begin{MacroCode}{size-11}
 \skip_set:Nn\partopsep{3pt~plus~1pt~minus~1pt}
-\cs_new:Npn\@listi{
+\cs_set:Npn\@listi{
     \dim_set_eq:NN\leftmargin\leftmargini
     \skip_set:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
     \skip_set:Nn\topsep {  9pt~plus~3pt~minus~5pt}
@@ -3545,14 +3545,14 @@
 \skip_gset:Nn\parsep {4.5pt~plus~2pt~minus~1pt}
 \skip_gset:Nn\topsep {  9pt~plus~3pt~minus~5pt}
 \skip_gset:Nn\itemsep{4.5pt~plus~2pt~minus~1pt}
-\cs_new:Npn\@listii{
+\cs_set:Npn\@listii{
     \dim_set_eq:NN\leftmargin\leftmarginii
     \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
     \skip_set:Nn\parsep {  2pt~plus~1pt~minus~1pt}
     \skip_set:Nn\topsep {4.5pt~plus~2pt~minus~1pt}
     \skip_set_eq:NN\itemsep\parsep
 }
-\cs_new:Npn\@listiii{
+\cs_set:Npn\@listiii{
     \dim_set_eq:NN\leftmargin\leftmarginiii
     \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_set_eq:NN\parsep\c_zero_skip
@@ -3560,15 +3560,15 @@
     \skip_set:Nn\partopsep{1pt~plus~0pt~minus~1pt}
     \skip_set_eq:NN\itemsep\topsep
 }
-\cs_new:Npn\@listiv{
+\cs_set:Npn\@listiv{
     \dim_set_eq:NN\leftmargin\leftmarginiv
     \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
-\cs_new:Npn\@listv{
+\cs_set:Npn\@listv{
     \dim_set_eq:NN\leftmargin\leftmarginv
     \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
-\cs_new:Npn\@listvi{
+\cs_set:Npn\@listvi{
     \dim_set_eq:NN\leftmargin\leftmarginvi
     \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
@@ -3727,7 +3727,7 @@
 \end{MacroCode}
 \begin{MacroCode}{size-11}
 \skip_set:Nn\partopsep{3pt~plus~2pt~minus~2pt}
-\cs_new:Npn\@listi{
+\cs_set:Npn\@listi{
     \dim_set_eq:NN\leftmargin\leftmargini
     \skip_set:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
     \skip_set:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
@@ -3738,14 +3738,14 @@
 \skip_gset:Nn\parsep { 5pt~plus~2.5pt~minus~1pt}
 \skip_gset:Nn\topsep {10pt~plus~4pt  ~minus~6pt}
 \skip_gset:Nn\itemsep{ 5pt~plus~2.5pt~minus~1pt}
-\cs_new:Npn\@listii{
+\cs_set:Npn\@listii{
     \dim_set_eq:NN\leftmargin\leftmarginii
     \dim_set:Nn\labelwidth{\leftmarginii-\labelsep}
     \skip_set:Nn\parsep {2.5pt~plus~1pt  ~minus~1pt}
     \skip_set:Nn\topsep {  5pt~plus~2.5pt~minus~1pt}
     \skip_set_eq:NN\itemsep\parsep
 }
-\cs_new:Npn\@listiii{
+\cs_set:Npn\@listiii{
     \dim_set_eq:NN\leftmargin\leftmarginiii
     \dim_set:Nn\labelwidth{\leftmarginiii-\labelsep}
     \skip_set_eq:NN\parsep\c_zero_skip
@@ -3753,15 +3753,15 @@
     \skip_set:Nn\partopsep{  1pt~plus~0pt~minus~1pt}
     \skip_set_eq:NN\itemsep\topsep
 }
-\cs_new:Npn\@listiv{
+\cs_set:Npn\@listiv{
     \dim_set_eq:NN\leftmargin\leftmarginiv
     \dim_set:Nn\labelwidth{\leftmarginiv-\labelsep}
 }
-\cs_new:Npn\@listv{
+\cs_set:Npn\@listv{
     \dim_set_eq:NN\leftmargin\leftmarginv
     \dim_set:Nn\labelwidth{\leftmarginv-\labelsep}
 }
-\cs_new:Npn\@listvi{
+\cs_set:Npn\@listvi{
     \dim_set_eq:NN\leftmargin\leftmarginvi
     \dim_set:Nn\labelwidth{\leftmarginvi-\labelsep}
 }
