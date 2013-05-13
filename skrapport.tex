@@ -2022,29 +2022,14 @@
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_post_section:n#1{
     \skip_set:Nn\l_tmpa_skip{#1}
-    \int_compare:nTF{\l_tmpa_skip>\c_zero}{
+    \dim_compare:nTF{\l_tmpa_skip>\c_zero_skip}{
         \par\nobreak
         \skip_vertical:N\l_tmpa_skip
         \@afterheading % !!!
     }{
         \@nobreakfalse
         \global\@noskipsectrue
-        \everypar{
-            \if@noskipsec
-                \global\@noskipsecfalse
-                {\box_set_to_last:N\c_zero}
-                \clubpenalty\@M % !!!
-                \group_begin:
-                    \cs_if_exist_use:N\__skrapport_saved_section:
-                \group_end:
-                \unskip
-                \skip_set:Nn\l_tmpa_skip{-#1}
-                \skip_horizontal:N\l_tmpa_skip
-            \else
-                \clubpenalty\@clubpenalty % !!!
-                \everypar{}
-            \fi
-        }
+        \skip_horizontal:n{-\l_tmpa_skip}
     }
     \ignorespaces
 }
@@ -2074,7 +2059,7 @@
         \dim_set:Nn\hangindent{#1+\box_wd:N\l_tmpa_box}
         \noindent\box_use_clear:N\l_tmpa_box
         \interlinepenalty\@M % !!!
-        #3\par
+        #3
     \group_end:
 }
 \end{MacroCode}
