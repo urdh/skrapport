@@ -846,12 +846,19 @@
 \end{MacroCode}
     \end{macro}
 
+    \begin{macro*}{\__skrapport_after_ams_hook:}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_after_ams_hook:{}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro}{\__skrapport_setup_font:n}[1]
         {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
     We set up the somewhat involved font stack.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_font:n#1{
+    \PassOptionsToPackage{intlimits}{amsmath}
+    \PassOptionsToPackage{full}{textcomp}
     \str_case:nnn{#1}{
 \end{MacroCode}
     The \texttt{none} font stack does literally nothing.
@@ -909,7 +916,9 @@
             \setmainfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Cambria}
             \setsansfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Calibri}
             \setmonofont[Scale=0.95]{Consolas}
-            \setmathfont{Cambria Math}
+            \apptocmd{\__skrapport_after_ams_hook:}{
+                \setmathfont{Cambria Math}
+            }{}{}
         }
     }{
 \end{MacroCode}
@@ -922,7 +931,9 @@
     But we don't load it when using the \texttt{none} font stack.
 \begin{MacroCode}{class}
     \str_if_eq:nnF{#1}{none}{
-        \RequirePackage[scaled=1.03]{inconsolata}
+        \str_if_eq:nnF{#1}{word}{
+            \RequirePackage[scaled=1.03]{inconsolata}
+        }
 \end{MacroCode}
     All font stacks except \texttt{none} and \texttt{kpfonts} require
     additional packages. Or, rather, \texttt{none} can't load these
@@ -931,17 +942,13 @@
 \begin{MacroCode}{class}
         \str_if_eq:nnF{#1}{kpfonts}{
             \AtEndOfClass{
-                \cs_undefine:N\Finv
-                \cs_undefine:N\Game
-                \cs_undefine:N\beth
-                \cs_undefine:N\gimel
-                \cs_undefine:N\daleth
-                \RequirePackage[intlimits]{amsmath}
+                \RequirePackage{amsmath}
                 \RequirePackage{amssymb}
                 \RequirePackage{textcomp}
             }
         }
     }
+    \AtEndOfClass{\__skrapport_after_ams_hook:}
 }
 \end{MacroCode}
     \end{macro}
@@ -1092,14 +1099,16 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_xelatex:{
     \RequirePackage[quiet]{fontspec}
-    \RequirePackage{unicode-math}
-    \unimathsetup {
-        math-style     = ISO,
-        bold-style     = ISO,
-        sans-style     = italic,
-        nabla          = upright,
-        partial        = italic,
-        vargreek-shape = unicode
+    \cs_gset:Nn\__skrapport_after_ams_hook:{
+        \RequirePackage{unicode-math}
+        \unimathsetup {
+            math-style     = ISO,
+            bold-style     = ISO,
+            sans-style     = italic,
+            nabla          = upright,
+            partial        = italic,
+            vargreek-shape = unicode
+        }
     }
 \end{MacroCode}
     \begin{macro}{\nobreakspace}
