@@ -906,10 +906,10 @@
             \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
                 \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
             }
-            \setmainfont{Cambria}
-            \setsansfont{Calibri}
-            \setmathrm{Cambria Math}
-            \setmonofont{Consolas}
+            \setmainfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Cambria}
+            \setsansfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Calibri}
+            \setmonofont[Scale=0.95]{Consolas}
+            \setmathfont{Cambria Math}
         }
     }{
 \end{MacroCode}
@@ -1092,6 +1092,15 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_xelatex:{
     \RequirePackage[quiet]{fontspec}
+    \RequirePackage{unicode-math}
+    \unimathsetup {
+        math-style     = ISO,
+        bold-style     = ISO,
+        sans-style     = italic,
+        nabla          = upright,
+        partial        = italic,
+        vargreek-shape = unicode
+    }
 \end{MacroCode}
     \begin{macro}{\nobreakspace}
 \begin{MacroCode}{class}
