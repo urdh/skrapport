@@ -168,7 +168,7 @@
     \thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
     serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
 
-    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion, skdoc}\AndDefault{kpfonts}
+    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion, skdoc, word}\AndDefault{kpfonts}
     In addition, the specific font can also be changed --- the available
     choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
     (Kp-Fonts), \texttt{minion} (Adobe Minion Pro), \texttt{palatino} (either \TeX-Gyre Pagella or
@@ -397,6 +397,9 @@
 \msg_new:nnnn{skrapport}{license-not-printed}{Detected~\token_to_str:N\license~but~no~`titlepage'!}
     {The~text~provided~by~\token_to_str:N\license~is~only~printed~when~
     the~`titlepage'~environment~is~used,~but~it~seems~to~be~missing.}
+\msg_new:nnnn{skrapport}{font-requires-xetex}{The~`font=#1'~option~requires~XeTeX~or~luaTeX!}
+    {Please~choose~another~font~setup~or~compile~the~document~with~
+    either~xelatex~or~lualatex.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -894,6 +897,20 @@
             \RequirePackage{PTSerif}
             \RequirePackage[defaultsans,osfigures,scale=0.95]{opensans}
         }
+\end{MacroCode}
+    The \texttt{word} font stack mimics recent versions of Microsoft
+    Word, using Cambria, Consolas and Calibri. This requires a modern
+    engine that supports \pkg{fontspec}.
+\begin{MacroCode}{class}
+        {word}{
+            \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+                \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
+            }
+            \setmainfont{Cambria}
+            \setsansfont{Calibri}
+            \setmathrm{Cambria Math}
+            \setmonofont{Consolas}
+        }
     }{
 \end{MacroCode}
     As a fallback, we print a waning and load no font packages.
@@ -1337,7 +1354,7 @@
     \changes{0.12}{Option is now deprecated}
 \begin{MacroCode}{class}
     font .choices:nn =
-        { none, kpfonts, lmodern, palatino, minion, skdoc }
+        { none, kpfonts, lmodern, palatino, minion, skdoc, word }
         {\__skrapport_setup_font:x{\tl_use:N\l_keys_choice_tl}},
     font .value_required:,
     nofont .code:n = 
