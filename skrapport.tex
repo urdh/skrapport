@@ -3304,11 +3304,9 @@
     \apptocmd{\__skrapport_smallprint_style:}
         {\color{skrapport@smallprintcolor}}{}
         {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_smallprint_style:}}
-    \AtBeginDocument{
-        \cs_set_protected:Npn\__skrapport_abstract_style:{
-            \color{skrapport@titlecolor}
-        }
-    }
+    \apptocmd{\__skrapport_abstract_style:}
+        {\color{skrapport@titlecolor}}{}
+        {\msg_warning:nnn{skrapport}{color-patch-failed}{\__skrapport_abstract_style:}}
     \apptocmd{\quote}
         {\color{skrapport@quotecolor}}{}
         {\msg_warning:nnn{skrapport}{color-patch-failed}{\quote}}
