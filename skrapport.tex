@@ -102,7 +102,7 @@
     \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
     \changes{0.11a}{Added \opt{skdoc} font option and \thm{skdoc} color theme}
-    \changes{0.12}{Deprecated several macros, moved to \LaTeX3}
+    \changes{0.12}{Deprecated several macros, moved to \LaTeX3. Use of TOC depth above 3 is now unsupported}
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -525,10 +525,12 @@
     \section{Known issues}\label{sec:issues}
     A list of current issues is available in the Github repository of this
     package\footnote{\url{https://github.com/urdh/skrapport/issues}}, but as
-    of the release of \theversion, there are no known issues.
-    %\begin{description}
+    of the release of \theversion, there is one known issue:
+    \begin{description}
     %    \item[\#6]  ???
-    %\end{description}
+        \item[--] If a \cs{subsubsection} is the last item of the Table
+        of Contents, it will not be indented properly.
+    \end{description}
     
     If you discover any bugs in this package, please report them to the issue
     tracker in the \thepackage\ Github repository.
@@ -585,6 +587,9 @@
 \msg_new:nnnn{skrapport}{font-requires-xetex}{The~`font=#1'~option~requires~XeTeX~or~luaTeX!}
     {Please~choose~another~font~setup~or~compile~the~document~with~
     either~xelatex~or~lualatex.}
+\msg_new:nnnn{skrapport}{tocdepth-too-deep}{TOC~depth~is~too~deep!}
+    {The~current~tocdepth,~#1,~is~not~supported.~Please~redefine~the~
+    \token_to_str:N#2~macro~to~enable~support.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -2091,13 +2096,8 @@
         \vspace{.75cm}
     \end{flushleft}
     \par
-\end{MacroCode}
-    This bit (which prints the email addresses) is based on the
-    \env{abstract} environment below and should probably be in the same
-    macro (they have to sync the width of the first minipage, which has
-    to be calculated at the first use).
-\begin{MacroCode}{class}
-    \dim_set_to_wd:Nn\l_tmpa_dim{\abstractname}
+    \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
+    \bool_gset_false:N\g__skrapport_abstract_used
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
@@ -2115,13 +2115,48 @@
 \end{MacroCode}
     \end{macro*}
 
+    \begin{macro*}{\g__skrapport_abstract_used}
+    This boolean keeps track of wether the \env{abstract} environment has
+    been used, and is set accordingly in the main auxillary file.
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_abstract_used
+\AtEndDocument{
+    \iow_shipout:Nx\@mainaux{ % !!!
+        \exp_not:N\ExplSyntaxOn
+        \bool_if:NTF\g__skrapport_abstract_used
+            {\exp_not:n{\bool_gset_true:N\g__skrapport_abstract_used}}
+            {\exp_not:n{\bool_gset_false:N\g__skrapport_abstract_used}}
+        \exp_not:N\ExplSyntaxOff
+    }
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\dim_set_to_abstract_or_email_wd:N}[1]
+        {Dimension register}
+    This macro sets a dimension to either the width of the email word
+    or the width of the abstract word depending on the state of
+    \cs{g__skrapport_abstract_used}.
+\begin{MacroCode}{class}
+\cs_new:Npn\dim_set_to_abstract_or_email_wd:N#1{
+    \dim_set_to_wd:Nn\l_tmpa_dim
+        {\abstractname\__skrapport_abstract_style:}
+    \dim_set_to_wd:Nn\l_tmpb_dim
+        {\__skrapport_Email_word:\__skrapport_abstract_style:}
+    \bool_if:NTF\g__skrapport_abstract_used
+        {\dim_set:Nn#1{\dim_max:nn{\l_tmpa_dim}{\l_tmpb_dim}}}
+        {\dim_set_eq:NN#1\l_tmpb_dim}
+}
+\end{MacroCode}
+    \end{macro*}
+
     \begin{environment}{abstract}
     Standard restyled \env{abstract} environment from the
     \pkg{article} class.
 \begin{MacroCode}{class}
 \dim_const:Nn\c__skrapport_abstract_separator_dim{1em}
 \DeclareDocumentEnvironment{abstract}{}{
-    \dim_set_to_wd:Nn\l_tmpa_dim{\abstractname}
+    \bool_gset_true:N\g__skrapport_abstract_used
+    \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
@@ -2992,7 +3027,7 @@
 \cs_new:Npn\@pnumwidth{1.55em}
 \cs_new:Npn\@tocrmarg{2em}
 \cs_new:Npn\@dotsep{1.7}
-\ctr_gset:nn{tocdepth}{5}
+\ctr_gset:nn{tocdepth}{3}
 \end{MacroCode}
     \begin{macro}{\tableofcontents}
     \changes{0.12}{Removed spacing and \cs{@mkboth} call}
@@ -3005,38 +3040,123 @@
 }
 \end{MacroCode}
     \end{macro}
+
+    The following macros conspire to replace \cs{@dottedtocline}.
+    \begin{macro*}{\__skrapport_toc_line:nnnnnn}[6]
+        {TOC line character}
+        {Table of contents level of the line}
+        {Indentation at the start of the line}
+        {Width of the section number}
+        {Section title}
+        {Page number}
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_toc_line:nnnnnn#1#2#3#4#5#6{
+    \int_compare:nF{#2>\ctr_use:n{tocdepth}}{
+        \skip_vertical:n{0pt~plus~.2pt}
+        \group_begin:
+            \skip_set:Nn\leftskip{#3}
+            \skip_set_eq:NN\rightskip\@tocrmarg
+            \skip_set:Nn\parfillskip{-\rightskip}
+            \dim_set:Nn\parindent{#3}
+            \@afterindenttrue % !!!
+            \interlinepenalty\@M % !!!
+            \leavevmode
+\end{MacroCode}
+    This here is pretty dumb. We can't use a \LaTeX3\ temporary skip
+    register (or skip the temporary), because \texttt{\#5} further down
+    will contain a \cs{hbox} based on \cs{@tempdima}. The proper thing
+    to do here would be to rewrite \cs{addcontentsline}, I guess. Bah.
+\begin{MacroCode}{class}
+            \skip_set:Nn\@tempdima{#4} % !!! (dumb)
+            \skip_add:Nn\leftskip{\@tempdima}
+            \null\nobreak
+            \skip_horizontal:n{-\leftskip}
+            {#5}\nobreak
+            \str_if_eq:nnTF{#1}{}{
+                \hfill
+            }{
+                \leaders\hbox:n{
+                    \(\mkern\@dotsep mu\hbox{#1}\mkern\@dotsep mu\) % !!!
+                }
+            }
+            \hfill\nobreak
+            \hbox_to_wd:nn{\@pnumwidth}{ % !!!
+                \hfil\normalfont\normalcolor #6
+            }
+            \par
+        \group_end:
+    }
+}
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\__skrapport_toc_line:nnnnnn}[5]
+        {Table of contents level of the line}
+        {Indentation at the start of the line}
+        {Width of the section number}
+        {Section title}
+        {Page number}
+    This is a variant of \cs{__skrapport_toc_line:nnnnnn} which
+    implicitly sets empty space as its TOC line.
+\begin{MacroCode}{class}
+\cs_new:Npn\__skrapport_toc_line:nnnnn#1#2#3#4#5{
+    \__skrapport_toc_line:nnnnnn{}{#1}{#2}{#3}{#4}{#5}
+}
+\end{MacroCode}
+    \end{macro*}
     \begin{macro*}{\l@section}
+    \changes{0.12a}{Now uses \cs{__skrapport_toc_line:nnnnn}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@section{mm}{
-    \@dottedtocline{1}{0em}{1.3em}{#1}{#2}
+    \group_begin:
+        \skip_vertical:n{.75ex}
+        \bfseries
+        \__skrapport_toc_line:nnnnn{1}{0em}{1.3em}{#1}{#2}
+    \group_end:
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@subsection}
+    \changes{0.12a}{Now uses \cs{__skrapport_toc_line:nnnnnn}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subsection{mm}{
-    \@dottedtocline{2}{1.3em}{2em}{#1}{#2}
+    \group_begin:
+        \skip_vertical:n{.35ex}
+        \penalty\@secpenalty % !!!
+        \__skrapport_toc_line:nnnnnn{.}{2}{1.3em}{2em}{#1}{#2}
+    \group_end:
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@subsubsection}
+    \changes{0.12a}{Changed style to match \pkg{skdoc}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subsubsection{mm}{
-    \@dottedtocline{3}{3.3em}{3.15em}{#1}{#2}
+    \skip_set:Nn\leftskip{3.3em}
+    \dim_set_eq:NN\parindent\c_zero_dim
+    \group_begin:
+        \cs_set_eq:NN\numberline\use_none:n
+        \small #1~[#2]
+    \group_end:
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@paragraph}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@paragraph{mm}{
-    \@dottedtocline{4}{6.45em}{4.15em}{#1}{#2}
+    \int_compare:nF{4>\ctr_use:n{tocdepth}}{
+        \msg_warning:nnnn{skrapport}{tocdepth-too-deep}
+            {4}{\l@paragraph}
+    }
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@subparagraph}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subparagraph{mm}{
-    \@dottedtocline{5}{10.6em}{5.15em}{#1}{#2}
+    \int_compare:nF{5>\ctr_use:n{tocdepth}}{
+        \msg_warning:nnnn{skrapport}{tocdepth-too-deep}
+            {5}{\l@subparagraph}
+    }
 }
 \end{MacroCode}
     \end{macro*}
