@@ -1,4 +1,4 @@
-%% chscite Skånings rapportklass
+%% skrapport Skånings rapportklass
 %%
 %% Copyright (C) 2012-2013 by Simon Sigurdhsson <sigurdhsson@gmail.com>
 %% 
@@ -14,12 +14,19 @@
 %% 
 %% The Current Maintainer of this work is Simon Sigurdhsson.
 %% 
-%% This work consists of the file skrapport.tex and the 
-%% derived files skrapport.cls, skrapport-colortheme-default.sty,
-%% skrapport-colortheme-unscathed.sty, skrapport-colortheme-violet.sty
-%% and skrapport-colortheme-cruelwater.sty.
+%% This work consists of the file skrapport.tex and the derived files:
+%%  * skrapport.cls
+%%  * skrapport-colortheme-default.sty
+%%  * skrapport-colortheme-unscathed.sty
+%%  * skrapport-colortheme-violet.sty
+%%  * skrapport-colortheme-cruelwater.sty
+%%  * skrapport-colortheme-skdoc.sty
+%%  * skrapport-size-common.sty
+%%  * skrapport-size10pt.clo
+%%  * skrapport-size11pt.clo
+%%  * skrapport-size12pt.clo
 
-This is version 0.11a of the skrapport document class, intended for simple
+This is version 0.12 of the skrapport document class, intended for simple
 reports submitted by the author at Chalmers University of Technology.
 
 The following files are enclosed.
