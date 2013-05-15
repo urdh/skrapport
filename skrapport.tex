@@ -32,6 +32,7 @@
 \usepackage{hologo,booktabs}
 \usepackage[style=authoryear]{biblatex}
 \usepackage{csquotes}
+\usepackage{varioref,cleveref}
 %\usepackage{chslacite}
 
 \ExplSyntaxOn
@@ -120,146 +121,200 @@
     \tableofcontents
 
     \section{Documentation}
-    \subsection{Loading the class}
-    The document class is loaded using \cs{documentclass} as usual,
-    but it has a bunch of options that you might want to know about.
+    The \thepackage\ document class aims to make typesetting simple but
+    stylish documents (mostly reports) as effortless as possible. It
+    does this by mostly reimplementing the default \pkg{article} class
+    in \LaTeX3, while making modifications to both form and function
+    along the way.
 
-    \subsubsection{Compatibility options}
-    There are a couple of options that are mostly provided for
-    compatibility with the standard \LaTeXe\ document classes. These
-    will do exactly the same thing they do in the standard classes,
-    although they may differ in default value. Although some of these
-    are key-value options, for compatibility their valid values may
-    also be passed as keys.
+    Because it is reimplemented in \LaTeX3, it may be incompatible with
+    any number of packages that patch or otherwise modify internals of
+    \pkg{article} or other document classes. For commonly used packages
+    (especially those used frequently by the author), this shouldn't be
+    a problem. The author gladly accepts reports of any such issues at
+    the project issue tracker --- see \enquote{Known issues} on
+    \vpageref{sec:issues}.
 
-    \Options{paper}\WithValues{a4paper, a5paper}\AndDefault{a4paper}
-    Specifying paper size is possible using the \opt{paper} option
-    (the values of which are based
-    on European paper sizes; use the \pkg{geometry} package for other
-    standards). Only A4 and A5 are defined since these two sizes cover
-    pretty much all intended use of the class. \opt{a4paper} is the
-    default value of this option, and the only other valid value is
-    \opt{a5paper}.
+    \subsection{Options}
+    As with other document classes, the class is loaded, possibly with
+    options, by issuing \Macro\documentclass[<options>]{skrapport}.
+    The class has a number of options controlling both form and function,
+    by \emph{e.g.} setting the font size, selecting a font stack, setting
+    the section title style, and so on.
 
-    \Options{ptsize}\WithValues{10pt, 11pt, 12pt}\AndDefault{11pt}
-    The same font sizes specified in the standard classes are also
-    available in \thepackage\ (\emph{i.e.} \opt{10pt},
-    \opt{11pt} and \opt{12pt}. The default font size is
-    \opt{11pt}, and there should be no compelling reason to change
-    this.
+    \subsubsection{Layout}
+    Two options controlling the overall layout of the document are
+    provided. Collectively they control the paper size and text layout
+    of the document.
 
-    \Options{draft,final}
-    The \opt{draft} and \opt{final} options work as expected, triggering
-    or untriggering the familiar draft mode. The default is \opt{final}.
+    \Option{paper}\WithValues{a4, a5}\AndDefault{a4}
+    The \opt{paper} option controls the paper size of the document.
+    Internally, this is set by the \pkg{typearea} package, so in theory
+    many more paper sizes could be available, but the current options
+    cover most useful documents.
 
-    \Options{fleqn,leqno}
-    Purely for compatibility \thepackage\ also defines the \opt{fleqn}
-    and \opt{leqno} options. As with the standard \LaTeXe\ classes,
-    \opt{fleqn} aligns equations with the left-hand margin and
-    \opt{leqno} places equation numbers to the left. None of these
-    are activated by default.
+    \Option{twocolumn}
+    The \opt{twocolumn} option sets up a two-column mode. This is not
+    provided by internal \LaTeX\ mechanics as in the original
+    \pkg{article} class, but instead by patching environments and macros
+    and using a combination of the \pkg{multicol} and \pkg{grid}
+    packages. In theory, this means that baselines of adjacent columns
+    should be aligned, and that three- or four-column modes are possible
+    in the future (but that'd be ridiculous).
 
-    \subsubsection{Typographic options}
-    There is also a number of options available to change certain
-    aspects of the typography of the typeset document.
+    \subsubsection{Style}
+    A couple of options to control the style of the document are
+    provided. Two of them, \opt{leqno} and \opt{fleqn}, are mainly
+    provided for compatibility with the \pkg{article} class.
 
-    \Options{titles}\WithValues{rm, bf, sf}\AndDefault{rm}
-    There are three different ways to typeset section headings in
-    \thepackage: \texttt{rm} (upright serif), \texttt{bf} (boldfaced
-    serif) and \texttt{sf} (sans serif). The default is \texttt{rm}.
+    \Option{leqno}
+    This option makes display math environments typeset their labels on
+    the left-hand side of the formula instead of the right-hand side.
 
-    \Options{font}\WithValues{nofont, lmodern, palatino, kpfonts, minion, skdoc, word}\AndDefault{kpfonts}
-    In addition, the specific font can also be changed --- the available
-    choices are \texttt{lmodern} (Latin Modern), \texttt{kpfonts}
-    (Kp-Fonts), \texttt{minion} (Adobe Minion Pro), \texttt{palatino} (either \TeX-Gyre Pagella or
-    Pazo Math depending on what's available) and \texttt{skdoc} (PT Serif and Open Sans, the style used by \pkg{skdoc}), with the default being
-    \texttt{kpfonts}. It is also possible to tell \thepackage\ not
-    to use any font (\texttt{nofont}), which is sometimes useful
-    when using \hologo{XeLaTeX}, among other things.
+    \Option{fleqn}
+    This option makes display math environments left-align the entire
+    formula as opposed to centering it.
 
-    \Options{indent,noindent}
-    Controlling indentation is posible using the options
-    \texttt{(no)indent}. The default, \texttt{noindent}, behaves
-    much like the \pkg{parskip} package in that it replaces
-    paragraph indentation with vertical spacing.
+    \Option{indent}\WithValues{true, false}\AndDefault{false}
+    The \opt{indent} option enables or disables the indentation of
+    paragraphs, with the default being not to indent anything. The
+    default behaviour thus is similar to that obtained using the
+    \pkg{parskip} package with the \pkg{article} package.
 
-    \Options{onecolumn,twocolumn}
-    Similar to the options available in the standard classes, these
-    options specify wether to typeset the document in one or two
-    columns. Unlike the standard classes, the two-column mode is
-    implemented using \pkg{multicol}. The default is \opt{onecolumn}.
+    \Option{titles}\WithValues{rm, bf, sf}\AndDefault{bf}
+    Section titles (and a few other elements) are controlled by this
+    option in that they are typeset either using the regular roman font,
+    the boldfaced roman font or the sans serif font. For historical
+    reasons the default is a boldfaced roman font, but the sans serif
+    option is very handsome.
 
-    \subsubsection{Other options}
-    \Options{swe,eng}
-    Either \pkg{babel} or \pkg{polyglossia} (depending on engine) is
-    loaded by the package. These options specify what language should
-    be used as the main language (swedish or english); both languages
-    are always loaded. The default is \opt{swe}.
+    \Option{color}\WithValues{\meta{color theme}}\AndDefault{default}
+    This option tells the class to activate color theme support and
+    optionally load a color theme. Several color themes are available
+    (as detailed by \enquote{Color themes} \vpageref{ssec:color}),
+    and the special value \texttt{false} disables color support
+    entirely (which only means that the \pkg{xcolor} package isn't
+    loaded, and that \cs{colortheme} remains undefined).
 
-    \Options{color,nocolor}
-    It is also possible to load \pkg{xcolor} inside the package. If
-    this is done, a range of color themes (discussed later) will be
-    available in the package and these will affect the document. The
-    default value is \opt{color}.
+    \subsubsection{Fonts}
+    Only two options control the font setup of the document class. The
+    class provides the same point sizes as \pkg{article}, but also
+    provides a large number of font stacks to choose from.
 
-    \Options{math,nomath}
-    Loading the \pkg{skmath} package is recommended and as such it is
-    loaded by default. If this for some reason is undesirable, the
-    \opt{nomath} option will supress this behaviour.
+    \Option{ptsize}\WithValues{10pt, 11pt, 12pt}\AndDefault{11pt}
+    The document class provides the same three point sizes as the
+    \pkg{article} class. There is room for expansion, but there really
+    shouldn't be any reason to use other point sizes.
 
-    \subsection{Macros and environments}
-    In general, the class defines the same macros as the \pkg{article} class, and adds a few. Only the novel ones are described here, as
-    the inherited ones should behave identically.
+    \Option{font}\WithValues{none, kpfonts, lmodern, palatino, minion, skdoc, word}\AndDefault{kpfonts}
+    Several different font stacks, detailed by \vref{tab:font}, are
+    provided. Most of these work with \hologo{pdfLaTeX}, but there are
+    two special font stacks: \texttt{none} and \texttt{word}. The
+    former, predictably, loads no fonts whatsoever leaving the document
+    with Computer Modern fonts. This is useful if the fonts are replaced
+    later anyway, such as when using \hologo{XeLaTeX}. The \texttt{word}
+    font stack, however, does load a few fonts. The fonts must be present
+    and installed on the system as OTF or TTF fonts, and the font stack
+    requires either \hologo{XeLaTeX} or \hologo{LuaLaTeX}.
 
-    \subsubsection{Front-matter and metadata}
-    \DescribeMacro\license{<license>}
-    The \cs{license} macro specifies the name of a license under which
-    the document is available. This will be typeset on the lower right
-    corner of the title page. \Notice{The license will only be printed
-    if the \env{titlepage} environment is used.}
+    \begin{table}[tp]
+        \centering
+        \caption{Font stacks provided by \thepackage.}
+        \label{tab:font}
+        \begin{tabular}{lllll}
+            \toprule
+            Font stack & Serif font & Math font & Sans serif font & Monospace font \\
+            \midrule
+            \texttt{kpfonts} & Kp-Fonts & Kp-Fonts & Kp-Fonts & Kp-Fonts \\
+            \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Inconsolata \\
+            \texttt{palatino} & \TeX\ Gyre & --- & --- & Inconsolata \\
+            \texttt{minion} & Minion Pro & Minion Pro & --- & Inconsolata \\
+            \texttt{skdoc} & PT Serif & --- & Open Sans & Inconsolata \\
+            \texttt{word} & Cambria & Cambria Math & Calibri & Consolas \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
 
-    \DescribeMacro\regarding{<text>}
-    The class adds a \cs{regarding} macro, which is used like the 
-    standard \cs{author} and \cs{title} macros and should be given an 
-    accurate but short description of the purpose of the report (i.e.
-    ~course name or similar). This is printed along with the date on 
-    the top of the title/first page.
+    \subsubsection{Functionality}
+    The final three options affect functionality in one way or another.
+    Since \thepackage\ was originally designed for reports written in
+    either swedish or english, the class always loads either \pkg{babel}
+    or \pkg{polyglossia} with either of these languages. Additionally,
+    the class may load the \pkg{skmath} package if desirable.
 
-    \DescribeMacro\author[<email>]{<author>}
-    The \cs{author} macro is redefined in two ways. To begin with, the
-    macro now acceps an optional argument specifying the email address
-    of the author. If the macro is used multiple times, authors are
-    appended to the list of author names displayed by \cs{maketitle}.
+    \Option{math}\WithValues{true, false}\AndDefault{true}
+    When \texttt{true}, the \pkg{skmath} package is loaded, providing
+    improvements to the math functionality of \pkg{amsmath} and friends.
 
+    \Option{lang}\WithValues{en, sv}\AndDefault{sv}
+    This option specifies what main language \pkg{babel} or
+    \pkg{polyglossia} set up with. The other language is loaded as 
+    well, for use in constructs that allow for a second language.
+
+    \Option{draft}\WithValues{true, false}\AndDefault{false}
+    The \opt{draft} option, much like in \pkg{article}, enables
+    \cs{overfullrule}s and possibly similar functionality in loaded
+    packages (if they react to the global \opt{draft} option).
+
+    \subsection{User-level commands and environments}
+    Philosophy?
+
+    \subsubsection{The front page}
+    \DescribeMacro\date{<ISO8601 date>}
+    \DescribeMacro\author[<email>]{<name>}
+    \DescribeMacro\regarding{<topic>}
+    \DescribeMacro\license{<license name>}
     \DescribeMacro\maketitle
-    The title page (or rather, block) has been refashioned to mimic the
-    Prac\TeX\ Journal style. This means a fairly compact block, starting
-    with a line of text containing the date and subject matter, followed
-    by a large skip and then the title, author and optionally an
-    abstract set ragged-right and fairly close together.
+%    \DescribeEnv{abstract}
+%    \DescribeEnv{titlepage}
 
-    \subsubsection{Useful macros}
-    The class defines a few additional macros that aren't available in
-    \pkg{article} but don't fit in any specifiv \enquote{set} of
-    features. These include commands to typeset comments.
+    \subsubsection{Sectioning}
+    note the tocdepth <= 3 caveat
+    \DescribeMacro\section*[<short title>]{<title>}
+    \DescribeMacro\subsection*[<short title>]{<title>}
+    \DescribeMacro\subsubsection*[<short title>]{<title>}
+    \DescribeMacro\paragraph*[<short title>]{<title>}
+    \DescribeMacro\subparagraph*[<short title>]{<title>}
 
+    \subsubsection{Macros and environments from \pkg{article}}
+    Note that old font commands are deprecated
+%    \DescribeEnv{description}
+%    \DescribeEnv{quote}
+%    \DescribeEnv{quotation}
+%    \DescribeEnv{verse}
+    \DescribeMacro\appendix
+    \DescribeMacro\emph{<text>}
+
+    \subsubsection{Floats}
+%    \DescribeEnv{figure}
+%    \DescribeEnv{table}
+
+    \subsubsection{Table of contents}
+    \DescribeMacro\tableofcontents
+
+%    \subsubsection{Basic bibliography support}
+
+    \subsubsection{Miscellaneous}
     \DescribeMacro\comment*{<comment>}
-    \DescribeMacro\com*{<comment>}
     \DescribeMacro\note*{<comment>}
-    The \cs{comment} macro (also available in an unstarred variant)
-    typesets a comment. The starred variant typesets the commen in red
-    prefixed by the word \enquote{Comment}, while the unstarred variant
-    typesets the comment as a margin note (but still prefixed). The
-    \cs{com} and \cs{note} macros are aliases of \cs{comment}.
+    \DescribeMacro\com*{<comment>}
 
-    \subsubsection{Two-column mode}
-    \DescribeEnv[<content>]{onecol}
-    In \opt{twocolumn} mode, the package defines an environment
-    \env{onecol} which typesets its contents in a single column. 
-    Additionally, it redefines \env{figure} and \env{table} as
-    non-floats, leaving the starred versions intact.
+    \subsubsection{Color theme support}
+    \DescribeMacro\colortheme{<theme>}
 
-    \subsubsection{Color themes}
+    \subsubsection{Font size macros}
+    \DescribeMacro\tiny
+    \DescribeMacro\scriptsize
+    \DescribeMacro\footnotesize
+    \DescribeMacro\small
+    \DescribeMacro\normalsize
+    \DescribeMacro\large
+    \DescribeMacro\Large
+    \DescribeMacro\LARGE
+    \DescribeMacro\huge
+    \DescribeMacro\Huge
+
+    \subsection{Color themes}\label{ssec:color}
     \DescribeMacro\colortheme{<theme>}
     If the package is loaded with the \opt{color} option, changing the color theme is
     possible using \cs{colortheme}, which loads an
@@ -302,45 +357,45 @@
     \Theme{skdoc}
     The \thm{skdoc} theme is loosely based on the \pkg{skdoc} document class, with which this documentation is typeset.
 
-    \subsection{Additional information}
-    The document class includes a number of packages by default. This
-    is useful to know, since passing explicit options to these packages
-    will require you to utilize the \cs{PassOptionsToPackage} macro
-    before you load the class using \cs{documentclass}.
-    Table~\ref{tab:pkgs} lists the packages included by \thepkg\ along
-    with their options (if applicable).
+%    \subsection{Additional information}
+%    The document class includes a number of packages by default. This
+%    is useful to know, since passing explicit options to these packages
+%    will require you to utilize the \cs{PassOptionsToPackage} macro
+%    before you load the class using \cs{documentclass}.
+%    Table~\ref{tab:pkgs} lists the packages included by \thepkg\ along
+%    with their options (if applicable).
+%
+%    \begin{table}[tbp]
+%        \centering
+%        \caption{User-level packages included by \thepkg.}
+%        \label{tab:pkgs}
+%        \begin{tabular}{llp{15em}}
+%            \toprule
+%            \textbf{Package} & \textbf{Options} & \textbf{Comments} \\
+%            \midrule
+%            \pkg{amsmath} & \texttt{intlimits} & Provides \hologo{AmS} commands and environments. \\
+%            \pkg{amssymb} & & Only if not using \opt{kpfonts}.\\
+%            \pkg{babel} & see options \opt{swe} and \opt{eng} & Only loaded if \emph{not} using \hologo{XeTeX}.\\
+%            \pkg{calc} & & \\
+%            \pkg{fontenc} & \texttt{T1} & Only loaded if \emph{not} using \hologo{XeTeX}. Makes sure we are using a good font encoding for crisp appearance on-screen (OT1 is horrible). \\
+%            \pkg{fontspec} & \texttt{quiet} & Only loaded if using \hologo{XeTeX}. Provides basic OTF font selection commands.\\
+%            \pkg{geometry} & \texttt{a4paper} or \texttt{a5paper} & This is used by the \opt{paper} option to set the paper area. \\
+%            \pkg{icomma} & & \\
+%            \pkg{inconsolata} & & \\
+%            \pkg{microtype} & & Provides micro-typographic improvements.\\
+%            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
+%            \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
+%            \pkg{skmath} & & Only if it exists and \opt{nomath} isn't set.\\
+%            \pkg{textcomp} & & Only if not using \opt{kpfonts}.\\
+%            \pkg{xcolor} & & Only loaded with the \opt{color} option.\\
+%            \bottomrule
+%        \end{tabular}
+%    \end{table}
 
-    \begin{table}[tbp]
-        \centering
-        \caption{User-level packages included by \thepkg.}
-        \label{tab:pkgs}
-        \begin{tabular}{llp{15em}}
-            \toprule
-            \textbf{Package} & \textbf{Options} & \textbf{Comments} \\
-            \midrule
-            \pkg{amsmath} & \texttt{intlimits} & Provides \hologo{AmS} commands and environments. \\
-            \pkg{amssymb} & & Only if not using \opt{kpfonts}.\\
-            \pkg{babel} & see options \opt{swe} and \opt{eng} & Only loaded if \emph{not} using \hologo{XeTeX}.\\
-            \pkg{calc} & & \\
-            \pkg{fontenc} & \texttt{T1} & Only loaded if \emph{not} using \hologo{XeTeX}. Makes sure we are using a good font encoding for crisp appearance on-screen (OT1 is horrible). \\
-            \pkg{fontspec} & \texttt{quiet} & Only loaded if using \hologo{XeTeX}. Provides basic OTF font selection commands.\\
-            \pkg{geometry} & \texttt{a4paper} or \texttt{a5paper} & This is used by the \opt{paper} option to set the paper area. \\
-            \pkg{icomma} & & \\
-            \pkg{inconsolata} & & \\
-            \pkg{microtype} & & Provides micro-typographic improvements.\\
-            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
-            \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
-            \pkg{skmath} & & Only if it exists and \opt{nomath} isn't set.\\
-            \pkg{textcomp} & & Only if not using \opt{kpfonts}.\\
-            \pkg{xcolor} & & Only loaded with the \opt{color} option.\\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-
-    \section{Known issues}
+    \section{Known issues}\label{sec:issues}
     A list of current issues is available in the Github repository of this
     package\footnote{\url{https://github.com/urdh/skrapport/issues}}, but as
-    of the release of \theversion, there are no known issues:
+    of the release of \theversion, there are no known issues.
     %\begin{description}
     %    \item[\#6]  ???
     %\end{description}
@@ -429,7 +484,7 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsection{Option setup macros}
+    \subsubsection{Option setup macros}
     In this section, all options declared in the previous section are
     implemented using setup macros. Some of these may have to be called
     in an appropriate order, but I haven't checked that yet.
@@ -926,21 +981,20 @@
 \begin{MacroCode}{class}
         \msg_warning:nnn{skrapport}{invalid-font}{#1}
     }
-\end{MacroCode}
-    We load \pkg{inconsolata} as our monospace font.
-    But we don't load it when using the \texttt{none} font stack.
-\begin{MacroCode}{class}
     \str_if_eq:nnF{#1}{none}{
-        \str_if_eq:nnF{#1}{word}{
-            \RequirePackage[scaled=1.03]{inconsolata}
-        }
 \end{MacroCode}
     All font stacks except \texttt{none} and \texttt{kpfonts} require
     additional packages. Or, rather, \texttt{none} can't load these
     packages by definition, and \texttt{kpfonts} already loads them
     internally \footcite[p.~1]{kpfonts}. They are always useful.
+
+    We also load \pkg{inconsolata} as our monospace font.
+    But we don't load it when using the \texttt{none} font stack.
 \begin{MacroCode}{class}
         \str_if_eq:nnF{#1}{kpfonts}{
+            \str_if_eq:nnF{#1}{word}{
+                \RequirePackage[scaled=1.03]{inconsolata}
+            }
             \AtEndOfClass{
                 \RequirePackage{amsmath}
                 \RequirePackage{amssymb}
@@ -1148,7 +1202,7 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsubsection{Variants with expandable arguments}
+    \paragraph{Variants with expandable arguments}
     Some option setup macros accept arguments, but those arguments are
     not expanded. Here, we provide variants which expand the parameters
     properly using the excellent \pkg{l3prg} functionality.
@@ -1173,7 +1227,7 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsection{Key-value system}
+    \subsubsection{Key-value system}
     Let's define some \pkg{l3keys} corresponding to the options. Note
     that most of them just refer to a macro in their \texttt{.code:n}
     block --- these macros were defined earlier.
@@ -1569,8 +1623,7 @@
 \__skrapport_setup_defaults:
 \end{MacroCode}
 
-    \subsection{Loading packages}
-    \subsubsection{Required packages}
+    \subsection{Required packages}
     We also include some essential packages per default. The
     \pkg{calc} package, for instance, is essential in later
     definitions.
@@ -1670,7 +1723,7 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsection{User-level commands}
+    \subsection{User-level commands and environments}
     \subsubsection{The front page}
     \begin{macro}{\title}[1]
         {Title of the document}
@@ -1849,7 +1902,8 @@
     \end{macro*}
     \begin{macro*}{\__skrapport_abstract_style:}
 \begin{MacroCode}{class}
-\cs_new_protected:Nn\__skrapport_abstract_style:{}
+\cs_new_protected:Nn\__skrapport_abstract_style:
+    {\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -1913,12 +1967,12 @@
     macro (they have to sync the width of the first minipage, which has
     to be calculated at the first use).
 \begin{MacroCode}{class}
-    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set_to_wd:Nn\l_tmpa_dim{\abstractname}
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
-            \leavevmode\bfseries\__skrapport_abstract_style:
+            \leavevmode\__skrapport_abstract_style:
             \__skrapport_Email_word:
         \end{flushright}
     \end{minipage}
@@ -1937,12 +1991,12 @@
 \begin{MacroCode}{class}
 \dim_const:Nn\c__skrapport_abstract_separator_dim{1em}
 \DeclareDocumentEnvironment{abstract}{}{
-    \dim_set_to_wd:Nn\l_tmpa_dim{\bfseries\abstractname}
+    \dim_set_to_wd:Nn\l_tmpa_dim{\abstractname}
     \dim_set:Nn\l_tmpb_dim
         {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
     \begin{minipage}[t]{\l_tmpa_dim}
         \begin{flushright}
-            \leavevmode\bfseries\__skrapport_abstract_style:
+            \leavevmode\__skrapport_abstract_style:
             \abstractname
         \end{flushright}
     \end{minipage}
@@ -2332,7 +2386,7 @@
     \begin{macro*}{\c__skrapport_paragraph_style:}
 \begin{MacroCode}{class}
 \cs_set_protected:Nn\__skrapport_paragraph_style:
-    {\normalfont\normalsize\bfseries}
+    {\normalfont\normalsize\__skrapport_title_style:}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -2363,7 +2417,7 @@
     \begin{macro*}{\c__skrapport_subparagraph_style:}
 \begin{MacroCode}{class}
 \cs_set_protected:Nn\__skrapport_subparagraph_style:
-    {\normalfont\normalsize\itshape}
+    {\normalfont\normalsize\__skrapport_title_style:\itshape}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -2373,7 +2427,7 @@
 \end{MacroCode}
     \end{macro}
 
-    \subsubsection{Macros from \pkg{article}}
+    \subsubsection{Macros and environments from \pkg{article}}
     \paragraph{List environments}
     First, several dimensions are provided and three penalties defined.
 \begin{MacroCode}{class}
