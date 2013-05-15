@@ -376,8 +376,20 @@
     sequence.
 
     \subsubsection{Floats}
-%    \DescribeEnv{figure}
-%    \DescribeEnv{table}
+    Both the \env{figure} and \env{table} float environments accept an
+    optional positioning argument. The default positioning is
+    \texttt{tp}. Both environments also have starred variants, which
+    do nothing in one-column mode while typesetting the figure across
+    both columns in two-column mode. As usual, \cs{centering},
+    \cs{caption} and \cs{label} should be used inside the floats.
+
+    \DescribeEnv[<content>]{figure}[position]
+    This float environment is intended for figures. The most common
+    contents are \cs{includegraphics} statements or \env{tikzpicture}
+    environments.
+
+    \DescribeEnv[<content>]{table}[position]
+    A float intended for tables. Probably contains \env{tabular}s.
 
     \subsubsection{Table of contents}
     \DescribeMacro\tableofcontents
@@ -392,9 +404,17 @@
     \DescribeMacro\comment*{<comment>}
     \DescribeMacro\note*{<comment>}
     \DescribeMacro\com*{<comment>}
+    These macros, the two latter being aliases of the first one, typeset
+    an author's comment in the document. The starred variants typeset the
+    comment inline with a red background, while the unstarred variant
+    typesets the comment in a \cs{marginpar}.
 
     \subsubsection{Color theme support}
     \DescribeMacro\colortheme{<theme>}
+    The \cs{colortheme} macro, which is only available when the
+    \opt{color} option is \texttt{true}, applies a color theme to 
+    the document. For a list of available color themes, see
+    \enquote{Color themes} \vpageref{ssec:color}.
 
     \subsubsection{Font size macros}
     The font size macros, expectedly, set the size of the text. They
