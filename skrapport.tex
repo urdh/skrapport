@@ -260,30 +260,120 @@
     Philosophy?
 
     \subsubsection{The front page}
+    The front page is the part of the document that has seen the most
+    changes in \thepackage\ compared to \pkg{article}. In addition to
+    the new, Prac\TeX-inspired layout, there are a few additional
+    pieces of information in it. Also, the \cs{author} macro has been
+    dramatically improved.
+
+    Also mention \cs{title} which isn't defined by us.
+
     \DescribeMacro\date{<ISO8601 date>}
+    The \cs{date} macro now internally employs \pkg{isodate} to typeset
+    the date of the document. This means that the input must be either
+    the string \enquote{today}, the token \cs{today} or a date as defined
+    by ISO8601. The mechanisms provided by \pkg{isodate} can be used to
+    affect the output format.
+
     \DescribeMacro\author[<email>]{<name>}
+    In contrast with the \pkg{article} package, the \cs{author} macro
+    should no longer be used to typeset several author names at once.
+    Instead, one \cs{author} command is to be issued for every author,
+    optionally providing a corresponding email. These are then combined,
+    in the order they are given, to form a list of authors and a
+    corresponding list of email adresses.
+
     \DescribeMacro\regarding{<topic>}
+    This macro defines a topic or other short message detailing the
+    purpose of the document. It is typeset along with the date in the
+    upper left corner of the title page.
+
     \DescribeMacro\license{<license name>}
+    The \cs{license} macro defines a short license name to be typeset
+    in the lower right corner of the title page. This mechanism could of
+    course be used to typeset an institution name or similar as well.
+    It is only typeset when also using the \env{titlepage} environment
+    described below.
+
     \DescribeMacro\maketitle
-%    \DescribeEnv{abstract}
-%    \DescribeEnv{titlepage}
+    As in \pkg{article}, the \cs{maketitle} macro typesets the
+    information provided by \cs{title}, \cs{author} and friends to form
+    a stylish front page. When combined with \env{abstract},
+    \env{titlepage} and/or \cs{tableofcontents}, you get a very
+    good-looking preamble with almost no effort.
+
+    \DescribeEnv[<abstract text>]{abstract}
+    The \env{abstract} environment defines an abstract, which is typeset
+    in a block with the \cs{abstractname} word next to it (see
+    \emph{e.g.} the title page of this manual for an example).
+
+    \DescribeEnv[<title page contents>]{titlepage}
+    Normally, \cs{maketitle} doesn't reserve its own page. By enclosing
+    \cs{maketitle} (and \env{abstract} if appropriate) in the
+    \env{titlepage} environment, the contents are typeset on their
+    own page, without page numbering and with the \cs{license} text
+    in the lower right corner (if applicable).
 
     \subsubsection{Sectioning}
-    note the tocdepth <= 3 caveat
     \DescribeMacro\section*[<short title>]{<title>}
     \DescribeMacro\subsection*[<short title>]{<title>}
     \DescribeMacro\subsubsection*[<short title>]{<title>}
     \DescribeMacro\paragraph*[<short title>]{<title>}
     \DescribeMacro\subparagraph*[<short title>]{<title>}
+    The sectioning macros are superficially very similar to those
+    provided by \pkg{article}, but have been completely reimplemented
+    in \pkg{expl3} code. Additionally, the style of these secioning
+    macros, as detailed by the \opt{titles} option documentation above,
+    can be changed.
+
+    All of them have both arguments and behaviour in common, only
+    differing in style. The starred versions are unnumbered, but still
+    accept the opional short title (simply discarding it). The optional
+    short title is used in the table of contents. The
+    \texttt{secnumdepth} counter limits the depth of section numbering.
+
+    The first three macros, being section titles, are typeset as actual
+    titles on their own line with appropriate spacing above and below.
+    The paragraph macros instead typeset run-in titles.
 
     \subsubsection{Macros and environments from \pkg{article}}
-    Note that old font commands are deprecated
-%    \DescribeEnv{description}
-%    \DescribeEnv{quote}
-%    \DescribeEnv{quotation}
-%    \DescribeEnv{verse}
-    \DescribeMacro\appendix
+    Aside from the \env{itemize} and \env{enumerate} envionments and the
+    font selection macros, which are carried without modification from
+    \LaTeXe, a couple of environments and macros are defined.
+
+    The old font macros, whose use has been discouraged for a long time,
+    are now deprecated. Instead of functioning correctly, they will emit
+    an error and require user input. Use the \cs**{text??} macros
+    instead. For emphasis, use the \cs{emph} macro.
+
     \DescribeMacro\emph{<text>}
+    Emphasized text will be typeset in italic, or bold italic if the
+    macro is used in a context where italic is already used (such as
+    inside another \cs{emph} invokation).
+
+    \DescribeEnv[\cs*{item}\oarg{item} \meta{description}]{description}
+    The \env{description} environment behaves as expected, typesetting
+    a list of descriptions as in the \pkg{article} class.
+
+    \DescribeEnv[<short quote>]{quote}
+    Intended for short quotes, the \env{quote} environment simply
+    typesets a centered block of italic text.
+
+    \DescribeEnv[<long quote>]{quotation}
+    Longer quoted passages are typeset using the \env{quotation}
+    environment. This is simply a \env{quote} environment with additional
+    spacing above and below.
+
+    \DescribeEnv[<pretentious poetry>]{verse}
+    The \env{verse} environment is intended for poetry and other text
+    where line breaks are critical. Use \verb|\\| to break
+    lines.
+
+    \DescribeMacro\appendix
+    This macro signals the end of the main matter and the start of
+    the appendix. In essence, it resets the section numbering counter
+    and changes the section numbering to the upper-case alphabetic 
+    sequence.
 
     \subsubsection{Floats}
 %    \DescribeEnv{figure}
@@ -291,6 +381,10 @@
 
     \subsubsection{Table of contents}
     \DescribeMacro\tableofcontents
+    The table of contents are typeset using this macro. The
+    \texttt{tocdepth} counter limits the depth of the table of
+    contents, but for stylistic reasons values higher than 3 are
+    unsupported.
 
 %    \subsubsection{Basic bibliography support}
 
@@ -303,16 +397,32 @@
     \DescribeMacro\colortheme{<theme>}
 
     \subsubsection{Font size macros}
+    The font size macros, expectedly, set the size of the text. They
+    do not take arguments, instead affecting all subsequent text of the
+    current \TeX\ group, so use braces to provide and limit context.
+    Also note that unlike \pkg{article}, these macros are \emph{all}
+    available, regardless of point size option.
+
     \DescribeMacro\tiny
+    Typesets {\tiny tiny} text.
     \DescribeMacro\scriptsize
+    Typesets {\scriptsize script-size} text.
     \DescribeMacro\footnotesize
+    Typesets {\footnotesize footnote-sized} text.
     \DescribeMacro\small
+    Typesets {\small small} text.
     \DescribeMacro\normalsize
+    Typesets normal text.
     \DescribeMacro\large
+    Typesets {\large large} text.
     \DescribeMacro\Large
+    Typesets {\Large slightly larger} text.
     \DescribeMacro\LARGE
+    Typesets {\LARGE even larger} text.
     \DescribeMacro\huge
+    Typesets {\huge huge} text.
     \DescribeMacro\Huge
+    Typesets {\Huge really huge} text.
 
     \subsection{Color themes}\label{ssec:color}
     \DescribeMacro\colortheme{<theme>}
