@@ -543,7 +543,7 @@
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
 \RequirePackage[replace]{l3ctr2e}
 \ProvidesExplClass{skrapport}%
-    {2013/04/10}{0.11a}{stylish report document class}
+    {2013/05/15}{0.12}{stylish report document class}
 \end{MacroCode}
     
     \subsection{Messages}
@@ -3104,7 +3104,7 @@
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@section}
-    \changes{0.12a}{Now uses \cs{__skrapport_toc_line:nnnnn}}
+    \changes{0.12}{Now uses \cs{__skrapport_toc_line:nnnnn}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@section{mm}{
     \group_begin:
@@ -3116,7 +3116,7 @@
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@subsection}
-    \changes{0.12a}{Now uses \cs{__skrapport_toc_line:nnnnnn}}
+    \changes{0.12}{Now uses \cs{__skrapport_toc_line:nnnnnn}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subsection{mm}{
     \group_begin:
@@ -3128,7 +3128,7 @@
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\l@subsubsection}
-    \changes{0.12a}{Changed style to match \pkg{skdoc}}
+    \changes{0.12}{Changed style to match \pkg{skdoc}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subsubsection{mm}{
     \skip_set:Nn\leftskip{3.3em}
