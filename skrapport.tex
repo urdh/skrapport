@@ -1290,6 +1290,10 @@
 \cs_new:Nn\__skrapport_setup_xelatex:{
     \RequirePackage[quiet]{fontspec}
     \AtEndOfClass{
+        \cs_undefine:N\dblcolon
+        \cs_undefine:N\coloneqq
+        \cs_undefine:N\Coloneqq
+        \cs_undefine:N\eqqcolon
         \RequirePackage{unicode-math}
         \unimathsetup {
             math-style     = ISO,
