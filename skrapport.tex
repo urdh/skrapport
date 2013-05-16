@@ -1767,10 +1767,19 @@
     Finally, we process the class options using the keys defined earlier.
     We also run the engine-specific code implemented above, and the fake
     key system used to define defaults.
+
+    Note that we save and restore \cs{@classoptionslist} around the
+    engine-specific setup. This is because we might load \pkg{xkeyval},
+    which apparently removes all key-value options from the list when
+    loaded (and this is really bad for us).
 \begin{MacroCode}{class}
+\cs_set_eq:NN\__skrapport_tmpa_cs:\@classoptionslist
 \__skrapport_setup_engine_specific:
+\cs_set_eq:NN\@classoptionslist\__skrapport_tmpa_cs:
 \ProcessKeysOptions{skrapport}
+\cs_set_eq:NN\@classoptionslist\__skrapport_tmpa_cs:
 \__skrapport_setup_defaults:
+\cs_undefine:N\__skrapport_tmpa_cs:
 \end{MacroCode}
 
     \subsection{Required packages}
