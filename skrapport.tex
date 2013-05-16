@@ -1311,9 +1311,16 @@
     \DeclareDocumentCommand\nobreakspace{}{\leavevmode\nobreak\space}
 \end{MacroCode}
     \end{macro}
+    Since apparently \hologo{LuaLaTeX} isn't supported by
+    \pkg{polyglossia}, we fall back to \pkg{babel} in that engine.
+    Thus, only load \pkg{polyglossia} for \hologo{XeLaTeX}.
 \begin{MacroCode}{class}
-    \RequirePackage{polyglossia}
-    \bool_gset_true:N\g__skrapport_has_polyglossia_bool
+    \xetex_if_engine:TF{
+        \RequirePackage{polyglossia}
+        \bool_gset_true:N\g__skrapport_has_polyglossia_bool
+    }{
+        \bool_gset_false:N\g__skrapport_has_polyglossia_bool
+    }
 }
 \end{MacroCode}
     \end{macro}
