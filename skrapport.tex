@@ -59,6 +59,12 @@
         author = {{International Organization for Standardization, Technical Committee 6}},
         year = {2007}
     }
+    @standard{ISO8601,
+        title = {ISO 8601:2004},
+        subtitle = {Data elements and interchange formats -- Information interchange -- Representation of dates and times},
+        author = {{International Organization for Standardization, Technical Committee 154}},
+        year = {2004}
+    }
 \end{filecontents}
 \addbibresource{skrapport.bib}
 
@@ -272,8 +278,8 @@
     The \cs{date} macro now internally employs \pkg{isodate} to typeset
     the date of the document. This means that the input must be either
     the string \enquote{today}, the token \cs{today} or a date as defined
-    by ISO8601. The mechanisms provided by \pkg{isodate} can be used to
-    affect the output format.
+    by ISO8601\footcite{ISO8601}. The mechanisms provided by
+    \pkg{isodate} can be used to affect the output format.
 
     \DescribeMacro\author[<email>]{<name>}
     In contrast with the \pkg{article} package, the \cs{author} macro
