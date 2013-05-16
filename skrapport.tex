@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12}
+    \version{0.12a-devel}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -104,8 +104,8 @@
                     fixed abstract in twocolumn mode}
     \changes{0.10}{Include skmath if exists
                     and wanted. Gobble optional arguments to
-                    \env{figure} and \env{table} in two-column mode.}
-    \changes{0.10a}{Include \pkg{xparse} (fixes breakage).}
+                    \env{figure} and \env{table} in two-column mode}
+    \changes{0.10a}{Include \pkg{xparse} (fixes breakage)}
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
     \changes{0.11a}{Added \opt{skdoc} font option and \thm{skdoc} color theme}
     \changes{0.12}{Deprecated several macros, moved to \LaTeX3. Use of TOC depth above 3 is now unsupported}
@@ -121,7 +121,7 @@
     \begin{abstract}
         A document class intended for simple documents \emph{e.g.}
         reports handed in to courses and such. It is small,
-        straightforwars and heavily inspired by the Prac\TeX{}
+        straight-forward and heavily inspired by the Prac\TeX{}
         Journal style.
     \end{abstract}
     \tableofcontents
@@ -1045,6 +1045,7 @@
     \begin{macro}{\__skrapport_setup_font:n}[1]
         {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
+    \changes{0.12a}{Drop the post-\pkg{amsmath} hook entirely}
     We set up the somewhat involved font stack.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_font:n#1{
@@ -1282,6 +1283,7 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_xelatex:}
+    \changes{0.12a}{Don't load \pkg{polyglossia} for \hologo{LuaTeX}}
     This macro contains special setup code for the \hologo{XeTeX} and
     \hologo{LuaTeX} engines, such as loading \pkg{fontspec}, providing
     missing commands (which have been replaced by equivalent Unicode
@@ -1443,6 +1445,7 @@
 
     \begin{option}{twocolumn}
     \changes{0.08}{Added option \opt{twocolumn}}
+    \changes{0.12a}{Use \cs{AtEndOfClass} instead of \cs{AtEndClass}}
     Declare column options. The code here should be run through
     \cs{AtEndOfClass} so that the setup code can patch everythin
     properly.
