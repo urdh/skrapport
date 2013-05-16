@@ -712,7 +712,7 @@
 
     \begin{macro}{\__skrapport_setup_twocolumn:}
     Setting up for twocolumn mode is slightly compliacted. Note that this
-    macro should be called from \cs{AtEndClass} to ensure that we patch
+    macro should be called from \cs{AtEndOfClass} to ensure that we patch
     everything correctly. Note also that \pkg{multicol} is always loaded
     as it is used for the \env{theindex} environment.
 \begin{MacroCode}{class}
@@ -1042,11 +1042,6 @@
 \end{MacroCode}
     \end{macro}
 
-    \begin{macro*}{\__skrapport_after_ams_hook:}
-\begin{MacroCode}{class}
-\cs_new:Npn\__skrapport_after_ams_hook:{}
-\end{MacroCode}
-    \end{macro*}
     \begin{macro}{\__skrapport_setup_font:n}[1]
         {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
@@ -1143,7 +1138,6 @@
             }
         }
     }
-    \AtEndOfClass{\__skrapport_after_ams_hook:}
 }
 \end{MacroCode}
     \end{macro}
@@ -1229,6 +1223,7 @@
 
     \begin{macro}{\__skrapport_setup_math:}
     This is the simplest option, only loading \pkg{skmath} if it exists.
+    Also the post-skmath hook is run.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_math:{
     \file_if_exist:nT{skmath.sty}{\RequirePackage{skmath}}
@@ -1294,7 +1289,7 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_xelatex:{
     \RequirePackage[quiet]{fontspec}
-    \cs_gset:Nn\__skrapport_after_ams_hook:{
+    \AtEndOfClass{
         \RequirePackage{unicode-math}
         \unimathsetup {
             math-style     = ISO,
@@ -1445,14 +1440,14 @@
     \begin{option}{twocolumn}
     \changes{0.08}{Added option \opt{twocolumn}}
     Declare column options. The code here should be run through
-    \cs{AtEndClass} so that the setup code can patch everythin
+    \cs{AtEndOfClass} so that the setup code can patch everythin
     properly.
     \begin{option}{onecolumn}
     \changes{0.12}{Option is now deprecated}
     The \opt{onecolumn} option has no effect and is deprecated.
 \begin{MacroCode}{class}
     twocolumn .code:n =
-        {\AtEndClass{\__skrapport_setup_twocolumn:}},
+        {\AtEndOfClass{\__skrapport_setup_twocolumn:}},
     onecolumn .code:n =
         {\msg_warning:nnn{skrapport}{option-no-effect}{onecolumn}},
 \end{MacroCode}
