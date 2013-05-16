@@ -1774,12 +1774,15 @@
     loaded (and this is really bad for us).
 \begin{MacroCode}{class}
 \cs_set_eq:NN\__skrapport_tmpa_cs:\@classoptionslist
+\RequirePackage{xkeyval}
+\cs_set_eq:NN\__skrapport_tmpb_cs:\@classoptionslist
+\cs_set_eq:NN\@classoptionslist\__skrapport_tmpa_cs:
 \__skrapport_setup_engine_specific:
-\cs_set_eq:NN\@classoptionslist\__skrapport_tmpa_cs:
 \ProcessKeysOptions{skrapport}
-\cs_set_eq:NN\@classoptionslist\__skrapport_tmpa_cs:
 \__skrapport_setup_defaults:
+\cs_set_eq:NN\@classoptionslist\__skrapport_tmpb_cs:
 \cs_undefine:N\__skrapport_tmpa_cs:
+\cs_undefine:N\__skrapport_tmpb_cs:
 \end{MacroCode}
 
     \subsection{Required packages}
@@ -2937,11 +2940,11 @@
 \cs_new:Npn  \fps@figure{tb}
 \cs_new:Npn\ftype@figure{1}
 \cs_new:Npn  \ext@figure{lof}
-\cs_new:Npn \fnum@figure{\figurename~\thefigure}
+\cs_new:Npn \fnum@figure{\figurename\ \thefigure}
 \cs_new:Npn  \fps@table {tb}
 \cs_new:Npn\ftype@table {2}
 \cs_new:Npn  \ext@table {lot}
-\cs_new:Npn \fnum@table {\tablename~\thetable}
+\cs_new:Npn \fnum@table {\tablename\ \thetable}
 \end{MacroCode}
 
     \paragraph{Environments}
