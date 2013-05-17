@@ -3022,6 +3022,8 @@
     \begin{macro*}{\@makecaption}
     \changes{0.10c}{Fix missing coloring command for some captions}
     \changes{0.12}{Split \cs{@captionstyle} into two macros}
+    \changes{0.12a}{Fix a bug which applied caption name styling to the
+        caption text}
     This should possibly be redefined already at the \cs{caption} level.
 \begin{MacroCode}{class}
 \cs_new:Npn\@makecaption#1#2{
@@ -3029,12 +3031,12 @@
     \hbox_set:Nn\l_tmpa_box{
         \color@setgroup % !!!
         {\__skrapport_caption_name_style:#1:~}
-        {\__skrapport_caption_name_style:#2}
+        {\__skrapport_caption_text_style:#2}
         \color@endgroup % !!!
     }
     \dim_compare:nTF{\box_wd:N\l_tmpa_box>\hsize}{
         {\__skrapport_caption_name_style:#1:~}
-        {\__skrapport_caption_name_style:#2}
+        {\__skrapport_caption_text_style:#2}
         \par
     }{
         \global\@minipagefalse % !!!
