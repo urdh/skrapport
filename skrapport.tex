@@ -1144,80 +1144,83 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_parskip:}
+    \changes{0.12a}{Fixed bug where font size reset the \cs{parindent}}
     This part mixes \LaTeXe\ and \LaTeX3, which may not be a good thing.
     On the other hand, it seems hard to avoid. Most of the code is
     half-lifted from \pkg{parskip} and converted to \LaTeX3.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_parskip:{
-    \skip_gset:Nn\parskip{0.5\baselineskip~plus~2pt}
-    \dim_gzero:N\parindent
-    \skip_gset:Nn\parfillskip{30pt~plus~1fil}
+    \AtEndOfClass{
+        \skip_gset:Nn\parskip{0.5\baselineskip~plus~2pt}
+        \dim_gzero:N\parindent
+        \skip_gset:Nn\parfillskip{30pt~plus~1fil}
 \end{MacroCode}
     \begin{macro*}{\@listI}
     \begin{macro*}{\@listi}
 \begin{MacroCode}{class}
-    \cs_gset:Npn\@listI{
-        \dim_set_eq:NN\leftmargin\leftmargini
-        \dim_set_eq:NN\parsep\parskip
-        \dim_zero:N\topsep
-        \dim_zero:N\itemsep
-    }
-    \cs_gset_eq:NN\@listi\@listI
+        \cs_gset:Npn\@listI{
+            \dim_set_eq:NN\leftmargin\leftmargini
+            \dim_set_eq:NN\parsep\parskip
+            \dim_zero:N\topsep
+            \dim_zero:N\itemsep
+        }
+        \cs_gset_eq:NN\@listi\@listI
 \end{MacroCode}
     \end{macro*}
     \end{macro*}
 \begin{MacroCode}{class}
-    \dim_gset_eq:NN\leftmargin\leftmargini
-    \dim_gset_eq:NN\parsep\parskip
-    \dim_gzero:N\topsep
-    \dim_gzero:N\itemsep
+        \dim_gset_eq:NN\leftmargin\leftmargini
+        \dim_gset_eq:NN\parsep\parskip
+        \dim_gzero:N\topsep
+        \dim_gzero:N\itemsep
 \end{MacroCode}
     \begin{macro*}{\@listii}
 \begin{MacroCode}{class}
-    \cs_gset:Npn\@listii{
-        \dim_set_eq:NN\leftmargin\leftmarginii
-        \dim_set_eq:NN\labelwidth\leftmarginii
-        \dim_set_eq:NN\parsep\parskip
-        \dim_sub:Nn\labelwidth{-\labelsep}
-        \dim_zero:N\topsep
-        \dim_zero:N\itemsep
-    }
+        \cs_gset:Npn\@listii{
+            \dim_set_eq:NN\leftmargin\leftmarginii
+            \dim_set_eq:NN\labelwidth\leftmarginii
+            \dim_set_eq:NN\parsep\parskip
+            \dim_sub:Nn\labelwidth{-\labelsep}
+            \dim_zero:N\topsep
+            \dim_zero:N\itemsep
+        }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\@listiii}
 \begin{MacroCode}{class}
-    \cs_gset:Npn\@listiii{
-        \dim_set_eq:NN\leftmargin\leftmarginiii
-        \dim_set_eq:NN\labelwidth\leftmarginiii
-        \dim_set_eq:NN\parsep\parskip
-        \dim_sub:Nn\labelwidth{-\labelsep}
-        \dim_zero:N\topsep
-        \dim_zero:N\itemsep
-    }
+        \cs_gset:Npn\@listiii{
+            \dim_set_eq:NN\leftmargin\leftmarginiii
+            \dim_set_eq:NN\labelwidth\leftmarginiii
+            \dim_set_eq:NN\parsep\parskip
+            \dim_sub:Nn\labelwidth{-\labelsep}
+            \dim_zero:N\topsep
+            \dim_zero:N\itemsep
+        }
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
-    \dim_gzero:N\partopsep
+        \dim_gzero:N\partopsep
 \end{MacroCode}
     \begin{macro*}{\@starttoc}[1]
         {Table of contents extension}
 \begin{MacroCode}{class}
-    \RenewDocumentCommand\@starttoc{m}{
-        \group_begin:
-        \dim_zero:N\parskip
-        \file_if_exist:nT{\c_job_name_tl.##1}{
-            \file_input:n{\c_job_name_tl.##1}
+        \RenewDocumentCommand\@starttoc{m}{
+            \group_begin:
+            \dim_zero:N\parskip
+            \file_if_exist:nT{\c_job_name_tl.##1}{
+                \file_input:n{\c_job_name_tl.##1}
+            }
+            \if@filesw
+                \iow_new:c{tf@##1}
+                \iow_open:cn{tf@##1}{\c_job_name_tl.##1}
+            \fi
+            \@nobreakfalse
+            \group_end:
         }
-        \if@filesw
-            \iow_new:c{tf@##1}
-            \iow_open:cn{tf@##1}{\c_job_name_tl.##1}
-        \fi
-        \@nobreakfalse
-        \group_end:
-    }
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
+    }
 }
 \end{MacroCode}
     \end{macro}
@@ -2081,7 +2084,7 @@
             }
         }
         \RenewDocumentCommand\@makefntext{m+}{
-            \parindent 1em\noindent
+            \dim_set:Nn\parindent{1em}\noindent
             \hbox_to_wd:nn{1.8em}{
                 \hss\@textsuperscript{\normalfont\@thefnmark}
             }
@@ -2893,7 +2896,7 @@
     \begin{macro*}{\@makefntext}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\@makefntext{m+}{
-    \parindent 1em\noindent
+    \dim_set:Nn\parindent{1em}\noindent
     \hbox_to_wd:nn{1.8em}{\hss\@makefnmark}
     #1
 }
