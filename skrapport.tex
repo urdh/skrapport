@@ -301,12 +301,17 @@
     It is only typeset when also using the \env{titlepage} environment
     described below.
 
-    \DescribeMacro\maketitle
+    \DescribeMacro\maketitle[hide={date,email}]
     As in \pkg{article}, the \cs{maketitle} macro typesets the
     information provided by \cs{title}, \cs{author} and friends to form
     a stylish front page. When combined with \env{abstract},
     \env{titlepage} and/or \cs{tableofcontents}, you get a very
     good-looking preamble with almost no effort.
+
+    The optional argument is a key-value list with only one valid
+    entry, \opt*{hide}. This entry accepts a comma-separated list in
+    which the values \opt*{date} and \opt*{email} are interpreted
+    as instructions to hide the corresponding entry from the front page.
 
     \DescribeEnv[<abstract text>]{abstract}
     The \env{abstract} environment defines an abstract, which is typeset
@@ -1084,8 +1089,13 @@
     symbols).
 \begin{MacroCode}{class}
         {minion}{
-            \RequirePackage{minionpro}
-            \RequirePackage{MnSymbol}
+            \AtEndOfClass{
+                \cs_set_eq:NN\__skrapport_old_vec:\vec
+                \cs_undefine:N\vec
+                \RequirePackage{MinionPro}
+                \RequirePackage{MnSymbol}
+                \cs_set_eq:NN\vec\__skrapport_old_vec:
+            }
         }
 \end{MacroCode}
     Finally, the \texttt{skdoc} font stack loads \pkg{PTSerif} and
@@ -2056,9 +2066,17 @@
     \end{macro*}
     \end{macro}
 
-    \begin{macro}{\maketitle}
+    \begin{macro}{\maketitle}[1]
+        {Optional key-value list}
+    \changes{0.12a}{Added optional key-value argument}
     The standard \cs{maketitle} command as taken from the \pkg{article}
     class but with some basic restyling.
+\begin{MacroCode}{class}
+\keys_define:nn{skrapport/maketitle}{
+    hide .clist_set:N = \l__skrapport_maketitle_hide_clist,
+    hide .value_required:
+}
+\end{MacroCode}
     \begin{macro*}{\__skrapport_smallprint_style:}
 \begin{MacroCode}{class}
 \cs_new_protected:Nn\__skrapport_smallprint_style:{}
@@ -2071,7 +2089,9 @@
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
-\DeclareDocumentCommand\maketitle{}{
+\DeclareDocumentCommand\maketitle{o}{
+    \clist_clear:N\l__skrapport_maketitle_hide_clist
+    \IfNoValueF{#1}{\keys_set:nn{skrapport/maketitle}{#1}}
     \par
     \group_begin:
         \RenewDocumentCommand\thefootnote{}{
@@ -2105,7 +2125,7 @@
     \hbox:n{}
     \begin{flushleft}
         \vspace{-\headsep}
-        {
+        \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{date}{
             \small\__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_regarding_tl
             \tl_if_empty:NF\g__skrapport_regarding_tl{,~}
@@ -2125,21 +2145,23 @@
         \vspace{.75cm}
     \end{flushleft}
     \par
-    \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
-    \bool_gset_false:N\g__skrapport_abstract_used
-    \dim_set:Nn\l_tmpb_dim
-        {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
-    \begin{minipage}[t]{\l_tmpa_dim}
-        \begin{flushright}
-            \leavevmode\__skrapport_abstract_style:
-            \__skrapport_Email_word:
-        \end{flushright}
-    \end{minipage}
-    \hspace{\c__skrapport_abstract_separator_dim}
-    \begin{minipage}[t]{\l_tmpb_dim}
-        \__skrapport_email_list:
-    \end{minipage}
-    \par
+    \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{email}{
+        \dim_set_to_abstract_or_email_wd:N\l_tmpa_dim
+        \bool_gset_false:N\g__skrapport_abstract_used
+        \dim_set:Nn\l_tmpb_dim
+            {\textwidth-\l_tmpa_dim-\c__skrapport_abstract_separator_dim}
+        \begin{minipage}[t]{\l_tmpa_dim}
+            \begin{flushright}
+                \leavevmode\__skrapport_abstract_style:
+                \__skrapport_Email_word:
+            \end{flushright}
+        \end{minipage}
+        \hspace{\c__skrapport_abstract_separator_dim}
+        \begin{minipage}[t]{\l_tmpb_dim}
+            \__skrapport_email_list:
+        \end{minipage}
+        \par
+    }
 }
 \end{MacroCode}
     \end{macro*}
