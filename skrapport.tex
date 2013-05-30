@@ -547,7 +547,6 @@
     useful packages, as well as declaring the class.
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
-\RequirePackage[replace]{l3ctr2e}
 \ProvidesExplClass{skrapport}%
     {2013/05/15}{0.12}{stylish report document class}
 \end{MacroCode}
@@ -1852,10 +1851,10 @@
 \int_gset:Nn\@lowpenalty  {51}
 \int_gset:Nn\@medpenalty {151}
 \int_gset:Nn\@highpenalty{301}
-\ctr_gset:nn{topnumber}{2}
-\ctr_gset:nn{bottomnumber}{1}
-\ctr_gset:nn{totalnumber}{4}
-\ctr_gset:nn{dbltopnumber}{2}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{2}
 \end{MacroCode}
     \begin{macro}{\topfraction}
 \begin{MacroCode}{class}
@@ -2076,7 +2075,7 @@
     \par
     \group_begin:
         \RenewDocumentCommand\thefootnote{}{
-            \ctr_use_fn:n{footnote}
+            \fnsymbol{footnote}
         }
         \RenewDocumentCommand\@makefnmark{}{
             \hbox_overlap_right:n{
@@ -2095,7 +2094,7 @@
         \__skrapport_maketitle:
         \thispagestyle{plain}
     \group_end:
-    \ctr_gzero:n{footnote}
+    \setcounter{footnote}{0}
 }
 \end{MacroCode}
     \end{macro}
@@ -2223,11 +2222,11 @@
     \end{macro}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{titlepage}{}{
-    \cleardoublepage\ctr_gset:nn{page}{1}
+    \cleardoublepage\setcounter{page}{1}
 }{
     \bool_gset_false:N\g__skrapport_copyright_unprinted_bool
     \thispagestyle{skrapport@titlepage}
-    \cleardoublepage\ctr_gset:nn{page}{1}
+    \cleardoublepage\setcounter{page}{1}
 }
 \end{MacroCode}
     \end{environment}
@@ -2236,46 +2235,46 @@
     Sectioning macros. This is kind of messy. We start with creaiting
     some counters using our homemade \LaTeX3 counter macros.
 \begin{MacroCode}{class}
-\ctr_gset:nn{secnumdepth}{3}
-\ctr_new:n{section}
-\ctr_new:nn{subsection}{section}
-\ctr_new:nn{subsubsection}{subsection}
-\ctr_new:nn{paragraph}{subsubsection}
-\ctr_new:nn{subparagraph}{paragraph}
+\setcounter{secnumdepth}{3}
+\newcounter{section}
+\newcounter{subsection}[section]
+\newcounter{subsubsection}[subsection]
+\newcounter{paragraph}[subsubsection]
+\newcounter{subparagraph}[paragraph]
 \end{MacroCode}
     Next up, we have macros to display the section numberings.
     \begin{macro*}{\thesection}
 \begin{MacroCode}{class}
 \cs_gset:Npn\thesection{
-    \ctr_use_arabic:n{section}
+    \arabic{section}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsection}
 \begin{MacroCode}{class}
 \cs_gset:Npn\thesubsection{
-    \thesection.\ctr_use_arabic:n{subsection}
+    \thesection.\arabic{subsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubsubsection}
 \begin{MacroCode}{class}
 \cs_gset:Npn\thesubsubsection{
-    \thesubsection.\ctr_use_arabic:n{subsubsection}
+    \thesubsection.\arabic{subsubsection}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theparagraph}
 \begin{MacroCode}{class}
 \cs_gset:Npn\theparagraph{
-    \thesubsubsection.\ctr_use_arabic:n{paragraph}
+    \thesubsubsection.\arabic{paragraph}
 }
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thesubparagraph}
 \begin{MacroCode}{class}
 \cs_gset:Npn\thesubparagraph{
-    \theparagraph.\ctr_use_arabic:n{subparagraph}
+    \theparagraph.\arabic{subparagraph}
 }
 \end{MacroCode}
     \end{macro*}
@@ -2369,15 +2368,15 @@
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
     \cs_set:Nn\__skrapport_saved_section:{}
-    \int_compare:nF{#2>\ctr_use:n{secnumdepth}}{
-        \ctr_ref_gincr:n{#1}
+    \int_compare:nF{#2>\value{secnumdepth}}{
+        \refstepcounter{#1}
         \cs_set:Nn\__skrapport_saved_section:{\use:c{the#1}~}
     }
     \__skrapport_section_star:nnnn
         {#3}{#4}{#5}{\__skrapport_saved_section:}
     \use:c{#1mark}{#6}
     \addcontentsline{toc}{#1}{
-        \int_compare:nF{#2>\ctr_use:n{secnumdepth}}{
+        \int_compare:nF{#2>\value{secnumdepth}}{
             \protect\numberline{\use:c{the#1}}
         }
         #6
@@ -2645,28 +2644,28 @@
     \begin{macro*}{\theenumi}
     The first level consists of arabic numbers (\(1,2,3,\dotsc\)).
 \begin{MacroCode}{class}
-\cs_set:Npn\theenumi  {\ctr_use_arabic:n{enumi}}
+\cs_set:Npn\theenumi  {\arabic{enumi}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumii}
     The second level consists of lower-case alphabetic characters
     (\(\text{a},\text{b},\text{c},\dotsc\)).
 \begin{MacroCode}{class}
-\cs_set:Npn\theenumii {\ctr_use_alph:n{enumii}}
+\cs_set:Npn\theenumii {\alph{enumii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiii}
     The third level consists of lower-case roman numerals
     (\(\text{i},\text{ii},\text{iii},\dotsc\)).
 \begin{MacroCode}{class}
-\cs_set:Npn\theenumiii{\ctr_use_roman:n{enumiii}}
+\cs_set:Npn\theenumiii{\roman{enumiii}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\theenumiv}
     The fourth level consists of upper-case alphabetic characters
     (\(\text{A},\text{B},\text{C},\dotsc\)).
 \begin{MacroCode}{class}
-\cs_set:Npn\theenumiv {\ctr_use_Alph:n{enumiv}}
+\cs_set:Npn\theenumiv {\Alph{enumiv}}
 \end{MacroCode}
     \end{macro*}
     We also need macros that typeset the actual labels. Here, different
@@ -2805,9 +2804,9 @@
 \begin{MacroCode}{class}
 \NewDocumentCommand\appendix{}{
     \par
-    \ctr_gset:nn{section}{0}
-    \ctr_gset:nn{subsection}{0}
-    \cs_gset:Npn\thesection{\ctr_use_Alph:n{section}}
+    \setcounter{section}{0}
+    \setcounter{subsection}{0}
+    \cs_gset:Npn\thesection{\Alph{section}}
 }
 \end{MacroCode}
     \end{macro}
@@ -2918,22 +2917,22 @@
 
     \paragraph{Counters}
 \begin{MacroCode}{class}
-\ctr_new:n{figure}
-\ctr_new:n{table}
+\newcounter{figure}
+\newcounter{table}
 \end{MacroCode}
     \begin{macro*}{\theequation}
 \begin{MacroCode}{class}
-\cs_set:Npn\theequation{\ctr_use_arabic:n{equation}}
+\cs_set:Npn\theequation{\arabic{equation}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thefigure}
 \begin{MacroCode}{class}
-\cs_set:Npn\thefigure{\ctr_use_arabic:n{figure}}
+\cs_set:Npn\thefigure{\arabic{figure}}
 \end{MacroCode}
     \end{macro*}
     \begin{macro*}{\thetable}
 \begin{MacroCode}{class}
-\cs_set:Npn\thetable{\ctr_use_arabic:n{table}}
+\cs_set:Npn\thetable{\arabic{table}}
 \end{MacroCode}
     \end{macro*}
 
@@ -3059,7 +3058,7 @@
 \cs_new:Npn\@pnumwidth{1.55em}
 \cs_new:Npn\@tocrmarg{2em}
 \cs_new:Npn\@dotsep{1.7}
-\ctr_gset:nn{tocdepth}{3}
+\setcounter{tocdepth}{3}
 \end{MacroCode}
     \begin{macro}{\tableofcontents}
     \changes{0.12}{Removed spacing and \cs{@mkboth} call}
@@ -3083,7 +3082,7 @@
         {Page number}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_toc_line:nnnnnn#1#2#3#4#5#6{
-    \int_compare:nF{#2>\ctr_use:n{tocdepth}}{
+    \int_compare:nF{#2>\value{tocdepth}}{
         \skip_vertical:n{0pt~plus~.2pt}
         \group_begin:
             \skip_set:Nn\leftskip{#3}
@@ -3175,7 +3174,7 @@
     \begin{macro*}{\l@paragraph}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@paragraph{mm}{
-    \int_compare:nF{4>\ctr_use:n{tocdepth}}{
+    \int_compare:nF{4>\value{tocdepth}}{
         \msg_warning:nnnn{skrapport}{tocdepth-too-deep}
             {4}{\l@paragraph}
     }
@@ -3185,7 +3184,7 @@
     \begin{macro*}{\l@subparagraph}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\l@subparagraph{mm}{
-    \int_compare:nF{5>\ctr_use:n{tocdepth}}{
+    \int_compare:nF{5>\value{tocdepth}}{
         \msg_warning:nnnn{skrapport}{tocdepth-too-deep}
             {5}{\l@subparagraph}
     }
@@ -3210,13 +3209,13 @@
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{thebibliography}{m}{
     \section*{\refname}
-    \list{\@biblabel{\ctr_use_arabic:n{enumiv}}}{
+    \list{\@biblabel{\arabic{enumiv}}}{
         \dim_set_to_wd:Nn\labelwidth{\@biblabel{#1}}
         \dim_set_eq:NN\leftmargin\labelwidth
         \dim_add:Nn\leftmargin{\labelsep}
         \usecounter{enumiv} % !!!
         \cs_set:Nn\p@enumiv{}
-        \RenewDocumentCommand\theenumiv{}{\ctr_use_arabic:n{enumiv}}
+        \RenewDocumentCommand\theenumiv{}{\arabic{enumiv}}
     }
     \sloppy
     \int_set:Nn\clubpenalty{4000}
