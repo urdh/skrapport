@@ -218,10 +218,14 @@
     two special font stacks: \texttt{none} and \texttt{word}. The
     former, predictably, loads no fonts whatsoever leaving the document
     with Computer Modern fonts. This is useful if the fonts are replaced
-    later anyway, such as when using \hologo{XeLaTeX}. The \texttt{word}
+    later anyway, such as when using \hologo{XeLaTeX}.
+
+    The \texttt{word}
     font stack, however, does load a few fonts. The fonts must be present
     and installed on the system as OTF or TTF fonts, and the font stack
     requires either \hologo{XeLaTeX} or \hologo{LuaLaTeX}.
+
+    \Notice{The \texttt{skdoc} font stack doesn't have a math font.}
 
     \begin{table}[tp]
         \centering
@@ -233,8 +237,8 @@
             \midrule
             \texttt{kpfonts} & Kp-Fonts & Kp-Fonts & Kp-Fonts & Kp-Fonts \\
             \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Inconsolata \\
-            \texttt{palatino} & \TeX\ Gyre & --- & --- & Inconsolata \\
-            \texttt{minion} & Minion Pro & Minion Pro & --- & Inconsolata \\
+            \texttt{palatino} & \TeX\ Gyre & PX & Arev & Inconsolata \\
+            \texttt{minion} & Minion Pro & Minion Pro & Myriad Pro & Inconsolata \\
             \texttt{skdoc} & PT Serif & --- & Open Sans & Inconsolata \\
             \texttt{word} & Cambria & Cambria Math & Calibri & Consolas \\
             \bottomrule
@@ -1078,6 +1082,8 @@
 \begin{MacroCode}{class}
         {palatino}{
             \file_if_exist:nTF{tgpagella.sty}{
+                \RequirePackage{arev}
+                \RequirePackage{pxfonts}
                 \RequirePackage{tgpagella}
             }{
                 \RequirePackage[osf]{mathpazo}
@@ -1092,6 +1098,8 @@
             \AtEndOfClass{
                 \cs_set_eq:NN\__skrapport_old_vec:\vec
                 \cs_undefine:N\vec
+                \RequirePackage{MyriadPro}
+                \RequirePackage{mdsymbol}
                 \RequirePackage{MinionPro}
                 \RequirePackage{MnSymbol}
                 \cs_set_eq:NN\vec\__skrapport_old_vec:
@@ -1114,8 +1122,8 @@
             \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
                 \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
             }
-            \setmainfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Cambria}
-            \setsansfont[Numbers={OldStyle,Proportional},Ligatures=TeX]{Calibri}
+            \setmainfont[Ligatures=TeX]{Cambria}
+            \setsansfont[Ligatures=TeX]{Calibri}
             \setmonofont[Scale=0.95]{Consolas}
             \apptocmd{\__skrapport_after_ams_hook:}{
                 \setmathfont{Cambria Math}
