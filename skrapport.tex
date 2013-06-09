@@ -2192,15 +2192,16 @@
     \end{macro*}
     \begin{macro*}{\dim_set_to_abstract_or_email_wd:N}[1]
         {Dimension register}
+    \changes{0.12a}{Set abstract style before word to fix incorrect width}
     This macro sets a dimension to either the width of the email word
     or the width of the abstract word depending on the state of
     \cs{g__skrapport_abstract_used}.
 \begin{MacroCode}{class}
 \cs_new:Npn\dim_set_to_abstract_or_email_wd:N#1{
     \dim_set_to_wd:Nn\l_tmpa_dim
-        {\abstractname\__skrapport_abstract_style:}
+        {\__skrapport_abstract_style:\abstractname}
     \dim_set_to_wd:Nn\l_tmpb_dim
-        {\__skrapport_Email_word:\__skrapport_abstract_style:}
+        {\__skrapport_abstract_style:\__skrapport_Email_word:}
     \bool_if:NTF\g__skrapport_abstract_used
         {\dim_set:Nn#1{\dim_max:nn{\l_tmpa_dim}{\l_tmpb_dim}}}
         {\dim_set_eq:NN#1\l_tmpb_dim}
