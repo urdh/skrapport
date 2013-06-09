@@ -29,7 +29,7 @@
 \let\SI\relax
 \usepackage{siunitx}
 \DeclareSIUnit\point{pt}
-\usepackage{hologo,booktabs}
+\usepackage{hologo,booktabs,xcoffins,calc}
 \usepackage[style=authoryear]{biblatex}
 \usepackage{csquotes}
 \usepackage{varioref,cleveref}
@@ -109,6 +109,8 @@
     \changes{0.11}{Added \opt{minion} for Adobe Minion Pro font}
     \changes{0.11a}{Added \opt{skdoc} font option and \thm{skdoc} color theme}
     \changes{0.12}{Deprecated several macros, moved to \LaTeX3. Use of TOC depth above 3 is now unsupported}
+    \changes{0.12a}{The \pkg{fontspec} package is now only loaded when using the \texttt{word} or \texttt{none} font stacks on \hologo{LuaLaTeX} or \hologo{XeLaTeX}. The \texttt{word} font stack is now
+    the default font stack on \hologo{XeLaTeX}}
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -224,25 +226,43 @@
     font stack, however, does load a few fonts. The fonts must be present
     and installed on the system as OTF or TTF fonts, and the font stack
     requires either \hologo{XeLaTeX} or \hologo{LuaLaTeX}.
+    Both \texttt{word} and \texttt{none} load the \pkg{fontspec}
+    package, assuming the document is compiled using \hologo{XeLaTeX}
+    or \hologo{LuaLaTeX}.
 
     \Notice{The \texttt{skdoc} font stack doesn't have a math font.}
+    \Warning{Currently, \pkg{fontspec} is always loaded by
+             \hologo{XeLaTeX} regardless of options due to
+             the use of \pkg{polyglossia}. This means that
+             you \emph{have} to use OpenType fonts in your
+             document, otherwise \emph{only} Latin Modern
+             Roman (\emph{i.e.} no sans-serif or monospace
+             fonts) will be available. Therefore, the \texttt{word}
+             font stack is the default when using \hologo{XeLaTeX}.
+             \Hologo{LuaLaTeX} is not affected by this.}
 
     \begin{table}[tp]
         \centering
         \caption{Font stacks provided by \thepackage.}
         \label{tab:font}
-        \begin{tabular}{lllll}
-            \toprule
-            Font stack & Serif font & Math font & Sans serif font & Monospace font \\
-            \midrule
-            \texttt{kpfonts} & Kp-Fonts & Kp-Fonts & Kp-Fonts & Kp-Fonts \\
-            \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Inconsolata \\
-            \texttt{palatino} & \TeX\ Gyre & PX & Arev & Inconsolata \\
-            \texttt{minion} & Minion Pro & Minion Pro & Myriad Pro & Inconsolata \\
-            \texttt{skdoc} & PT Serif & --- & Open Sans & Inconsolata \\
-            \texttt{word} & Cambria & Cambria Math & Calibri & Consolas \\
-            \bottomrule
-        \end{tabular}
+        \NewCoffin\tempcoffin\newlength\templength
+        \SetHorizontalCoffin\tempcoffin{
+            \begin{tabular}{lllll}
+                \toprule
+                Font stack & Serif font & Math font & Sans serif font & Monospace font \\
+                \midrule
+                \texttt{kpfonts} & Kp-Fonts & Kp-Fonts & Kp-Fonts & Kp-Fonts \\
+                \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Inconsolata \\
+                \texttt{palatino} & \TeX\ Gyre & PX & Arev & Inconsolata \\
+                \texttt{minion} & Minion Pro & Minion Pro & Myriad Pro & Inconsolata \\
+                \texttt{skdoc} & PT Serif & --- & Open Sans & Inconsolata \\
+                \texttt{word} & Cambria & Cambria Math & Calibri & Consolas \\
+                \bottomrule
+            \end{tabular}
+        }
+        \setlength{\templength}{(\textwidth - \CoffinWidth\tempcoffin)/2}
+        \hspace*{\templength}
+        \TypesetCoffin\tempcoffin
     \end{table}
 
     \subsubsection{Functionality}
@@ -267,7 +287,13 @@
     packages (if they react to the global \opt{draft} option).
 
     \subsection{User-level commands and environments}
-    Philosophy?
+    The general idea behind the document class is to provide most
+    (if not all) of the macros provided by the standard \LaTeXe{}
+    classes, as well as additional macros to simplify and beautify
+    the documents produced. As such, most of the documentation that
+    follows details macros that are present in the standard document
+    classes. Some of them have changed functionality or semantics,
+    so at least a skim through this section is recommended.
 
     \subsubsection{The front page}
     The front page is the part of the document that has seen the most
@@ -1053,7 +1079,9 @@
     \begin{macro}{\__skrapport_setup_font:n}[1]
         {Font (\texttt{none}, \texttt{kpfonts}, \texttt{lmodern},
          \texttt{palatino}, \texttt{minion} or \texttt{skdoc})}
-    \changes{0.12a}{Drop the post-\pkg{amsmath} hook entirely}
+    \changes{0.12a}{Drop the post-\pkg{amsmath} hook entirely.
+                    Load \pkg{fontspec} in \texttt{word} and
+                    \texttt{none}}
     We set up the somewhat involved font stack.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_font:n#1{
@@ -1061,9 +1089,15 @@
     \PassOptionsToPackage{full}{textcomp}
     \str_case:nnn{#1}{
 \end{MacroCode}
-    The \texttt{none} font stack does literally nothing.
+    The \texttt{none} font stack is special. If we're using
+    \hologo{XeTeX} or \hologo{LuaTeX}, we load the \pkg{fontspec}
+    package. Otherwise, we do nothing.
 \begin{MacroCode}{class}
-        {none}{\prg_do_nothing:}
+        {none}{
+            \bool_if:nT{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+                \RequirePackage[quiet]{fontspec}
+            }
+        }
 \end{MacroCode}
     The \texttt{kpfonts} font stack simply loads \pkg{kpfonts}...
 \begin{MacroCode}{class}
@@ -1122,6 +1156,7 @@
             \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
                 \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
             }
+            \RequirePackage[quiet]{fontspec}
             \setmainfont[Ligatures=TeX]{Cambria}
             \setsansfont[Ligatures=TeX]{Calibri}
             \setmonofont[Scale=0.95]{Consolas}
@@ -1303,14 +1338,14 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_xelatex:}
-    \changes{0.12a}{Don't load \pkg{polyglossia} for \hologo{LuaTeX}}
+    \changes{0.12a}{Don't load \pkg{polyglossia} for \hologo{LuaTeX}.
+                    Don't load \pkg{fontspec} for any engine}
     This macro contains special setup code for the \hologo{XeTeX} and
-    \hologo{LuaTeX} engines, such as loading \pkg{fontspec}, providing
+    \hologo{LuaTeX} engines, such as providing
     missing commands (which have been replaced by equivalent Unicode
     characters, apparently) and loading \pkg{polyglossia}.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_xelatex:{
-    \RequirePackage[quiet]{fontspec}
     \AtEndOfClass{
         \cs_undefine:N\dblcolon
         \cs_undefine:N\coloneqq
@@ -1699,6 +1734,7 @@
     key-value system will be used to set flags with which we will
     determine wether to set certain default options.
     \begin{macro}{\__skrapport_setup_defaults:}
+    \changes{0.12a}{\texttt{word} font stack is now the default font stack when using \hologo{XeLaTeX}}
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_defaults:{
     \bool_new:N\l__skrapport_has_option_indent_bool
@@ -1763,7 +1799,11 @@
         \keys_set:nn{skrapport}{color=true}
     }
     \bool_if:NF\l__skrapport_has_option_font_bool{
-        \keys_set:nn{skrapport}{font=kpfonts}
+        \xetex_if_engine:TF{
+            \keys_set:nn{skrapport}{font=word}
+        }{
+            \keys_set:nn{skrapport}{font=kpfonts}
+        }
     }
     \bool_if:NF\l__skrapport_has_option_lang_bool{
         \keys_set:nn{skrapport}{lang=sv}
