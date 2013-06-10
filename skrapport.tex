@@ -432,6 +432,11 @@
     \DescribeEnv[<content>]{table}[position]
     A float intended for tables. Probably contains \env{tabular}s.
 
+    \DescribeEnv{figcenter}
+    This environment is useful for wide figures and tables. It typesets
+    its contents centered horizonally, but allows the content to extend
+    into the margin. The content is set in a horizontal coffin.
+
     \subsubsection{Table of contents}
     \DescribeMacro\tableofcontents
     The table of contents are typeset using this macro. The
@@ -3032,17 +3037,20 @@
     \end{macro*}
     \end{macro}
     \begin{environment}{figure}
+    \changes{0.12a}{Figures are now \cs{centering}ed by default}
     \begin{environment*}{figure*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{figure}{o}{
     \__skrapport_xfloat:nx{figure}
         {\IfNoValueTF{#1}{\fps@figure}{#1}}
+    \centering
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{figure*}{o}{
     \__skrapport_xfloat:nx{figure}
         {\IfNoValueTF{#1}{tp}{#1}}
+    \centering
 }{
     \end@float
 }
@@ -3050,22 +3058,42 @@
     \end{environment*}
     \end{environment}
     \begin{environment}{table}
+    \changes{0.12a}{Tables are now \cs{centering}ed by default}
     \begin{environment*}{table*}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{table}{o}{
     \__skrapport_xfloat:nx{table}
         {\IfNoValueTF{#1}{\fps@table}{#1}}
+    \centering
 }{
     \end@float
 }
 \DeclareDocumentEnvironment{table*}{o}{
     \__skrapport_xfloat:nx{table}
         {\IfNoValueTF{#1}{tp}{#1}}
+    \centering
 }{
     \end@float
 }
 \end{MacroCode}
     \end{environment*}
+    \end{environment}
+
+    In addition to the \env{figure} and \env{table} environments, we
+    also provide a \env{figcenter} environment that enables centering
+    of figures or tables that are too wide for the page.
+    \begin{environment}{figcenter}
+\begin{MacroCode}{class}
+\DeclareDocumentEnvironment{figcenter}{
+    \coffin_clear:N\l_tmpa_coffin
+    \hcoffin_set:Nw\l_tmpa_coffin
+}{
+    \hcoffin_set_end:
+    \dim_set:Nn\l_tmpa_dim{(\textwidth - \coffin_wd:N\l_tmpa_coffin)/2}
+    \skip_horizontal:n{-\l_tmpa_dim}
+    \coffin_typeset:Nnnnn\l_tmpa_coffin{H}{l}{0pt}{0pt}
+}
+\end{MacroCode}
     \end{environment}
 
     \paragraph{Captions}
