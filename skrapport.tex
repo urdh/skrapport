@@ -1191,7 +1191,12 @@
             }
             \AtEndOfClass{
                 \RequirePackage{amsmath}
-                \RequirePackage{amssymb}
+\end{MacroCode}
+    The \pkg{mnsymbol} package is incompatible with \pkg{amssymb}.
+\begin{MacroCode}{class}
+              \str_if_eq:nnF{#1}{minion}{
+                    \RequirePackage{amssymb}
+                }
                 \RequirePackage{textcomp}
             }
         }
