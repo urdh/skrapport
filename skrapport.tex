@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12a-devel}
+    \version{0.12a}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -302,8 +302,6 @@
     pieces of information in it. Also, the \cs{author} macro has been
     dramatically improved.
 
-    Also mention \cs{title} which isn't defined by us.
-
     \DescribeMacro\date{<ISO8601 date>}
     The \cs{date} macro now internally employs \pkg{isodate} to typeset
     the date of the document. This means that the input must be either
@@ -331,17 +329,24 @@
     It is only typeset when also using the \env{titlepage} environment
     described below.
 
-    \DescribeMacro\maketitle[hide={date,email}]
+    \DescribeMacro\title{<document title>}
+    The \cs{title} macro, while not defined by \pkg{skrapport}, is
+    relevant to describe. It simply sets the title of the document, as
+    displayed by \cs{maketitle}.
+
+    \DescribeMacro\maketitle[hide={date,email},nopdfinfo]
     As in \pkg{article}, the \cs{maketitle} macro typesets the
     information provided by \cs{title}, \cs{author} and friends to form
     a stylish front page. When combined with \env{abstract},
     \env{titlepage} and/or \cs{tableofcontents}, you get a very
     good-looking preamble with almost no effort.
 
-    The optional argument is a key-value list with only one valid
-    entry, \opt*{hide}. This entry accepts a comma-separated list in
-    which the values \opt*{date} and \opt*{email} are interpreted
-    as instructions to hide the corresponding entry from the front page.
+    The optional argument is a key-value list with two valid entries,
+    \opt*{hide} and \opt*{nopdfinfo}. The \opt*{hide} entry accepts a 
+    comma-separated list in which the values \opt*{date} and \opt*{email}
+    are interpreted as instructions to hide the corresponding entry from 
+    the front page. The \opt*{nopdfinfo} key disables the generation of
+    PDF information by \pkg{hyperref}.
 
     \DescribeEnv[<abstract text>]{abstract}
     The \env{abstract} environment defines an abstract, which is typeset
@@ -384,8 +389,8 @@
 
     The old font macros, whose use has been discouraged for a long time,
     are now deprecated. Instead of functioning correctly, they will emit
-    an error and require user input. Use the \cs**{text??} macros
-    instead. For emphasis, use the \cs{emph} macro.
+    an error and require user input. Use the \cs*{text??}/\cs*{??family} 
+    macros instead. For emphasis, use the \cs{emph} macro.
 
     \DescribeMacro\emph{<text>}
     Emphasized text will be typeset in italic, or bold italic if the
@@ -588,7 +593,7 @@
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
 \ProvidesExplClass{skrapport}%
-    {2013/05/15}{0.12}{stylish report document class}
+    {2013/06/24}{0.12a}{stylish report document class}
 \end{MacroCode}
     
     \subsection{Messages}
@@ -999,6 +1004,7 @@
     \begin{macro*}{\appendixname}
     \begin{macro*}{\abstractname}
     \begin{macro*}{\today}
+    \begin{macro*}{\__skrapport_RFC_language:}
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{och}
             \cs_gset:Nn\__skrapport_Email_word:{E-post}
@@ -1011,7 +1017,9 @@
             \cs_gset:Npn\abstractname{Sammanfattning}
             \cs_gset:Npn\today
                 {\int_use:N\year--\int_use:N\month--\int_use:N\day}
+            \cs_gset:Nn\__skrapport_RFC_language:{swe}
 \end{MacroCode}
+    \end{macro*}
     \end{macro*}
     \end{macro*}
     \end{macro*}
@@ -1044,6 +1052,7 @@
     \begin{macro*}{\appendixname}
     \begin{macro*}{\abstractname}
     \begin{macro*}{\today}
+    \begin{macro*}{\__skrapport_RFC_language:}
 \begin{MacroCode}{class}
             \cs_gset:Nn\__skrapport_and_word:{and}
             \cs_gset:Nn\__skrapport_Email_word:{Email}
@@ -1056,7 +1065,9 @@
             \cs_gset:Npn\abstractname{Abstract}
             \cs_gset:Npn\today
                 {\int_use:N\year--\int_use:N\month--\int_use:N\day}
+            \cs_gset:Nn\__skrapport_RFC_language:{eng}
 \end{MacroCode}
+    \end{macro*}
     \end{macro*}
     \end{macro*}
     \end{macro*}
@@ -2007,6 +2018,7 @@
     and to be used multiple times.
     \begin{macro*}{\__skrapport_email:n}[1]
         {Email address}
+    \changes{0.12a}{Store \cs{textemdash} instead of \cs{NoValue}}
     The \cs{skrapport@email} helper macro typesets an email address
     using \pkg{hyperref} if that package is used. This is suboptimal,
     the macro behaves differently with respect to special characters
@@ -2037,30 +2049,24 @@
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\author{om}{%
     \clist_gput_right:Nn\g__skrapport_author_clist{#2}
-    \clist_gput_right:Nn\g__skrapport_email_clist{#1}
+    \clist_gput_right:Nn\g__skrapport_email_clist
+        {\IfNoValueTF{#1}{\textemdash}{#1}}
 }
 \end{MacroCode}
     \begin{macro}{\__skrapport_author_list:}
+    \changes{0.12a}{Use \cs{clist_use:Nnnn}}
     This macro lists all the authors in the comma-separated list
     \cs{g__skrapport_author_clist}, separating them with a comma
     or the word \enquote{and} (in the appropriate language).
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_author_list:{
-    \int_zero:N\l_tmpa_int
-    \int_set:Nn\l_tmpb_int{\clist_count:N\g__skrapport_author_clist}
-    \clist_map_inline:Nn\g__skrapport_author_clist{
-        \int_compare:nT{\l_tmpa_int>\c_zero}{~}
-        ##1
-        \int_incr:N\l_tmpa_int
-        \int_compare:nT{\l_tmpa_int<\l_tmpb_int}{
-            \int_compare:nTF{\l_tmpa_int=\l_tmpb_int-1}
-                {~\__skrapport_and_word:}{,}
-        }
-    }
+    \clist_use:Nnnn\g__skrapport_author_clist
+        {~\__skrapport_and_word:{}~}{,~}{~\__skrapport_and_word:{}~}
 }
 \end{MacroCode}
     \end{macro}
     \begin{macro}{\__skrapport_email_list:}
+    \changes{0.12a}{Use \cs{clist_use:Nnnn}}
     This macro lists the email addresses in the comma-separated list
     \cs{g__skrapport_email_clist} by applying \cs{__skrapport_email:}
     if appropriate (or printing an em-dash if no value exists) and
@@ -2068,16 +2074,7 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_email_list:{
     \int_compare:nT{\clist_count:N\g__skrapport_author_clist>\c_zero}{
-        \bool_set_false:N\l_tmpa_bool
-        \clist_map_inline:Nn\g__skrapport_email_clist{
-            \bool_if:NT\l_tmpa_bool{\\}
-            \IfNoValueTF{##1}{
-                \textemdash
-            }{
-                \__skrapport_email:n{##1}
-            }
-            \bool_set_true:N\l_tmpa_bool
-        }
+        \clist_use:Nnnn\g__skrapport_email_clist{\\}{\\}{\\}
     }
 }
 \end{MacroCode}
@@ -2125,13 +2122,15 @@
 
     \begin{macro}{\maketitle}[1]
         {Optional key-value list}
-    \changes{0.12a}{Added optional key-value argument}
+    \changes{0.12a}{Added optional key-value argument and PDFinfo}
     The standard \cs{maketitle} command as taken from the \pkg{article}
     class but with some basic restyling.
 \begin{MacroCode}{class}
 \keys_define:nn{skrapport/maketitle}{
     hide .clist_set:N = \l__skrapport_maketitle_hide_clist,
-    hide .value_required:
+    hide .value_required:,
+    nopdfinfo .bool_set_inverse:N = \l__skrapport_maketitle_pdfinfo_bool,
+    nopdfinfo .default:n = true
 }
 \end{MacroCode}
     \begin{macro*}{\__skrapport_smallprint_style:}
@@ -2148,7 +2147,21 @@
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\maketitle{o}{
     \clist_clear:N\l__skrapport_maketitle_hide_clist
+    \bool_new:N\l__skrapport_maketitle_pdfinfo_bool
+    \bool_set_true:N\l__skrapport_maketitle_pdfinfo_bool
     \IfNoValueF{#1}{\keys_set:nn{skrapport/maketitle}{#1}}
+    \bool_if:NT\l__skrapport_maketitle_pdfinfo_bool{
+        \exp_args:NNx\cs_if_exist_use:NT\hypersetup{{
+            pdfinfo={
+                Title={\tl_use:N\g__skrapport_title_tl},
+                Subject={\tl_use:N\g__skrapport_regarding_tl},
+                Author={
+                    \clist_use:Nnnn\g__skrapport_author_clist{,~}{,~}{,~}
+                },
+                Lang={\__skrapport_RFC_language:}
+            }
+        }}
+    }
     \par
     \group_begin:
         \RenewDocumentCommand\thefootnote{}{
@@ -3088,7 +3101,7 @@
     of figures or tables that are too wide for the page.
     \begin{environment}{figcenter}
 \begin{MacroCode}{class}
-\DeclareDocumentEnvironment{figcenter}{
+\DeclareDocumentEnvironment{figcenter}{}{
     \coffin_clear:N\l_tmpa_coffin
     \hcoffin_set:Nw\l_tmpa_coffin
 }{
