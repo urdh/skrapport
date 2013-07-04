@@ -252,10 +252,10 @@
                 Font stack & Serif font & Math font & Sans serif font & Monospace font \\
                 \midrule
                 \texttt{kpfonts} & Kp-Fonts & Kp-Fonts & Kp-Fonts & Kp-Fonts \\
-                \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Inconsolata \\
-                \texttt{palatino} & \TeX\ Gyre & PX & Arev & Inconsolata \\
-                \texttt{minion} & Minion Pro & Minion Pro & Myriad Pro & Inconsolata \\
-                \texttt{skdoc} & PT Serif & --- & Open Sans & Inconsolata \\
+                \texttt{lmodern} & Latin Modern & Latin Modern & Latin Modern & Source Code Pro \\
+                \texttt{palatino} & \TeX\ Gyre & PX & Arev & Source Code Pro \\
+                \texttt{minion} & Minion Pro & Minion Pro & Myriad Pro & Source Code Pro \\
+                \texttt{skdoc} & PT Serif & --- & Open Sans & Source Code Pro \\
                 \texttt{word} & Cambria & Cambria Math & Calibri & Consolas \\
                 \bottomrule
             \end{tabular}
@@ -1192,12 +1192,12 @@
     packages by definition, and \texttt{kpfonts} already loads them
     internally \footcite[p.~1]{kpfonts}. They are always useful.
 
-    We also load \pkg{inconsolata} as our monospace font.
+    We also load \pkg{sourcecodepro} as our monospace font.
     But we don't load it when using the \texttt{none} font stack.
 \begin{MacroCode}{class}
         \str_if_eq:nnF{#1}{kpfonts}{
             \str_if_eq:nnF{#1}{word}{
-                \RequirePackage[scaled=1.03]{inconsolata}
+                \RequirePackage{sourcecodepro}
             }
             \AtEndOfClass{
                 \RequirePackage{amsmath}
