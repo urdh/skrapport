@@ -1,0 +1,10 @@
+language: latex
+
+install:
+  - sudo apt-get update
+  - sudo apt-get install texlive texlive-latex-extra
+  - sudo mkdir -p /usr/share/texmf-texlive/tex/latex/skdoc && cd /usr/share/texmf-texlive/tex/latex/skdoc && sudo wget http://mirror.ctan.org/macros/latex/contrib/skdoc/skdoc.dtx && sudo tex skdoc.dtx && sudo texhash /usr/share/texmf-texlive && cd -
+
+script:
+  - make dist
+  - make test
