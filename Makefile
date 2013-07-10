@@ -12,12 +12,12 @@ distclean: clean
 %.pdf: %.tex %.cls
 	makeglossaries $*
 	biber $*
-	pdflatex $<
+	pdflatex -interaction=nonstopmode -halt-on-error $<
 	makeglossaries $*
-	pdflatex $<
+	pdflatex -interaction=nonstopmode -halt-on-error $<
 
 %.cls: %.tex
-	pdflatex $<
+	pdflatex -interaction=nonstopmode -halt-on-error $<
 
 %.sty: skrapport.cls
 
