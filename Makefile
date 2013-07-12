@@ -33,11 +33,13 @@ install: all
 	-mktexlsr
 
 skrapport.tds.zip: skrapport.tex skrapport.pdf skrapport.cls
-	mkdir -p skrapport/{tex,doc,source}/latex/skrapport
+	mkdir -p skrapport/tex/latex/skrapport
 	cp skrapport-*.sty skrapport/tex/latex/skrapport/
 	cp skrapport-*.clo skrapport/tex/latex/skrapport/
 	cp skrapport.cls skrapport/tex/latex/skrapport/skrapport.cls
+	mkdir -p skrapport/doc/latex/skrapport
 	cp skrapport.pdf skrapport/doc/latex/skrapport/skrapport.pdf
+	mkdir -p skrapport/source/latex/skrapport
 	cp skrapport.tex skrapport/source/latex/skrapport/skrapport.tex
 	cp README skrapport/doc/latex/skrapport/README
 	cd skrapport && zip -r ../skrapport.tds.zip *
