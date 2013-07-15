@@ -1,0 +1,10 @@
+{\tiny tiny}
+{\scriptsize scriptsize}
+{\footnotesize footnotesize}
+{\small small}
+{\normalsize normalsize}
+{\large large}
+{\Large Large}
+{\LARGE LARGE}
+{\huge huge}
+{\Huge Huge}

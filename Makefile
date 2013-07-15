@@ -57,7 +57,11 @@ skrapport.tar.gz: skrapport.tds.zip skrapport.tex skrapport.pdf
 dist: skrapport.tar.gz
 
 test:
-#	$(MAKE) -C tests
+	cp -f skrapport-*.sty tests/
+	cp -f skrapport-*.clo tests/
+	$(MAKE) -C tests
 
 clean-test:
-#	$(MAKE) -C tests clean
+	$(MAKE) -C tests clean
+	rm -rf tests/skrapport-*.sty
+	rm -rf tests/skrapport-*.clo

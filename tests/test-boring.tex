@@ -1,0 +1,28 @@
+\documentclass[%
+paper=a5,%
+twocolumn=false,%
+leqno=false,%
+fleqn=false,%
+indent=false,%
+titles=bf,%
+color=false,%
+ptsize=12pt,%
+font=lmodern,%
+math=false,%
+lang=en,%
+draft=true,%
+]{../skrapport}
+% TODO: test other option combinations (maybe auto-generate them, but how?)
+% TODO: test lack of options (i.e. default values)
+\input{preamble.inc}
+
+\begin{document}
+	\input{frontpage.inc}
+	\tableofcontents
+	\input{sectioning.inc}
+	\input{from-article.inc}
+	\input{floats.inc}
+	\input{misc.inc}
+	\input{fontsize.inc}
+	\input{appendix.inc}
+\end{document}
