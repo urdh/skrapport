@@ -2130,7 +2130,8 @@
     hide .clist_set:N = \l__skrapport_maketitle_hide_clist,
     hide .value_required:,
     nopdfinfo .bool_set_inverse:N = \l__skrapport_maketitle_pdfinfo_bool,
-    nopdfinfo .default:n = true
+    nopdfinfo .default:n = true,
+    nopdfinfo .initial:n = false
 }
 \end{MacroCode}
     \begin{macro*}{\__skrapport_smallprint_style:}
@@ -2147,8 +2148,6 @@
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\maketitle{o}{
     \clist_clear:N\l__skrapport_maketitle_hide_clist
-    \bool_new:N\l__skrapport_maketitle_pdfinfo_bool
-    \bool_set_true:N\l__skrapport_maketitle_pdfinfo_bool
     \IfNoValueF{#1}{\keys_set:nn{skrapport/maketitle}{#1}}
     \bool_if:NT\l__skrapport_maketitle_pdfinfo_bool{
         \exp_args:NNx\cs_if_exist_use:NT\hypersetup{{
