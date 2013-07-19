@@ -640,6 +640,8 @@
 \msg_new:nnnn{skrapport}{tocdepth-too-deep}{TOC~depth~is~too~deep!}
     {The~current~tocdepth,~#1,~is~not~supported.~Please~redefine~the~
     \token_to_str:N#2~macro~to~enable~support.}
+\msg_new:nnnn{skrapport}{caption-in-figcenter}{Cannot~use~\token_to_str:N\caption~here!}
+    {The~\token_to_str:N\caption~macro~can't~be~used~inside~figcenter~environments!~Please~move~the~caption~to~the~enclosing~float~environment.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -3102,6 +3104,8 @@
     \begin{environment}{figcenter}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{figcenter}{}{
+    \cs_set_eq:NN\l__tmpa_cs\caption
+    \cs_set:Npn\caption{\msg_error:nn{skrapport}{caption-in-figcenter}}
     \coffin_clear:N\l_tmpa_coffin
     \hcoffin_set:Nw\l_tmpa_coffin
 }{
@@ -3109,6 +3113,8 @@
     \dim_set:Nn\l_tmpa_dim{(\textwidth - \coffin_wd:N\l_tmpa_coffin)/2}
     \skip_horizontal:n{-\l_tmpa_dim}
     \coffin_typeset:Nnnnn\l_tmpa_coffin{H}{l}{0pt}{0pt}
+    \cs_set_eq:NN\caption\l__tmpa_cs
+    \cs_undefine:N\l__tmpa_cs
 }
 \end{MacroCode}
     \end{environment}

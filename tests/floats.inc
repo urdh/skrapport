@@ -39,14 +39,14 @@
 \begin{figure}
 	\begin{figcenter}
 		\fbox{\hspace*{\textwidth}}
-		\caption{Page-wide \texttt{figcenter} figure}
-		\label{fig:center-wide}
 	\end{figcenter}
+	\caption{Page-wide \texttt{figcenter} figure}
+	\label{fig:center-wide}
 \end{figure}
 \begin{figure}
 	\begin{figcenter}
 		\fbox{\hspace*{4em}}
-		\caption{Narrow \texttt{figcenter} figure}
-		\label{fig:center-narow}
 	\end{figcenter}
+	\caption{Narrow \texttt{figcenter} figure}
+	\label{fig:center-narow}
 \end{figure}
