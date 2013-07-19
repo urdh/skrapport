@@ -823,7 +823,7 @@
         \begin{gridenv}
             \vspace{\intextsep}
             \begin{minipage}{\linewidth}
-                \cs_set:Nn\@captype{figure}
+                \cs_set:Npn\@captype{figure}
     }{
             \end{minipage}
             \vspace{\intextsep}
@@ -845,7 +845,7 @@
         \begin{gridenv}
             \vspace{\intextsep}
             \begin{minipage}{\linewidth}
-                \cs_set:Nn\@captype{table}
+                \cs_set:Npn\@captype{table}
                 \cs_set_eq:NN\__skrapport_old_caption:\caption
                 \RenewDocumentCommand{\caption}{om}{%
                     \skip_set_eq:NN\l_tmpa_skip\abovecaptionskip
@@ -903,16 +903,16 @@
         \end{onecol}
         \end{multicols}
         \group_begin:
-        \cs_set:Nn\endonecol{
+        \cs_set:Npn\endonecol{
             \group_end:
             \begin{multicols}{2}
             \cs_set_eq:NN\__skrapport_old_onecol:\onecol
-            \cs_set:Nn\onecol{
+            \cs_set:Npn\onecol{
                 \cs_set_eq:NN\onecol\__skrapport_old_onecol:
             }
             \begin{onecol}
         }
-        \cs_set:Nn\onecol{}
+        \cs_set:Npn\onecol{}
         \begin{onecol}
     }{}
 \end{MacroCode}
