@@ -3418,10 +3418,14 @@
     \end{macro}
     \begin{macro}{\comment}
     \changes{0.10}{Added macro for comments}
+    \changes{0.12b}{No longer uses \cs{colorbox} if no color package is loaded}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\comment{sm}{
     \IfBooleanTF{#1}
-        {\colorbox{red!50}{\__skrapport_comment:n{#2}}}
+        {
+            \cs_if_exist_use:NT\colorbox{{red!50}}
+                {\__skrapport_comment:n{#2}}
+        }
         {\marginpar{\__skrapport_comment:n{#2}}}
 }
 \end{MacroCode}
