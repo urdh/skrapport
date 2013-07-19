@@ -733,9 +733,9 @@
 \end{MacroCode}
     \begin{macro*}{\c__skrapport_ptsize_token}
 \begin{MacroCode}{class}
-        {10pt}{\token_new:Nn\c__skrapport_ptsize_token{0}}
-        {11pt}{\token_new:Nn\c__skrapport_ptsize_token{1}}
-        {12pt}{\token_new:Nn\c__skrapport_ptsize_token{2}}
+        {10pt}{\int_const:Nn\c__skrapport_ptsize_int{0}}
+        {11pt}{\int_const:Nn\c__skrapport_ptsize_int{1}}
+        {12pt}{\int_const:Nn\c__skrapport_ptsize_int{2}}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -769,8 +769,8 @@
     We include the \pkg{grid} package in two-column mode, because
     it looks way better that way.
 \begin{MacroCode}{class}
-    \int_set:Nn\l_tmpa_int{1\c__skrapport_ptsize_token}
-    \int_set:Nn\l_tmpb_int{1.2*\l_tmpa_int}
+    \int_set:Nn\l_tmpa_int{10+\c__skrapport_ptsize_int}
+    \int_set:Nn\l_tmpb_int{12*\l_tmpa_int/10}
     \RequirePackage[fontsize=\l_tmpa_int pt,
                     baseline=\l_tmpb_int pt,
                     lines=\g__skrapport_grid_lines_int]{grid}
