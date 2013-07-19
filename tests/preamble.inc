@@ -3,5 +3,5 @@
 \author[b.doe@example.com]{B. Doe} % TODO: tests with only one author
 \regarding{Continuous integration}
 \license{Creative Commons CC0 1.0 Universal}
-\title{Testing the \textsf{skrapport} document class}
+\title{Testing the document class}
 
