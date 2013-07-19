@@ -631,8 +631,8 @@
 \msg_new:nnnn{skrapport}{color-patch-failed}{Could~not~patch~macro~\token_to_str:N#1!}
     {The~macro~\token_to_str:N#1~could~not~be~patched!~Color~theme~
     support~may~be~incomplete.}
-\msg_new:nnnn{skrapport}{license-not-printed}{Detected~\token_to_str:N\license~but~no~`titlepage'!}
-    {The~text~provided~by~\token_to_str:N\license~is~only~printed~when~
+\msg_new:nnnn{skrapport}{license-not-printed}{Detected~\token_to_str:N\license\ but~no~`titlepage'!}
+    {The~text~provided~by~\token_to_str:N\license\ is~only~printed~when~
     the~`titlepage'~environment~is~used,~but~it~seems~to~be~missing.}
 \msg_new:nnnn{skrapport}{font-requires-xetex}{The~`font=#1'~option~requires~XeTeX~or~luaTeX!}
     {Please~choose~another~font~setup~or~compile~the~document~with~
@@ -640,8 +640,8 @@
 \msg_new:nnnn{skrapport}{tocdepth-too-deep}{TOC~depth~is~too~deep!}
     {The~current~tocdepth,~#1,~is~not~supported.~Please~redefine~the~
     \token_to_str:N#2~macro~to~enable~support.}
-\msg_new:nnnn{skrapport}{caption-in-figcenter}{Cannot~use~\token_to_str:N\caption~here!}
-    {The~\token_to_str:N\caption~macro~can't~be~used~inside~figcenter~environments!~Please~move~the~caption~to~the~enclosing~float~environment.}
+\msg_new:nnnn{skrapport}{caption-in-figcenter}{Cannot~use~\token_to_str:N\caption\ here!}
+    {The~\token_to_str:N\caption\ macro~can't~be~used~inside~figcenter~environments!~Please~move~the~caption~to~the~enclosing~float~environment.}
 \end{MacroCode}
     This message should probably not be used at all. Except in
     development versions straight off Github, of course.
@@ -765,7 +765,7 @@
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
     \AtBeginDocument{  
-        \KOMAoptions{twocolumn=true}
+        \KOMAoptions{twocolumn=false}
     }
 \end{MacroCode}
     We include the \pkg{grid} package in two-column mode, because
@@ -777,16 +777,33 @@
                     baseline=\l_tmpb_int pt,
                     lines=\g__skrapport_grid_lines_int]{grid}
 \end{MacroCode}
-    Now, we patch commands. First up is \env{abstract}.
+    Now, we patch commands. First up is \env{abstract}. Save the old
+    one in case we need it (we do).
 \begin{MacroCode}{class}
+    \cs_set_eq:Nc\__skrapport_onecol_abstract:{environment~abstract~code}
+    \cs_set_eq:Nc\__skrapport_end_onecol_abstract:{environment~abstract~end~aux~}
+    \pretocmd{\__skrapport_onecol_abstract:}{\null}{}{}
     \RenewDocumentEnvironment{abstract}{}{\section*{\abstractname}}{}
 \end{MacroCode}
-    Then \env{document} (kind of, at least) and \cs{maketitle}.
+    Then \env{document} (kind of, at least) and \cs{maketitle}. Again,
+    save the old \cs{maketitle}.
 \begin{MacroCode}{class}
     \AfterEndPreamble{\begin{multicols}{2}}
     \AtEndDocument{\end{multicols}}
-    \pretocmd{\maketitle}{\end{multicols}}{}{}
-    \apptocmd{\maketitle}{\begin{multicols}{2}}{}{}
+    \cs_set_eq:NN\__skrapport_onecol_maketitle:\maketitle
+    \pretocmd{\maketitle}{\begin{onecol}}{}{}
+    \apptocmd{\maketitle}{\end{onecol}}{}{}
+\end{MacroCode}
+    Next up is \env{titlepage}. This is where we need the saved
+    \env{abstract} and \cs{maketitle}.
+\begin{MacroCode}{class}
+    \BeforeBeginEnvironment{titlepage}{
+        \begin{onecol}
+        \cs_set_eq:cN{environment~abstract~code}\__skrapport_onecol_abstract:
+        \cs_set_eq:cN{environment~abstract~end~aux~}\__skrapport_end_onecol_abstract:
+        \cs_set_eq:NN\maketitle\__skrapport_onecol_maketitle:
+    }
+    \AfterEndEnvironment{titlepage}{\end{onecol}}
 \end{MacroCode}
     Always typeset \env{equation} and friends outside the grid:
 \begin{MacroCode}{class}
