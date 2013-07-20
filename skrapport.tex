@@ -334,7 +334,7 @@
     relevant to describe. It simply sets the title of the document, as
     displayed by \cs{maketitle}.
 
-    \DescribeMacro\maketitle[hide=\{date,email\},nopdfinfo]
+    \DescribeMacro\maketitle[hide=\{date,regarding,email\},nopdfinfo]
     As in \pkg{article}, the \cs{maketitle} macro typesets the
     information provided by \cs{title}, \cs{author} and friends to form
     a stylish front page. When combined with \env{abstract},
@@ -343,7 +343,8 @@
 
     The optional argument is a key-value list with two valid entries,
     \opt*{hide} and \opt*{nopdfinfo}. The \opt*{hide} entry accepts a 
-    comma-separated list in which the values \opt*{date} and \opt*{email}
+    comma-separated list in which the values \opt*{date},
+    \opt*{regarding} and \opt*{email}
     are interpreted as instructions to hide the corresponding entry from 
     the front page. The \opt*{nopdfinfo} key disables the generation of
     PDF information by \pkg{hyperref}.
@@ -2214,12 +2215,20 @@
     \hbox:n{}
     \begin{flushleft}
         \vspace{-\headsep}
-        \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{date}{
+        \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{regarding}{
             \small\__skrapport_smallprint_style:
             \tl_use:N\g__skrapport_regarding_tl
-            \tl_if_empty:NF\g__skrapport_regarding_tl{,~}
-            \tl_use:N\g__skrapport_date_tl\par
+            \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{date}{
+                \tl_if_empty:NF\g__skrapport_regarding_tl{,~}
+            }
         }
+        \clist_if_in:NnF\l__skrapport_maketitle_hide_clist{date}{
+            \tl_use:N\g__skrapport_date_tl
+        }
+        \clist_if_in:NnTF\l__skrapport_maketitle_hide_clist{regarding}{
+            \clist_if_in:NnTF\l__skrapport_maketitle_hide_clist{date}
+                {}{\par}
+        }{\par}
         \vspace{1.5cm}
         {
             \Huge\__skrapport_title_style:
