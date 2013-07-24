@@ -766,7 +766,7 @@
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
     \AtBeginDocument{  
-        \KOMAoptions{twocolumn=false}
+        \KOMAoptions{twocolumn=false,DIV=14}
     }
 \end{MacroCode}
     We include the \pkg{grid} package in two-column mode, because
@@ -835,30 +835,31 @@
 \end{MacroCode}
     The \env{figure} environment is patched\ldots
 \begin{MacroCode}{class}
-    \cs_set_eq:Nc\__skrapport_old_figurest:{figure*}
-    \cs_set_eq:Nc\__skrapport_old_endfigurest:{endfigure*}
+    \cs_new:Npn\__skrapport_xdblfloat:nn##1##2{\@xdblfloat{##1}[##2]}
+    \cs_generate_variant:Nn\__skrapport_xdblfloat:nn{nx}
     \RenewDocumentEnvironment{figure}{o}{
         \begin{gridenv}
             \vspace{\intextsep}
             \begin{minipage}{\linewidth}
                 \cs_set:Npn\@captype{figure}
+                \centering
     }{
             \end{minipage}
             \vspace{\intextsep}
         \end{gridenv}
     }
     \RenewDocumentEnvironment{figure*}{o}{
-        \begin{onecol}
-        \__skrapport_old_figurest:
+        \__skrapport_xdblfloat:nx{figure}
+            {\IfNoValueTF{##1}{tp}{##1}}
+        \dim_set_eq:NN\hsize\textwidth
+        \dim_set_eq:NN\linewidth\textwidth
+        \centering
     }{
-        \__skrapport_old_endfigurest:
-        \end{onecol}
+        \end@dblfloat
     }
 \end{MacroCode}
     \ldots as is \env{table}.
 \begin{MacroCode}{class}
-    \cs_set_eq:Nc\__skrapport_old_tablest:{table*}
-    \cs_set_eq:Nc\__skrapport_old_endtablest:{endtable*}
     \RenewDocumentEnvironment{table}{o}{%
         \begin{gridenv}
             \vspace{\intextsep}
@@ -873,30 +874,20 @@
                     \__skrapport_old_caption:[####1]{####2}
                     \vspace{\belowcaptionskip}
                 }
+                \centering
     }{
             \end{minipage}
             \vspace{\intextsep}
         \end{gridenv}
     }
-    \cs_set_eq:NN\__skrapport_old_tablest:\__skrapport_old_old_tablest:
-    \cs_set:Nn\__skrapport_old_tablest:{
-        \__skrapport_old_old_tablest:
-        \cs_set_eq:NN\__skrapport_old_caption:\caption
-        \RenewDocumentCommand{\caption}{om}{%
-            \skip_set_eq:NN\l_tmpa_skip\abovecaptionskip
-            \skip_set_eq:NN\abovecaptionskip\belowcaptionskip
-            \skip_set_eq:NN\belowcaptionskip\l_tmpa_skip
-            \vspace{\abovecaptionskip}
-            \__skrapport_old_caption:[####1]{####2}
-            \vspace{\belowcaptionskip}
-        }
-    }
     \RenewDocumentEnvironment{table*}{o}{
-        \begin{onecol}
-        \__skrapport_old_tablest:
+        \__skrapport_xdblfloat:nx{table}
+            {\IfNoValueTF{##1}{tp}{##1}}
+        \dim_set_eq:NN\hsize\textwidth
+        \dim_set_eq:NN\linewidth\textwidth
+        \centering
     }{
-        \__skrapport_old_endtablest:
-        \end{onecol}
+        \end@dblfloat
     }
 \end{MacroCode}
     \begin{environment}{onecol}
