@@ -766,7 +766,7 @@
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
     \AtBeginDocument{  
-        \KOMAoptions{twocolumn=false,DIV=14}
+        \KOMAoptions{twocolumn=false,DIV=12}
     }
 \end{MacroCode}
     We include the \pkg{grid} package in two-column mode, because
@@ -832,6 +832,40 @@
     \AfterEndEnvironment{alignat}{\end{gridenv}}
     \BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
     \AfterEndEnvironment{alignat*}{\end{gridenv}}
+\end{MacroCode}
+    Since \pkg{grid} just overrides whatever sectioning macros we
+    define normally, we have to fix them up to make the public API
+    conform with the one-column mode. This is only necessary for
+    the \enquote{major} sectioning macros, not \cs*{paragraph} and
+    \cs*{subparagraph}.
+\begin{MacroCode}{class}
+    \cs_set_eq:NN\__skrapport_saved_section:w\section
+    \RenewDocumentCommand\section{som}{
+        \IfBooleanTF{##1}
+            {\__skrapport_saved_section:w*{##3}}
+            {\IfNoValueTF{##2}
+                {\__skrapport_saved_section:w{##3}}
+                {\__skrapport_saved_section:w[##2]{##3}}
+            }
+    }
+    \cs_set_eq:NN\__skrapport_saved_subsection:w\subsection
+    \RenewDocumentCommand\subsection{som}{
+        \IfBooleanTF{##1}
+            {\__skrapport_saved_subsection:w*{##3}}
+            {\IfNoValueTF{##2}
+                {\__skrapport_saved_subsection:w{##3}}
+                {\__skrapport_saved_subsection:w[##2]{##3}}
+            }
+    }
+    \cs_set_eq:NN\__skrapport_saved_subsubsection:w\subsubsection
+    \RenewDocumentCommand\subsubsection{som}{
+        \IfBooleanTF{##1}
+            {\__skrapport_saved_subsubsection:w*{##3}}
+            {\IfNoValueTF{##2}
+                {\__skrapport_saved_subsubsection:w{##3}}
+                {\__skrapport_saved_subsubsection:w[##2]{##3}}
+            }
+    }
 \end{MacroCode}
     The \env{figure} environment is patched\ldots
 \begin{MacroCode}{class}
