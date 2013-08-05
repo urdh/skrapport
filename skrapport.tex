@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12b}
+    \version{0.12c-dev}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -3153,7 +3153,13 @@
     In addition to the \env{figure} and \env{table} environments, we
     also provide a \env{figcenter} environment that enables centering
     of figures or tables that are too wide for the page.
+    \begin{macro*}{\coffin_typeset:Nnnon}
+\begin{MacroCode}{class}
+\cs_generate_variant:Nn\coffin_typeset:Nnnnn{Nnnon}
+\end{MacroCode}
+    \end{macro*}
     \begin{environment}{figcenter}
+    \changes{0.12c}{Fixed the x-offset calculation}
 \begin{MacroCode}{class}
 \DeclareDocumentEnvironment{figcenter}{}{
     \cs_set_eq:NN\l__tmpa_cs\caption
@@ -3163,8 +3169,7 @@
 }{
     \hcoffin_set_end:
     \dim_set:Nn\l_tmpa_dim{(\textwidth - \coffin_wd:N\l_tmpa_coffin)/2}
-    \skip_horizontal:n{-\l_tmpa_dim}
-    \coffin_typeset:Nnnnn\l_tmpa_coffin{H}{l}{0pt}{0pt}
+    \coffin_typeset:Nnnon\l_tmpa_coffin{H}{l}{\dim_use:N\l_tmpa_dim}{0pt}
     \cs_set_eq:NN\caption\l__tmpa_cs
     \cs_undefine:N\l__tmpa_cs
 }
