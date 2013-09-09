@@ -277,10 +277,11 @@
     When \texttt{false}, the \pkg{skmath} package is loaded, providing
     improvements to the math functionality of \pkg{amsmath} and friends.
 
-    \Option{lang}\WithValues{en, sv}\AndDefault{sv}
+    \Option{lang}\WithValues{en, sv, de}\AndDefault{sv}
     This option specifies what main language \pkg{babel} or
-    \pkg{polyglossia} set up with. The other language is loaded as 
-    well, for use in constructs that allow for a second language.
+    \pkg{polyglossia} set up with. English (or swedish, for
+    \texttt{lang=en}) is loaded as well, for use in constructs
+    that allow for a second language.
 
     \Option{draft}\WithValues{true, false}\AndDefault{false}
     The \opt{draft} option, much like in \pkg{article}, enables
@@ -370,7 +371,7 @@
     \DescribeMacro\subparagraph*[<short title>]{<title>}
     The sectioning macros are superficially very similar to those
     provided by \pkg{article}, but have been completely reimplemented
-    in \pkg{expl3} code. Additionally, the style of these secioning
+    in \pkg{expl3} code. Additionally, the style of these sectioning
     macros, as detailed by the \opt{titles} option documentation above,
     can be changed.
 
@@ -1046,7 +1047,7 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_lang:n}[1]
-        {Language (\texttt{sv} or \texttt{en})}
+        {Language (\texttt{sv}, \texttt{en} or \texttt{de})}
     Thus far only two language options are implemented, each of them
     setting the other as the \enquote{other} language. We check if
     \pkg{polyglossia} has been loaded (this is done by
@@ -1100,7 +1101,6 @@
     \end{macro*}
     \end{macro*}
     \end{macro*}
-
 \begin{MacroCode}{class}
             \PassOptionsToPackage{iso,swedish}{isodate}
         }
@@ -1150,6 +1150,53 @@
     \end{macro*}
 \begin{MacroCode}{class}
             \PassOptionsToPackage{iso,british}{isodate}
+        }
+        {de}{
+            \bool_if:NTF\g__skrapport_has_polyglossia_bool{
+                \setmainlanguage{ngerman}
+                \setotherlanguage[variant=british]{english}
+            }{
+                \RequirePackage[british,ngerman]{babel}
+            }
+\end{MacroCode}
+    \begin{macro*}{\__skrapport_and_word:}
+    \begin{macro*}{\__skrapport_Email_word:}
+    \begin{macro*}{\__skrapport_Comment_word:}
+    \begin{macro*}{\contentsname}
+    \begin{macro*}{\refname}
+    \begin{macro*}{\figurename}
+    \begin{macro*}{\tablename}
+    \begin{macro*}{\appendixname}
+    \begin{macro*}{\abstractname}
+    \begin{macro*}{\today}
+    \begin{macro*}{\__skrapport_RFC_language:}
+\begin{MacroCode}{class}
+            \cs_gset:Nn\__skrapport_and_word:{und}
+            \cs_gset:Nn\__skrapport_Email_word:{E-Mail}
+            \cs_gset:Nn\__skrapport_Comment_word:{Kommentar}
+            \cs_gset:Npn\contentsname{Inhaltsverzeichnis}
+            \cs_gset:Npn\refname{Literatur}
+            \cs_gset:Npn\figurename{Abbildung}
+            \cs_gset:Npn\tablename{Tabelle}
+            \cs_gset:Npn\appendixname{Anhang}
+            \cs_gset:Npn\abstractname{Zusammenfassung}
+            \cs_gset:Npn\today
+                {\int_use:N\day.\,\int_use:N\month.\,\int_use:N\year}
+            \cs_gset:Nn\__skrapport_RFC_language:{ger}
+\end{MacroCode}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+    \end{macro*}
+\begin{MacroCode}{class}
+            \PassOptionsToPackage{iso,ngerman}{isodate}
         }
     }{
 \end{MacroCode}
@@ -1672,7 +1719,8 @@
     \end{option}
     \end{option}
 
-    \begin{option}{lang}{sv, en}
+    \begin{option}{lang}{sv, en, de}
+    \changes{0.12c}{Added option value \texttt{de}}
     \changes{0.12}{Incompatible change: values \texttt{swe} and
                    \texttt{eng} are now \texttt{sv} and \texttt{en},
                    respectively}
@@ -1685,7 +1733,7 @@
     aliases are deprecated and will be removed.
 \begin{MacroCode}{class}
     lang .choices:nn = 
-        { sv, en }
+        { sv, en, de }
         {\__skrapport_setup_lang:x{\tl_use:N\l_keys_choice_tl}},
     lang .value_required:,
     swe .code:n = 
