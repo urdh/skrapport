@@ -759,6 +759,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_twocolumn:}
+    \changes{0.12c}{Major changes to the sectioning commands, to
+    override what \pkg{grid} is doing}
     Setting up for twocolumn mode is slightly compliacted. Note that this
     macro should be called from \cs{AtEndOfClass} to ensure that we patch
     everything correctly. Note also that \pkg{multicol} is always loaded
@@ -834,40 +836,61 @@
     \BeforeBeginEnvironment{alignat*}{\begin{gridenv}}
     \AfterEndEnvironment{alignat*}{\end{gridenv}}
 \end{MacroCode}
-    Since \pkg{grid} just overrides whatever sectioning macros we
-    define normally, we have to fix them up to make the public API
-    conform with the one-column mode. This is only necessary for
+    Since \pkg{grid} override the usual sectioning macros, we have to
+    provide fixed and improved variants that conform to our style
+    and out public API. This is only necessary for
     the \enquote{major} sectioning macros, not \cs*{paragraph} and
     \cs*{subparagraph}.
+    \begin{macro*}{\section}
 \begin{MacroCode}{class}
-    \cs_set_eq:NN\__skrapport_saved_section:w\section
-    \RenewDocumentCommand\section{som}{
-        \IfBooleanTF{##1}
-            {\__skrapport_saved_section:w*{##3}}
-            {\IfNoValueTF{##2}
-                {\__skrapport_saved_section:w{##3}}
-                {\__skrapport_saved_section:w[##2]{##3}}
-            }
-    }
-    \cs_set_eq:NN\__skrapport_saved_subsection:w\subsection
-    \RenewDocumentCommand\subsection{som}{
-        \IfBooleanTF{##1}
-            {\__skrapport_saved_subsection:w*{##3}}
-            {\IfNoValueTF{##2}
-                {\__skrapport_saved_subsection:w{##3}}
-                {\__skrapport_saved_subsection:w[##2]{##3}}
-            }
-    }
-    \cs_set_eq:NN\__skrapport_saved_subsubsection:w\subsubsection
-    \RenewDocumentCommand\subsubsection{som}{
-        \IfBooleanTF{##1}
-            {\__skrapport_saved_subsubsection:w*{##3}}
-            {\IfNoValueTF{##2}
-                {\__skrapport_saved_subsubsection:w{##3}}
-                {\__skrapport_saved_subsubsection:w[##2]{##3}}
-            }
+    \skip_gset:Nn\c__skrapport_section_pre_skip{-.999\baselineskip}
+    \skip_gset:Nn\c__skrapport_section_post_skip{0.001\baselineskip}
+    \dim_gset:Nn \c__skrapport_section_indent_dim{\c_zero_dim}
+    \cs_set_protected:Nn\__skrapport_section_style:
+        {\normalfont\__skrapport_title_style:}
+    \DeclareDocumentCommand\section{som}{
+        \__skrapport_generic_section:nnnnn{section}{1}{##1}{##2}{##3}
     }
 \end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\subsection}
+\begin{MacroCode}{class}
+    \skip_gset:Nn\c__skrapport_subsection_pre_skip{\baselineskip}
+    \skip_gset:Nn\c__skrapport_subsection_post_skip{-.35\baselineskip}
+    \dim_gset:Nn \c__skrapport_subsection_indent_dim{\c_zero_dim}
+    \cs_set_protected:Nn\__skrapport_subsection_style:
+        {\normalfont\__skrapport_title_style:\unskip}
+    \DeclareDocumentCommand\subsection{som}{
+        \__skrapport_generic_section:nnnnn{subsection}{2}{##1}{##2}{##3}
+    }
+\end{MacroCode}
+    \end{macro*}
+    \begin{macro*}{\subsubsection}
+\begin{MacroCode}{class}
+    \skip_gset:Nn\c__skrapport_subsubsection_pre_skip{\baselineskip}
+    \skip_gset:Nn\c__skrapport_subsubsection_post_skip{-.35\baselineskip}
+    \dim_gset:Nn \c__skrapport_subsubsection_indent_dim{\c_zero_dim}
+    \cs_set_protected:Nn\__skrapport_subsubsection_style:
+        {\normalfont\itshape\__skrapport_title_style:\unskip}
+    \DeclareDocumentCommand\subsubsection{som}{
+        \__skrapport_generic_section:nnnnn{subsubsection}{3}{##1}{##2}{##3}
+    }
+\end{MacroCode}
+    \end{macro*}
+    We also redefine \cs{l@section} to make the TOC blend in a bit.
+    \begin{macro*}{\l@section}
+\begin{MacroCode}{class}
+    \DeclareDocumentCommand\l@section{mm}{
+        \group_begin:
+            \skip_vertical:n{.75ex}
+            \__skrapport_title_style:
+            \__skrapport_toc_line:nnnnn{1}{0em}{1.3em}{##1}{
+                \__skrapport_title_style: ##2
+            }
+        \group_end:
+    }
+\end{MacroCode}
+    \end{macro*}
     The \env{figure} environment is patched\ldots
 \begin{MacroCode}{class}
     \cs_new:Npn\__skrapport_xdblfloat:nn##1##2{\@xdblfloat{##1}[##2]}
