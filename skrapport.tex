@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12c}
+    \version{0.12d-dev}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -1718,6 +1718,15 @@
     \end{option}
     \end{option}
     \end{option}
+    \end{option}
+
+    \begin{option}{hanging-titles}{true, false}
+    \changes{0.12d}{Added option to enable \enquote{hanging} titles}
+\begin{MacroCode}{class}
+    hanging-titles .bool_gset:N = \g__skrapport_hanging_titles_bool,
+    hanging-titles .default:n = true,
+    hanging-titles .initian:n = false,
+\end{MacroCode}
     \end{option}
 
     \begin{option}{lang}{sv, en, de}
