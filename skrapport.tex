@@ -191,7 +191,7 @@
     default behaviour thus is similar to that obtained using the
     \pkg{parskip} package with the \pkg{article} package.
 
-    \Option{titles}\WithValues{rm, bf, sf}\AndDefault{bf}
+    \Option{titles}\WithValues{rm, it, bf, sf}\AndDefault{bf}
     Section titles (and a few other elements) are controlled by this
     option in that they are typeset either using the regular roman font,
     the boldfaced roman font or the sans serif font. For historical
@@ -1019,7 +1019,8 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_titles:n}[1]
-        {Title style (\texttt{rm}, \texttt{bf} or \texttt{sf})}
+        {Title style (\texttt{rm}, \texttt{it},
+                      \texttt{bf} or \texttt{sf})}
     The title styles are implemented by creating a new macro
     \cs{__skrapport_title_style:} which will later be used by
     \cs{section} and friends. 
@@ -1030,8 +1031,10 @@
     \begin{macro*}{\__skrapport_title_style:}
         \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced
                         \cs{relax} with \cs{rmfamily}}
+        \changes{0.12d}{Added \texttt{it} option}
 \begin{MacroCode}{class}
         {rm}{\cs_new_protected:Nn\__skrapport_title_style:{\rmfamily}}
+        {it}{\cs_new_protected:Nn\__skrapport_title_style:{\itshape}}
         {bf}{\cs_new_protected:Nn\__skrapport_title_style:{\bfseries}}
         {sf}{\cs_new_protected:Nn\__skrapport_title_style:{\sffamily}}
 \end{MacroCode}
@@ -1687,7 +1690,7 @@
 \end{MacroCode}
     \end{option}
 
-    \begin{option}{titles}{rm, bf, sf}
+    \begin{option}{titles}{rm, it, bf, sf}
     Declare options for section titles. The old \opt*{??titles} aliases
     are deprecated and will be removed in a future version.
     \begin{option}{rmtitles}
@@ -1699,7 +1702,7 @@
     \changes{0.12}{Option is now deprecated}
 \begin{MacroCode}{class}
     titles .choices:nn =
-        { rm, bf, sf }
+        { rm, it, bf, sf }
         {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
     titles .value_required:,
     rmtitles .code:n = 
