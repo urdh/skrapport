@@ -1992,13 +1992,12 @@
 \RequirePackage{calc,isodate,multicol}
 \end{MacroCode}
 
-    At the end of the class definition we load a couple of very
-    useful packages that improve typesetting. These are
-    \pkg{microtype}, \pkg{icomma}. Also set \cs{frenchspacing}.
+    At the end of the class definition we load a very
+    useful package that improves typesetting: \pkg{microtype}.
+    Also set \cs{frenchspacing}.
 \begin{MacroCode}{class}
 \AtEndOfClass{
     \RequirePackage{microtype}
-    \RequirePackage{icomma}
     \frenchspacing
 }
 \end{MacroCode}
