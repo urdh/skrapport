@@ -1725,7 +1725,7 @@
 \begin{MacroCode}{class}
     hanging-titles .bool_gset:N = \g__skrapport_hanging_titles_bool,
     hanging-titles .default:n = true,
-    hanging-titles .initian:n = false,
+    hanging-titles .initial:n = false,
 \end{MacroCode}
     \end{option}
 
@@ -2598,7 +2598,11 @@
     \cs_set:Nn\__skrapport_saved_section:{}
     \int_compare:nF{#2>\value{secnumdepth}}{
         \refstepcounter{#1}
-        \cs_set:Nn\__skrapport_saved_section:{\use:c{the#1}~}
+        \cs_set:Nn\__skrapport_saved_section:{
+            \bool_if:NTF\g__skrapport_hanging_titles_bool
+                {\llap{\use:c{the#1}\hspace{1ex}}}
+                {\use:c{the#1}~}
+        }
     }
     \__skrapport_section_star:nnnn
         {#3}{#4}{#5}{\__skrapport_saved_section:}
