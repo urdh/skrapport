@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12c}
+    \version{0.12d-dev}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -197,6 +197,10 @@
     the boldfaced roman font or the sans serif font. For historical
     reasons the default is a boldfaced roman font, but the sans serif
     option is very handsome.
+
+    \Option{hanging-titles}\WithValues{true, false}\AndDefault{false}
+    This options allow sections to be set as \enquote{hanging} titles,
+    \emph{i.e.} with the section number in the margin. 
 
     \Option{color}\WithValues{\meta{color theme}}\AndDefault{default}
     This option tells the class to activate color theme support and
@@ -1723,6 +1727,15 @@
     \end{option}
     \end{option}
 
+    \begin{option}{hanging-titles}{true, false}
+    \changes{0.12d}{Added option to enable \enquote{hanging} titles}
+\begin{MacroCode}{class}
+    hanging-titles .bool_gset:N = \g__skrapport_hanging_titles_bool,
+    hanging-titles .default:n = true,
+    hanging-titles .initial:n = false,
+\end{MacroCode}
+    \end{option}
+
     \begin{option}{lang}{sv, en, de}
     \changes{0.12c}{Added option value \texttt{de}}
     \changes{0.12}{Incompatible change: values \texttt{swe} and
@@ -2592,7 +2605,11 @@
     \cs_set:Nn\__skrapport_saved_section:{}
     \int_compare:nF{#2>\value{secnumdepth}}{
         \refstepcounter{#1}
-        \cs_set:Nn\__skrapport_saved_section:{\use:c{the#1}~}
+        \cs_set:Nn\__skrapport_saved_section:{
+            \bool_if:NTF\g__skrapport_hanging_titles_bool
+                {\llap{\use:c{the#1}\hspace{1ex}}}
+                {\use:c{the#1}~}
+        }
     }
     \__skrapport_section_star:nnnn
         {#3}{#4}{#5}{\__skrapport_saved_section:}
