@@ -1517,6 +1517,7 @@
     Thus, only load \pkg{polyglossia} for \hologo{XeLaTeX}.
 \begin{MacroCode}{class}
     \xetex_if_engine:TF{
+        \PassOptionsToPackage{quiet}{fontspec}
         \RequirePackage{polyglossia}
         \bool_gset_true:N\g__skrapport_has_polyglossia_bool
     }{
@@ -1532,6 +1533,9 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_pdftex:{
     \RequirePackage[T1]{fontenc}
+    \AtEndOfClass{
+        \RequirePackage{isomath}
+    }
     \bool_gset_false:N\g__skrapport_has_polyglossia_bool
 }
 \end{MacroCode}
