@@ -466,7 +466,7 @@
     These macros, the two latter being aliases of the first one, typeset
     an author's comment in the document. The starred variants typeset the
     comment inline with a red background, while the unstarred variant
-    typesets the comment in a \cs{marginpar}.
+    typesets the comment in a \cs{marginnote}.
 
     \DescribeMacro\eg
     \DescribeMacro\ie
@@ -2012,7 +2012,7 @@
     \pkg{calc} package, for instance, is essential in later
     definitions.
 \begin{MacroCode}{class}
-\RequirePackage{calc,isodate,multicol}
+\RequirePackage{calc,isodate,multicol,marginnote}
 \end{MacroCode}
 
     At the end of the class definition we load a very
@@ -3575,6 +3575,7 @@
     \begin{macro}{\comment}
     \changes{0.10}{Added macro for comments}
     \changes{0.12b}{No longer uses \cs{colorbox} if no color package is loaded}
+    \changes{0.12d}{Use \cs{marginnote} instead of \cs{marginpar}}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\comment{sm}{
     \IfBooleanTF{#1}
@@ -3582,7 +3583,7 @@
             \cs_if_exist_use:NT\colorbox{{red!50}}
                 {\__skrapport_comment:n{#2}}
         }
-        {\marginpar{\__skrapport_comment:n{#2}}}
+        {\marginnote{\__skrapport_comment:n{#2}}}
 }
 \end{MacroCode}
     \end{macro}
