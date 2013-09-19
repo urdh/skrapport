@@ -90,7 +90,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12d-dev}
+    \version{0.12d}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -113,6 +113,7 @@
     the default font stack on \hologo{XeLaTeX}}
     \changes{0.12b}{Minor and major bugfixes to \cs{maketitle}, \opt{ptsize}, \opt{twocolumn} and others}
     \changes{0.12c}{Added german language option, fixed sectioning macros in \opt{twocolumn} mode}
+    \changes{0.12d}{Added \opt{hanging-titles}, latin phrase macros. Load \pkg{isomath}. Don't load \pkg{icomma}. Use \cs{frenchspacing}}
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -1069,6 +1070,8 @@
 
     \begin{macro}{\__skrapport_setup_lang:n}[1]
         {Language (\texttt{sv}, \texttt{en} or \texttt{de})}
+    \changes{0.12d}{Use \pkg{babel} mechanisms for language-dependent
+        strings, so they work correctly in \env{otherlanguage}}
     Thus far only two language options are implemented, each of them
     setting the other as the \enquote{other} language. We check if
     \pkg{polyglossia} has been loaded (this is done by
@@ -1488,6 +1491,7 @@
     \begin{macro}{\__skrapport_setup_xelatex:}
     \changes{0.12a}{Don't load \pkg{polyglossia} for \hologo{LuaTeX}.
                     Don't load \pkg{fontspec} for any engine}
+    \changes{0.12d}{Force \texttt{quiet} option for \pkg{fontspec}}
     This macro contains special setup code for the \hologo{XeTeX} and
     \hologo{LuaTeX} engines, such as providing
     missing commands (which have been replaced by equivalent Unicode
@@ -1531,6 +1535,7 @@
     \end{macro}
 
     \begin{macro}{\__skrapport_setup_pdftex:}
+    \changes{0.12d}{Load \pkg{isomath}}
     This macro contains special setup code for the \hologo{pdfTeX}
     engine. Currently, it only sets the font encoding to T1.
 \begin{MacroCode}{class}
@@ -2607,6 +2612,7 @@
         {Styling of the section title}
         {Actual section title}
         {Section title for TOC}
+    \changes{0.12d}{Added support for hanging titles}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_section_nostar:nnnnnn#1#2#3#4#5#6{
     \cs_set:Nn\__skrapport_saved_section:{}
