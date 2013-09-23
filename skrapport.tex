@@ -114,6 +114,8 @@
     \changes{0.12b}{Minor and major bugfixes to \cs{maketitle}, \opt{ptsize}, \opt{twocolumn} and others}
     \changes{0.12c}{Added german language option, fixed sectioning macros in \opt{twocolumn} mode}
     \changes{0.12d}{Added \opt{hanging-titles}, latin phrase macros. Load \pkg{isomath}. Don't load \pkg{icomma}. Use \cs{frenchspacing}}
+    % Don't forget to update the version number and release date of
+    % the package declaration in the implementation!
 
     % Metadata
     \package[ctan=skrapport,vcs=https://github.com/urdh/skrapport]{skrapport}
@@ -615,7 +617,7 @@
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
 \ProvidesExplClass{skrapport}%
-    {2013/09/09}{0.12c}{stylish report document class}
+    {2013/09/19}{0.12d}{stylish report document class}
 \end{MacroCode}
     
     \subsection{Messages}
