@@ -194,12 +194,16 @@
     default behaviour thus is similar to that obtained using the
     \pkg{parskip} package with the \pkg{article} package.
 
-    \Option{titles}\WithValues{rm, it, bf, sf}\AndDefault{bf}
+    \Option{titles}\WithValues{rm, it, bf, sf, sc}\AndDefault{bf}
     Section titles (and a few other elements) are controlled by this
     option in that they are typeset either using the regular roman font,
-    the boldfaced roman font or the sans serif font. For historical
-    reasons the default is a boldfaced roman font, but the sans serif
-    option is very handsome.
+    the italic roman font, the boldfaced roman font or the sans serif 
+    font. For historical reasons the default is a boldfaced roman font,
+    but the sans serif option is very handsome.
+
+    The final option value, \opt{titles=sc}, has additional effects.
+    In addition to setting the title in small caps, the option makes
+    titles centered and applies some other styling.
 
     \Option{hanging-titles}\WithValues{true, false}\AndDefault{false}
     This options allow sections to be set as \enquote{hanging} titles,
@@ -694,6 +698,13 @@
 \bool_new:N\g__skrapport_has_polyglossia_bool
 \end{MacroCode}
     \end{macro}
+    \begin{macro}{\g__skrapport_sctitles_bool}
+    Are we using the special formatting of small-caps titles?
+\begin{MacroCode}{class}
+\bool_new:N\g__skrapport_sctitles_bool
+\bool_gset_false:N\g__skrapport_sctitles_bool
+\end{MacroCode}
+    \end{macro}
 
     \subsubsection{Option setup macros}
     In this section, all options declared in the previous section are
@@ -1052,11 +1063,16 @@
         \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced
                         \cs{relax} with \cs{rmfamily}}
         \changes{0.12d}{Added \texttt{it} option}
+        \changes{0.12e}{Added \texttt{sc} option}
 \begin{MacroCode}{class}
         {rm}{\cs_new_protected:Nn\__skrapport_title_style:{\rmfamily}}
         {it}{\cs_new_protected:Nn\__skrapport_title_style:{\itshape}}
         {bf}{\cs_new_protected:Nn\__skrapport_title_style:{\bfseries}}
         {sf}{\cs_new_protected:Nn\__skrapport_title_style:{\sffamily}}
+        {sc}{
+            \cs_new_protected:Nn\__skrapport_title_style:{\rmfamily}
+            \bool_gset_true:N\g__skrapport_sctitles_bool
+        }
 \end{MacroCode}
     \end{macro*}
     The fall-back for incorrect parameters is an informational message
@@ -1708,7 +1724,7 @@
 \end{MacroCode}
     \end{option}
 
-    \begin{option}{titles}{rm, it, bf, sf}
+    \begin{option}{titles}{rm, it, bf, sf, sc}
     Declare options for section titles. The old \opt*{??titles} aliases
     are deprecated and will be removed in a future version.
     \begin{option}{rmtitles}
@@ -1720,7 +1736,7 @@
     \changes{0.12}{Option is now deprecated}
 \begin{MacroCode}{class}
     titles .choices:nn =
-        { rm, it, bf, sf }
+        { rm, it, bf, sf, sc }
         {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
     titles .value_required:,
     rmtitles .code:n = 
@@ -2290,8 +2306,10 @@
     \end{macro*}
     \begin{macro*}{\__skrapport_abstract_style:}
 \begin{MacroCode}{class}
-\cs_new_protected:Nn\__skrapport_abstract_style:
-    {\__skrapport_title_style:}
+\cs_new_protected:Nn\__skrapport_abstract_style:{
+    \__skrapport_title_style:
+    \bool_if:NT\g__skrapport_sctitles_bool{\scshape}
+}
 \end{MacroCode}
     \end{macro*}
 \begin{MacroCode}{class}
@@ -2736,8 +2754,12 @@
     \begin{macro*}{\c__skrapport_section_style:}
     This is the text style of a section title.
 \begin{MacroCode}{class}
-\cs_set_protected:Nn\__skrapport_section_style:
-    {\normalfont\LARGE\__skrapport_title_style:}
+\cs_set_protected:Nn\__skrapport_section_style:{
+    \normalfont
+    \bool_if:NTF\g__skrapport_sctitles_bool
+        {\__skrapport_title_style:\scshape}
+        {\LARGE\__skrapport_title_style:}
+}
 \end{MacroCode}
     \end{macro*}
     Finally, the public macro is provided.
