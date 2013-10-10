@@ -1143,6 +1143,7 @@
     translation strings. This is done using the \cs*{addto} and
     \cs*{captions<lang>}, which is compatible with both packages.
     \begin{macro*}{\captionsswedish}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\dateswedish}
 \begin{MacroCode}{class}
     \addto\captionsswedish{
@@ -1154,12 +1155,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{\emph{etc.}}
         \cs_gset:Nn\__skrapport_cf_word:{jfr.}
         \cs_gset:Nn\__skrapport_viz_word:{dvs.}
-        \cs_gset:Npn\contentsname{Innehåll}
-        \cs_gset:Npn\refname{Referenser}
-        \cs_gset:Npn\figurename{Figur}
-        \cs_gset:Npn\tablename{Tabell}
-        \cs_gset:Npn\appendixname{Bilaga}
-        \cs_gset:Npn\abstractname{Sammanfattning}
     }
     \cs_gset:Npn\dateswedish{
         \cs_gset:Npn\today
@@ -1169,6 +1164,7 @@
     \end{macro*}
     \end{macro*}
     \begin{macro*}{\captionsbritish}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\datebritish}
 \begin{MacroCode}{class}
     \addto\captionsbritish{
@@ -1180,12 +1176,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{\emph{etc.}}
         \cs_gset:Nn\__skrapport_cf_word:{\emph{cf.}}
         \cs_gset:Nn\__skrapport_viz_word:{\emph{viz.}}
-        \cs_gset:Npn\contentsname{Contents}
-        \cs_gset:Npn\refname{References}
-        \cs_gset:Npn\figurename{Figure}
-        \cs_gset:Npn\tablename{Table}
-        \cs_gset:Npn\appendixname{Appendix}
-        \cs_gset:Npn\abstractname{Abstract}
     }
     \cs_gset:Npn\datebritish{
         \cs_gset:Npn\today
@@ -1195,6 +1185,7 @@
     \end{macro*}
     \end{macro*}
     \begin{macro*}{\captionsngerman}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\datengerman}
 \begin{MacroCode}{class}
     \addto\captionsngerman{
@@ -1206,12 +1197,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{usw.}
         \cs_gset:Nn\__skrapport_cf_word:{vgl.}
         \cs_gset:Nn\__skrapport_viz_word:{\emph{viz.}}
-        \cs_gset:Npn\contentsname{Inhaltsverzeichnis}
-        \cs_gset:Npn\refname{Literatur}
-        \cs_gset:Npn\figurename{Abbildung}
-        \cs_gset:Npn\tablename{Tabelle}
-        \cs_gset:Npn\appendixname{Anhang}
-        \cs_gset:Npn\abstractname{Zusammenfassung}
     }
     \cs_gset:Npn\datengerman{
         \cs_gset:Npn\today
