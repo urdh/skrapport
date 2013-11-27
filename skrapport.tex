@@ -65,6 +65,15 @@
         author = {{International Organization for Standardization, Technical Committee 154}},
         year = {2004}
     }
+    @article{Flynn,
+        author = {Peter Flynn},
+        title = {Rolling your own Document Class: Using \LaTeX{} to
+                 keep away from the Dark Side},
+        journal = {The Prac\TeX{} Journal},
+        number = {4},
+        year = {2006},
+        url = {http://tug.org/pracjourn/2006-4/flynn/flynn.pdf}
+    }
 \end{filecontents}
 \addbibresource{skrapport.bib}
 
@@ -483,6 +492,11 @@
     should behave correctly regardless of usage (assuming they're used in
     running text and uncomplicated settings). In languages other than
     english, appropriate translations are made if applicable.
+
+    \DescribeMacro\dash
+    This macro prints an em-dash surrounded by thin spaces, as discussed
+    by \textcite[\pno~8]{Flynn}. When \cs*{DeclareUnicodeCharacter} is
+    available, the real em dash uses this definition.
 
     \subsubsection{Color theme support}
     \DescribeMacro\colortheme{<theme>}
@@ -3649,6 +3663,15 @@
 \DeclareDocumentCommand\viz{}{
     \__skrapport_peek_punctuation:x{\__skrapport_viz_word:}
 }
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\dash}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\dash{}{
+    \cs_if_exist_use:NT\texorpdfstring{{ - }}
+    {\unskip\nobreak\thinspace\textemdash\thinspace\ignorespaces}
+}
+\cs_if_exist_use:NT\DeclareUnicodeCharacter{{2014}{\dash}}
 \end{MacroCode}
     \end{macro}
 
