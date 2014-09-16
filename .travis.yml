@@ -12,5 +12,6 @@ install:
   - cd diff-pdf && ./bootstrap && ./configure && make && sudo make install
 
 script:
+  - cd $TRAVIS_BUILD_DIR
   - make dist
   - make test
