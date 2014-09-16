@@ -9,7 +9,7 @@ install:
   - sudo apt-get install make automake g++
   - sudo apt-get install libpoppler-glib-dev poppler-utils wxgtk2.8-dev
   - git clone https://github.com/vslavik/diff-pdf.git diff-pdf
-  - cd diff-pdf && ./bootstrap && ./configure --prefix=/usr && make && make install
+  - cd diff-pdf && ./bootstrap && ./configure && make && sudo make install
 
 script:
   - make dist
