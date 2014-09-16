@@ -1,6 +1,6 @@
 %% skrapport Skånings rapportklass
 %%
-%% Copyright (C) 2012-2013 by Simon Sigurdhsson <sigurdhsson@gmail.com>
+%% Copyright (C) 2012-2014 by Simon Sigurdhsson <sigurdhsson@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3
@@ -64,6 +64,15 @@
         subtitle = {Data elements and interchange formats -- Information interchange -- Representation of dates and times},
         author = {{International Organization for Standardization, Technical Committee 154}},
         year = {2004}
+    }
+    @article{Flynn,
+        author = {Peter Flynn},
+        title = {Rolling your own Document Class: Using \LaTeX{} to
+                 keep away from the Dark Side},
+        journal = {The Prac\TeX{} Journal},
+        number = {4},
+        year = {2006},
+        url = {http://tug.org/pracjourn/2006-4/flynn/flynn.pdf}
     }
 \end{filecontents}
 \addbibresource{skrapport.bib}
@@ -487,6 +496,11 @@
     should behave correctly regardless of usage (assuming they're used in
     running text and uncomplicated settings). In languages other than
     english, appropriate translations are made if applicable.
+
+    \DescribeMacro\dash
+    This macro prints an em-dash surrounded by thin spaces, as discussed
+    by \textcite[\pno~8]{Flynn}. When \cs*{DeclareUnicodeCharacter} is
+    available, the real em dash uses this definition.
 
     \subsubsection{Color theme support}
     \DescribeMacro\colortheme{<theme>}
@@ -1159,6 +1173,7 @@
     translation strings. This is done using the \cs*{addto} and
     \cs*{captions<lang>}, which is compatible with both packages.
     \begin{macro*}{\captionsswedish}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\dateswedish}
 \begin{MacroCode}{class}
     \addto\captionsswedish{
@@ -1170,12 +1185,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{\emph{etc.}}
         \cs_gset:Nn\__skrapport_cf_word:{jfr.}
         \cs_gset:Nn\__skrapport_viz_word:{dvs.}
-        \cs_gset:Npn\contentsname{Innehåll}
-        \cs_gset:Npn\refname{Referenser}
-        \cs_gset:Npn\figurename{Figur}
-        \cs_gset:Npn\tablename{Tabell}
-        \cs_gset:Npn\appendixname{Bilaga}
-        \cs_gset:Npn\abstractname{Sammanfattning}
     }
     \cs_gset:Npn\dateswedish{
         \cs_gset:Npn\today
@@ -1185,6 +1194,7 @@
     \end{macro*}
     \end{macro*}
     \begin{macro*}{\captionsbritish}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\datebritish}
 \begin{MacroCode}{class}
     \addto\captionsbritish{
@@ -1196,12 +1206,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{\emph{etc.}}
         \cs_gset:Nn\__skrapport_cf_word:{\emph{cf.}}
         \cs_gset:Nn\__skrapport_viz_word:{\emph{viz.}}
-        \cs_gset:Npn\contentsname{Contents}
-        \cs_gset:Npn\refname{References}
-        \cs_gset:Npn\figurename{Figurr}
-        \cs_gset:Npn\tablename{Table}
-        \cs_gset:Npn\appendixname{Appendix}
-        \cs_gset:Npn\abstractname{Abstract}
     }
     \cs_gset:Npn\datebritish{
         \cs_gset:Npn\today
@@ -1211,6 +1215,7 @@
     \end{macro*}
     \end{macro*}
     \begin{macro*}{\captionsngerman}
+    \changes{0.12e}{Don't redefine standard language strings}
     \begin{macro*}{\datengerman}
 \begin{MacroCode}{class}
     \addto\captionsngerman{
@@ -1222,12 +1227,6 @@
         \cs_gset:Nn\__skrapport_etc_word:{usw.}
         \cs_gset:Nn\__skrapport_cf_word:{vgl.}
         \cs_gset:Nn\__skrapport_viz_word:{\emph{viz.}}
-        \cs_gset:Npn\contentsname{Inhaltsverzeichnis}
-        \cs_gset:Npn\refname{Literatur}
-        \cs_gset:Npn\figurename{Abbildung}
-        \cs_gset:Npn\tablename{Tabelle}
-        \cs_gset:Npn\appendixname{Anhang}
-        \cs_gset:Npn\abstractname{Zusammenfassung}
     }
     \cs_gset:Npn\datengerman{
         \cs_gset:Npn\today
@@ -2199,7 +2198,7 @@
         }
     }
 }
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro*}
     \begin{macro*}{\g__skrapport_author_clist}
 \begin{MacroCode}{class}
@@ -3650,7 +3649,7 @@
     }
 }
 \cs_generate_variant:Nn\__skrapport_peek_punctuation:n{x}
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro*}
     \end{macro}
     \begin{macro}{\eg}
@@ -3658,35 +3657,44 @@
 \DeclareDocumentCommand\eg{}{
     \__skrapport_peek_punctuation:x{\__skrapport_eg_word:}
 }
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro}
     \begin{macro}{\ie}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\ie{}{
     \__skrapport_peek_punctuation:x{\__skrapport_ie_word:}
 }
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro}
     \begin{macro}{\etc}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\etc{}{
     \__skrapport_peek_punctuation:x{\__skrapport_etc_word:}
 }
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro}
     \begin{macro}{\cf}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\cf{}{
     \__skrapport_peek_punctuation:x{\__skrapport_cf_word:}
 }
-\end{MacroCode}{class}
+\end{MacroCode}
     \end{macro}
     \begin{macro}{\viz}
 \begin{MacroCode}{class}
 \DeclareDocumentCommand\viz{}{
     \__skrapport_peek_punctuation:x{\__skrapport_viz_word:}
 }
-\end{MacroCode}{class}
+\end{MacroCode}
+    \end{macro}
+    \begin{macro}{\dash}
+\begin{MacroCode}{class}
+\DeclareDocumentCommand\dash{}{
+    \cs_if_exist_use:NT\texorpdfstring
+    {\unskip\nobreak\thinspace\textemdash\thinspace\ignorespaces}{{ - }}
+}
+\cs_if_exist_use:NT\DeclareUnicodeCharacter{{2014}{\dash}}
+\end{MacroCode}
     \end{macro}
 
     \subsubsection{Color theme support}
