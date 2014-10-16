@@ -6,12 +6,7 @@ install:
   - cd $TRAVIS_BUILD_DIR && export PATH=/usr/local/texlive/CURRENT/bin/x86_64-linux:$PATH
   - sudo /usr/local/texlive/CURRENT/bin/x86_64-linux/tlmgr install babel-swedish babel-ngerman
 #  - sudo tlmgr update --self -all
-  - sudo apt-get install make automake g++
-  - sudo apt-get install libpoppler-glib-dev poppler-utils wxgtk2.8-dev
-  - git clone https://github.com/vslavik/diff-pdf.git diff-pdf
-  - cd diff-pdf && ./bootstrap && ./configure && make && sudo make install
 
 script:
-  - cd $TRAVIS_BUILD_DIR
   - make dist
   - make test
