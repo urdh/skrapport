@@ -24,7 +24,7 @@ distclean: clean
 %.clo: skrapport.cls
 
 README: README.md
-	sed -e '1,4d;$$d' README.md > README
+	sed -e '1,4d;$$d' $< > $@
 
 install: all
 	install -m 0644 skrapport-*.sty $(TEXMFHOME)/tex/latex/skrapport/
