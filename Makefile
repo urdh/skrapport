@@ -1,12 +1,12 @@
 TEXMFHOME ?= $(shell kpsewhich -var-value TEXMFHOME)
 .PHONY: all clean distclean install dist test clean-test
-all: skrapport.pdf
+all: skrapport.tex skrapport.pdf skrapport.cls README
 clean: clean-test
 	rm -f *.gl? *.id? *.aux # problematic files
 	rm -f *.bbl *.bcf *.bib *.blg *.xdy # biblatex
 	rm -f *.fls *.log *.out *.run.xml *.toc # junk
 distclean: clean
-	rm -f *.cls *.sty *.clo *.tar.gz *.tds.zip
+	rm -f *.cls *.sty *.clo *.tar.gz *.tds.zip README
 	git reset --hard
 
 %.pdf: %.tex %.cls
@@ -23,6 +23,9 @@ distclean: clean
 
 %.clo: skrapport.cls
 
+README: README.md
+	sed -e '1,4d;$$d' README.md > README
+
 install: all
 	install -m 0644 skrapport-*.sty $(TEXMFHOME)/tex/latex/skrapport/
 	install -m 0644 skrapport-*.clo $(TEXMFHOME)/tex/latex/skrapport/
@@ -32,7 +35,7 @@ install: all
 	install -m 0644 README $(TEXMFHOME)/doc/latex/skrapport/README
 	-mktexlsr
 
-skrapport.tds.zip: skrapport.tex skrapport.pdf skrapport.cls
+skrapport.tds.zip: all
 	mkdir -p skrapport/tex/latex/skrapport
 	cp skrapport-*.sty skrapport/tex/latex/skrapport/
 	cp skrapport-*.clo skrapport/tex/latex/skrapport/
@@ -45,7 +48,7 @@ skrapport.tds.zip: skrapport.tex skrapport.pdf skrapport.cls
 	cd skrapport && zip -r ../skrapport.tds.zip *
 	rm -rf skrapport
 
-skrapport.tar.gz: skrapport.tds.zip skrapport.tex skrapport.pdf
+skrapport.tar.gz: all skrapport.tds.zip
 	mkdir -p skrapport
 	cp skrapport.tex skrapport/skrapport.tex
 	cp skrapport.pdf skrapport/skrapport.pdf
