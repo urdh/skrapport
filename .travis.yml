@@ -13,6 +13,8 @@ install:
   # Required by the class
   - tlmgr install kpfonts
   - tlmgr install arev
+  - tlmgr install babel-swedish
+  - tlmgr install babel-german
 
 script:
   - make dist
