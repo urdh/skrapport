@@ -10,6 +10,9 @@ install:
   - tlmgr install opensans
   - tlmgr install sourcecodepro
   - tlmgr install ly1
+  # Required by the class
+  - tlmgr install kpfonts
+  - tlmgr install arev
 
 script:
   - make dist
