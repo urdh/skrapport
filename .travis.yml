@@ -32,3 +32,13 @@ script:
 
 after_success:
   - ./deploy-ctan.sh skrapport.tar.gz
+
+deploy:
+  provider: releases
+  api_key:
+    secure: euhP+4c1aSJ/Pkf1kqQA05Xs4Z0pdJSKSd+4Ww6h5Px0QiUGkGQPsymYuA3tFiR+VrKz57dUy6ZHNQPOVJ6tgAxvsA5lwoSKnAZbW5LPJ6b9307TVAFJ0LHf5oWzPVzb2W54QmxJiBcP+8sFPX2EeyRtd7qY0SeJ1cSyyj4Q8Qs=
+  file: skrapport.tar.gz
+  skip_cleanup: true
+  on:
+    repo: urdh/skrapport
+    tags: true
