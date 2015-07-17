@@ -1,7 +1,7 @@
 %% skrapport Skånings rapportklass
 %%
 %% Copyright (C) 2012-2015 by Simon Sigurdhsson <sigurdhsson@gmail.com>
-%% 
+%%
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3
 %% of this license or (at your option) any later version.
@@ -9,11 +9,11 @@
 %%   http://www.latex-project.org/lppl.txt
 %% and version 1.3 or later is part of all distributions of LaTeX
 %% version 2005/12/01 or later.
-%% 
+%%
 %% This work has the LPPL maintenance status `maintained'.
-%% 
+%%
 %% The Current Maintainer of this work is Simon Sigurdhsson.
-%% 
+%%
 %% This work consists of the file skrapport.tex and the derived files:
 %%  * skrapport.cls
 %%  * skrapport-colortheme-default.sty
@@ -99,13 +99,13 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12d}
+    \version{0.12e}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
     \changes{0.05}{Improved documentation}
     \changes{0.06}{Corrected cheksum, further improved documentation}
-    \changes{0.07}{Various bugfixes, \hologo{XeLaTeX} compatibility, 
+    \changes{0.07}{Various bugfixes, \hologo{XeLaTeX} compatibility,
                     better float settings, quote style fix,
                     \opt{intlimits} option to \pkg{amsmath}}
     \changes{0.07a}{Fixed \pkg{kpfonts} issues}
@@ -123,6 +123,7 @@
     \changes{0.12b}{Minor and major bugfixes to \cs{maketitle}, \opt{ptsize}, \opt{twocolumn} and others}
     \changes{0.12c}{Added german language option, fixed sectioning macros in \opt{twocolumn} mode}
     \changes{0.12d}{Added \opt{hanging-titles}, latin phrase macros. Load \pkg{isomath}. Don't load \pkg{icomma}. Use \cs{frenchspacing}}
+    \changes{0.12e}{Replace usage of deprecated \pkg{expl3} macros (thanks for the heads-up, Joseph Wright!)}
     % Don't forget to update the version number and release date of
     % the package declaration in the implementation!
 
@@ -212,7 +213,7 @@
 
     \Option{hanging-titles}\WithValues{true, false}\AndDefault{false}
     This options allow sections to be set as \enquote{hanging} titles,
-    \emph{i.e.} with the section number in the margin. 
+    \emph{i.e.} with the section number in the margin.
 
     \Option{color}\WithValues{\meta{color theme}}\AndDefault{default}
     This option tells the class to activate color theme support and
@@ -361,10 +362,10 @@
     good-looking preamble with almost no effort.
 
     The optional argument is a key-value list with two valid entries,
-    \opt*{hide} and \opt*{nopdfinfo}. The \opt*{hide} entry accepts a 
+    \opt*{hide} and \opt*{nopdfinfo}. The \opt*{hide} entry accepts a
     comma-separated list in which the values \opt*{date},
     \opt*{regarding} and \opt*{email}
-    are interpreted as instructions to hide the corresponding entry from 
+    are interpreted as instructions to hide the corresponding entry from
     the front page. The \opt*{nopdfinfo} key disables the generation of
     PDF information by \pkg{hyperref}.
 
@@ -409,7 +410,7 @@
 
     The old font macros, whose use has been discouraged for a long time,
     are now deprecated. Instead of functioning correctly, they will emit
-    an error and require user input. Use the \cs*{text??}/\cs*{??family} 
+    an error and require user input. Use the \cs*{text??}/\cs*{??family}
     macros instead. For emphasis, use the \cs{emph} macro.
 
     \DescribeMacro\emph{<text>}
@@ -438,7 +439,7 @@
     \DescribeMacro\appendix
     This macro signals the end of the main matter and the start of
     the appendix. In essence, it resets the section numbering counter
-    and changes the section numbering to the upper-case alphabetic 
+    and changes the section numbering to the upper-case alphabetic
     sequence.
 
     \subsubsection{Floats}
@@ -501,7 +502,7 @@
     \subsubsection{Color theme support}
     \DescribeMacro\colortheme{<theme>}
     The \cs{colortheme} macro, which is only available when the
-    \opt{color} option is \texttt{true}, applies a color theme to 
+    \opt{color} option is \texttt{true}, applies a color theme to
     the document. For a list of available color themes, see
     \enquote{Color themes} \vpageref{ssec:color}.
 
@@ -554,11 +555,11 @@
     \textcolor[HTML]{70524A}{lighter brown} to quotes.
 
     \Theme{cruelwater}
-    The \thm{cruelwater} theme is also based on a palette from 
+    The \thm{cruelwater} theme is also based on a palette from
     COLOURlovers%
 \footnote{\url{http://www.colourlovers.com/palette/126030/Cruel_Water_at_Night}},
     and applies a \textcolor[HTML]{030C22}{dark blue} color to bold
-    text and captions, a \textcolor[HTML]{20293F}{slightly less dark 
+    text and captions, a \textcolor[HTML]{20293F}{slightly less dark
     blue} to titles and emphasized text, a \textcolor[HTML]{A9B0B3}{
     light gray} color to small print and a \textcolor[HTML]{404749}{
     darker gray} to quotes.
@@ -620,7 +621,7 @@
         \item[--] If a \cs{subsubsection} is the last item of the Table
         of Contents, it will not be indented properly.
     \end{description}
-    
+
     If you discover any bugs in this package, please report them to the issue
     tracker in the \thepackage\ Github repository.
 
@@ -631,9 +632,9 @@
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
 \ProvidesExplClass{skrapport}%
-    {2013/09/19}{0.12d}{stylish report document class}
+    {2015/07/17}{0.12e}{stylish report document class}
 \end{MacroCode}
-    
+
     \subsection{Messages}
     Tons of messages are declared for future use.
 \begin{MacroCode}{class}
@@ -725,7 +726,7 @@
     \end{macro*}
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_paper:n#1{
-    \str_case:nnn{#1}{
+    \str_case:nnF{#1}{
 \end{MacroCode}
     The two options simply consist of passing the appropriate option
     to the \pkg{typearea} package. Note that the use of \pkg{typearea}
@@ -769,7 +770,7 @@
     \file{size11.clo} or \file{size12.clo} as appropriate
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_ptsize:n#1{
-    \str_case:nnn{#1}{
+    \str_case:nnF{#1}{
 \end{MacroCode}
     \begin{macro*}{\c__skrapport_ptsize_token}
 \begin{MacroCode}{class}
@@ -804,7 +805,7 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_twocolumn:{
     \RequirePackage{etoolbox}
-    \AtBeginDocument{  
+    \AtBeginDocument{
         \KOMAoptions{twocolumn=false,DIV=12}
     }
 \end{MacroCode}
@@ -1057,10 +1058,10 @@
                       \texttt{bf} or \texttt{sf})}
     The title styles are implemented by creating a new macro
     \cs{__skrapport_title_style:} which will later be used by
-    \cs{section} and friends. 
+    \cs{section} and friends.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_titles:n#1{
-    \str_case:nnn{#1}{
+    \str_case:nnF{#1}{
 \end{MacroCode}
     \begin{macro*}{\__skrapport_title_style:}
         \changes{0.11a}{Removed incorrect \cs{bfseries}, replaced
@@ -1092,11 +1093,11 @@
     setting the other as the \enquote{other} language. We check if
     \pkg{polyglossia} has been loaded (this is done by
     \cs{__skrapport_setup_xelatex:}): if it has, we use the
-    \pkg{polyglossia} interface for setting languages, otherwise we 
+    \pkg{polyglossia} interface for setting languages, otherwise we
     load the \pkg{babel} package with appropriate options.
 \begin{MacroCode}{class}
 \cs_new:Npn\__skrapport_setup_lang:n#1{
-    \str_case:nnn{#1}{
+    \str_case:nnF{#1}{
         {sv}{
             \bool_if:NTF\g__skrapport_has_polyglossia_bool{
                 \setmainlanguage{swedish}
@@ -1235,7 +1236,7 @@
 \cs_new:Npn\__skrapport_setup_font:n#1{
     \PassOptionsToPackage{intlimits}{amsmath}
     \PassOptionsToPackage{full}{textcomp}
-    \str_case:nnn{#1}{
+    \str_case:nnF{#1}{
 \end{MacroCode}
     The \texttt{none} font stack is special. If we're using
     \hologo{XeTeX} or \hologo{LuaTeX}, we load the \pkg{fontspec}
@@ -1614,20 +1615,20 @@
         {\__skrapport_setup_paper:n{a4}},
     paper / a5 .code:n =
         {\__skrapport_setup_paper:n{a5}},
-    paper / a4paper .code:n = 
+    paper / a4paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {paper=a4paper}{paper=a4}
          \keys_set:nn{skrapport}{paper=a4}},
-    paper / a5paper .code:n = 
+    paper / a5paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {paper=a5paper}{paper=a5}
          \keys_set:nn{skrapport}{paper=a4}},
     paper .value_required:,
-    a4paper .code:n = 
+    a4paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {a4paper}{paper=a4}
          \keys_set:nn{skrapport}{paper=a4}},
-    a5paper .code:n = 
+    a5paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {a5paper}{paper=a5}
          \keys_set:nn{skrapport}{paper=a5}},
@@ -1684,7 +1685,7 @@
     draft / true .code:n =
         {\bool_gset_true:N\g__skrapport_draft_bool
          \__skrapport_setup_draft:},
-    draft / false .code:n = 
+    draft / false .code:n =
         {\bool_gset_false:N\g__skrapport_draft_bool},
     draft .default:n = true,
     final .code:n = {\prg_do_nothing:},
@@ -1722,15 +1723,15 @@
         { rm, it, bf, sf }
         {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
     titles .value_required:,
-    rmtitles .code:n = 
+    rmtitles .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {rmtitles}{titles=rm}
          \keys_set:nn{skrapport}{titles=rm}},
-    bftitles .code:n = 
+    bftitles .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {bftitles}{titles=bf}
          \keys_set:nn{skrapport}{titles=bf}},
-    sftitles .code:n = 
+    sftitles .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {sftitles}{titles=sf}
          \keys_set:nn{skrapport}{titles=sf}},
@@ -1762,15 +1763,15 @@
     \pkg{polyglossia} support. Again, the old \opt{swe} and \opt{eng}
     aliases are deprecated and will be removed.
 \begin{MacroCode}{class}
-    lang .choices:nn = 
+    lang .choices:nn =
         { sv, en, de }
         {\__skrapport_setup_lang:x{\tl_use:N\l_keys_choice_tl}},
     lang .value_required:,
-    swe .code:n = 
+    swe .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {swe}{lang=sv}
          \keys_set:nn{skrapport}{lang=sv}},
-    eng .code:n = 
+    eng .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {eng}{lang=en}
          \keys_set:nn{skrapport}{lang=en}},
@@ -1802,27 +1803,27 @@
         { none, kpfonts, lmodern, palatino, minion, skdoc, word }
         {\__skrapport_setup_font:x{\tl_use:N\l_keys_choice_tl}},
     font .value_required:,
-    nofont .code:n = 
+    nofont .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {nofont}{font=none}
          \keys_set:nn{skrapport}{font=none}},
-    kpfonts .code:n = 
+    kpfonts .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {kpfonts}{font=kpfonts}
          \keys_set:nn{skrapport}{font=kpfonts}},
-    lmodern .code:n = 
+    lmodern .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {lmodern}{font=lmodern}
          \keys_set:nn{skrapport}{font=lmodern}},
-    palatino .code:n = 
+    palatino .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {palatino}{font=palatino}
          \keys_set:nn{skrapport}{font=palatino}},
-    minion .code:n = 
+    minion .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {minion}{font=minion}
          \keys_set:nn{skrapport}{font=minion}},
-    skdoc .code:n = 
+    skdoc .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {skdoc}{font=skdoc}
          \keys_set:nn{skrapport}{font=skdoc}},
@@ -1891,7 +1892,7 @@
 \end{MacroCode}
     \end{option}
     \end{option}
-    
+
     That's it, we're done setting up the \pkg{l3keys} for the options.
 \begin{MacroCode}{class}
 }
@@ -2030,7 +2031,7 @@
     \frenchspacing
 }
 \end{MacroCode}
-    
+
     When the document starts, we set the URL style if the user has
     loaded the \pkg{url} package.
 \begin{MacroCode}{class}
@@ -2052,7 +2053,7 @@
 }
 \end{MacroCode}
     \end{macro}
-    
+
     \subsection{Hidden things}
     Set some default measurements (should probably be replaced with
     simply loading \pkg{typearea}).
@@ -2231,7 +2232,7 @@
 
     \begin{macro}{\regarding}[1]
         {Text snippet}
-    This macro defines a variable used by \cs{maketitle} to insert a 
+    This macro defines a variable used by \cs{maketitle} to insert a
     simple text into the header on the title page.
     \begin{macro*}{\g__skrapport_regarding_tl}
 \begin{MacroCode}{class}
@@ -2246,7 +2247,7 @@
     \begin{macro}{\license}[1]
         {Short license description}
     \changes{0.07}{Added command \cs{license}}
-    This macro defines a variable used by \cs{maketitle} to insert a 
+    This macro defines a variable used by \cs{maketitle} to insert a
     license into the footer on the titlepage.
     \begin{macro*}{\g__skrapport_copyright_unprinted_bool}
 \begin{MacroCode}{class}
@@ -2703,7 +2704,7 @@
 }
 \end{MacroCode}
     \end{macro}
-    
+
     \paragraph{Public sectioning API}
     It's time to define the public sectioning macros. They all follow
     the same format: first, two skips and one dimension (used by
@@ -3570,7 +3571,7 @@
     \end{macro*}
 
     \subsubsection{Miscellaneous}
-    A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let 
+    A macro \cs{comment} (alias \cs{com}/\cs{note}) is defined to let
     the user add comments and notes to the document.
     \begin{macro}{\__skrapport_comment:n}
 \begin{MacroCode}{class}
@@ -3768,7 +3769,7 @@
     As described earlier, the user can load color themes to customize
     the appearance of the document if the class was loaded with the
     \opt{color} option. Four themes are available by default.
-    
+
     \subsubsection{Default color theme}
     \begin{theme}{Default}
     \changes{0.09}{Added default color theme}
@@ -4175,7 +4176,7 @@
 \dim_set:Nn\footskip  {30pt}
 \dim_set:Nn\maxdepth  { 5pt}
 \end{MacroCode}
-    These (\emph{i.e.} text width and height) are hopefully overwritten 
+    These (\emph{i.e.} text width and height) are hopefully overwritten
     by \pkg{typearea} later, so we don't bother much with them.
 \begin{MacroCode}{size-10,size-11,size-12}
 \dim_set:Nn\textwidth  {\paperwidth-2cm}
