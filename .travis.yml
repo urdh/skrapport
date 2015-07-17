@@ -20,6 +20,7 @@ install:
   - tlmgr install opensans
   - tlmgr install sourcecodepro
   - tlmgr install ly1
+  - tlmgr install xindy
   # Required by the class
   - tlmgr install kpfonts
   - tlmgr install arev
