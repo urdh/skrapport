@@ -8,6 +8,7 @@ env:
     - NAME="Simon Sigurdhsson"
     - EMAIL="Sigurdhsson@gmail.com"
     - DIRECTORY=/macros/latex/contrib/skrapport
+    - SUMMARY="‘Simple’ class for reports, etc"
     - LICENSE=free
     - FREEVERSION=lppl
 
