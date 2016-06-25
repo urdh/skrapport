@@ -24,6 +24,7 @@ install:
   - tlmgr install ly1
   - tlmgr install xindy
   - tlmgr install mweights
+  - tlmgr remove --force skrapport
   # Required by the class
   - tlmgr install kpfonts
   - tlmgr install arev
