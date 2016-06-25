@@ -22,6 +22,7 @@ install:
   - tlmgr install sourcecodepro
   - tlmgr install ly1
   - tlmgr install xindy
+  - tlmgr install mweights
   # Required by the class
   - tlmgr install kpfonts
   - tlmgr install arev
