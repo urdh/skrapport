@@ -604,7 +604,7 @@
 %            \pkg{icomma} & & \\
 %            \pkg{inconsolata} & & \\
 %            \pkg{microtype} & & Provides micro-typographic improvements.\\
-%            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
+%            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
 %            \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
 %            \pkg{skmath} & & Only if it exists and \opt{nomath} isn't set.\\
 %            \pkg{textcomp} & & Only if not using \opt{kpfonts}.\\
@@ -1244,7 +1244,7 @@
     package. Otherwise, we do nothing.
 \begin{MacroCode}{class}
         {none}{
-            \bool_if:nT{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+            \bool_if:nT{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
                 \RequirePackage[quiet]{fontspec}
             }
         }
@@ -1302,7 +1302,7 @@
     engine that supports \pkg{fontspec}.
 \begin{MacroCode}{class}
         {word}{
-            \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+            \bool_if:nF{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
                 \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
             }
             \RequirePackage[quiet]{fontspec}
@@ -1526,7 +1526,7 @@
     \pkg{polyglossia}, we fall back to \pkg{babel} in that engine.
     Thus, only load \pkg{polyglossia} for \hologo{XeLaTeX}.
 \begin{MacroCode}{class}
-    \xetex_if_engine:TF{
+    \sys_if_engine_xetex:TF{
         \PassOptionsToPackage{quiet}{fontspec}
         \RequirePackage{polyglossia}
         \bool_gset_true:N\g__skrapport_has_polyglossia_bool
@@ -1557,7 +1557,7 @@
     engine setup macro.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_engine_specific:{
-    \bool_if:nTF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+    \bool_if:nTF{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
         \__skrapport_setup_xelatex:
     }{
         \__skrapport_setup_pdftex:
@@ -1969,7 +1969,7 @@
         \keys_set:nn{skrapport}{color=true}
     }
     \bool_if:NF\l__skrapport_has_option_font_bool{
-        \xetex_if_engine:TF{
+        \sys_if_engine_xetex:TF{
             \keys_set:nn{skrapport}{font=word}
         }{
             \keys_set:nn{skrapport}{font=kpfonts}
