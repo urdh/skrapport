@@ -1624,7 +1624,7 @@
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {paper=a5paper}{paper=a5}
          \keys_set:nn{skrapport}{paper=a4}},
-    paper .value_required:,
+    paper .value_required:n = true,
     a4paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {a4paper}{paper=a4}
@@ -1648,7 +1648,7 @@
     ptsize .choices:nn =
         { 10pt, 11pt, 12pt }
         {\__skrapport_setup_ptsize:x{\tl_use:N\l_keys_choice_tl}},
-    ptsize .value_required:,
+    ptsize .value_required:n = true,
     10pt .meta:n = {ptsize=10pt},
     11pt .meta:n = {ptsize=11pt},
     12pt .meta:n = {ptsize=12pt},
@@ -1723,7 +1723,7 @@
     titles .choices:nn =
         { rm, it, bf, sf }
         {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
-    titles .value_required:,
+    titles .value_required:n = true,
     rmtitles .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {rmtitles}{titles=rm}
@@ -1767,7 +1767,7 @@
     lang .choices:nn =
         { sv, en, de }
         {\__skrapport_setup_lang:x{\tl_use:N\l_keys_choice_tl}},
-    lang .value_required:,
+    lang .value_required:n = true,
     swe .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {swe}{lang=sv}
@@ -1803,7 +1803,7 @@
     font .choices:nn =
         { none, kpfonts, lmodern, palatino, minion, skdoc, word }
         {\__skrapport_setup_font:x{\tl_use:N\l_keys_choice_tl}},
-    font .value_required:,
+    font .value_required:n = true,
     nofont .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {nofont}{font=none}
@@ -2278,7 +2278,7 @@
 \begin{MacroCode}{class}
 \keys_define:nn{skrapport/maketitle}{
     hide .clist_set:N = \l__skrapport_maketitle_hide_clist,
-    hide .value_required:,
+    hide .value_required:n = true,
     nopdfinfo .bool_set_inverse:N = \l__skrapport_maketitle_pdfinfo_bool,
     nopdfinfo .default:n = true,
     nopdfinfo .initial:n = false
