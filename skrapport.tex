@@ -604,7 +604,7 @@
 %            \pkg{icomma} & & \\
 %            \pkg{inconsolata} & & \\
 %            \pkg{microtype} & & Provides micro-typographic improvements.\\
-%            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
+%            \pkg{multicol} & & Only loaded with the \opt{twocolumn} option. \\
 %            \pkg{polyglossia} & see options \opt{swe} and \opt{eng} & Only loaded if using \hologo{XeTeX}.\\
 %            \pkg{skmath} & & Only if it exists and \opt{nomath} isn't set.\\
 %            \pkg{textcomp} & & Only if not using \opt{kpfonts}.\\
@@ -1244,7 +1244,7 @@
     package. Otherwise, we do nothing.
 \begin{MacroCode}{class}
         {none}{
-            \bool_if:nT{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+            \bool_if:nT{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
                 \RequirePackage[quiet]{fontspec}
             }
         }
@@ -1302,7 +1302,7 @@
     engine that supports \pkg{fontspec}.
 \begin{MacroCode}{class}
         {word}{
-            \bool_if:nF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+            \bool_if:nF{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
                 \msg_fatal:nnn{skrapport}{font-requires-xetex}{word}
             }
             \RequirePackage[quiet]{fontspec}
@@ -1526,7 +1526,7 @@
     \pkg{polyglossia}, we fall back to \pkg{babel} in that engine.
     Thus, only load \pkg{polyglossia} for \hologo{XeLaTeX}.
 \begin{MacroCode}{class}
-    \xetex_if_engine:TF{
+    \sys_if_engine_xetex:TF{
         \PassOptionsToPackage{quiet}{fontspec}
         \RequirePackage{polyglossia}
         \bool_gset_true:N\g__skrapport_has_polyglossia_bool
@@ -1557,7 +1557,7 @@
     engine setup macro.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_setup_engine_specific:{
-    \bool_if:nTF{\luatex_if_engine_p: || \xetex_if_engine_p:}{
+    \bool_if:nTF{\sys_if_engine_luatex_p: || \sys_if_engine_xetex_p:}{
         \__skrapport_setup_xelatex:
     }{
         \__skrapport_setup_pdftex:
@@ -1624,7 +1624,7 @@
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {paper=a5paper}{paper=a5}
          \keys_set:nn{skrapport}{paper=a4}},
-    paper .value_required:,
+    paper .value_required:n = true,
     a4paper .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {a4paper}{paper=a4}
@@ -1648,7 +1648,7 @@
     ptsize .choices:nn =
         { 10pt, 11pt, 12pt }
         {\__skrapport_setup_ptsize:x{\tl_use:N\l_keys_choice_tl}},
-    ptsize .value_required:,
+    ptsize .value_required:n = true,
     10pt .meta:n = {ptsize=10pt},
     11pt .meta:n = {ptsize=11pt},
     12pt .meta:n = {ptsize=12pt},
@@ -1723,7 +1723,7 @@
     titles .choices:nn =
         { rm, it, bf, sf }
         {\__skrapport_setup_titles:x{\tl_use:N\l_keys_choice_tl}},
-    titles .value_required:,
+    titles .value_required:n = true,
     rmtitles .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {rmtitles}{titles=rm}
@@ -1767,7 +1767,7 @@
     lang .choices:nn =
         { sv, en, de }
         {\__skrapport_setup_lang:x{\tl_use:N\l_keys_choice_tl}},
-    lang .value_required:,
+    lang .value_required:n = true,
     swe .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {swe}{lang=sv}
@@ -1803,7 +1803,7 @@
     font .choices:nn =
         { none, kpfonts, lmodern, palatino, minion, skdoc, word }
         {\__skrapport_setup_font:x{\tl_use:N\l_keys_choice_tl}},
-    font .value_required:,
+    font .value_required:n = true,
     nofont .code:n =
         {\msg_warning:nnnn{skrapport}{option-deprecated}
             {nofont}{font=none}
@@ -1969,7 +1969,7 @@
         \keys_set:nn{skrapport}{color=true}
     }
     \bool_if:NF\l__skrapport_has_option_font_bool{
-        \xetex_if_engine:TF{
+        \sys_if_engine_xetex:TF{
             \keys_set:nn{skrapport}{font=word}
         }{
             \keys_set:nn{skrapport}{font=kpfonts}
@@ -2278,7 +2278,7 @@
 \begin{MacroCode}{class}
 \keys_define:nn{skrapport/maketitle}{
     hide .clist_set:N = \l__skrapport_maketitle_hide_clist,
-    hide .value_required:,
+    hide .value_required:n = true,
     nopdfinfo .bool_set_inverse:N = \l__skrapport_maketitle_pdfinfo_bool,
     nopdfinfo .default:n = true,
     nopdfinfo .initial:n = false
