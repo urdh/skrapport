@@ -30,6 +30,8 @@ install:
   - tlmgr install arev
   - tlmgr install babel-swedish
   - tlmgr install babel-german
+  - tlmgr install siunitx
+  - tlmgr install isomath
 
 script:
   - make dist
