@@ -99,7 +99,7 @@
 % This is where the documentation begins
 \begin{document}
     % Change & version info
-    \version{0.12g}
+    \version{0.12h}
     \changes{0.01}{Initial version}
     \changes{0.03}{Removed \cs{rd} and \cs{id}}
     \changes{0.04}{Added \pkg{microtype} package}
@@ -126,6 +126,7 @@
     \changes{0.12e}{Replace usage of deprecated \pkg{expl3} macros (thanks for the heads-up, Joseph Wright!)}
     \changes{0.12f}{Fix incorrect usage of \pkg{xparse} macros}
     \changes{0.12g}{Track \pkg{expl3} changes (thanks to Joseph Wright)}
+    \changes{0.12h}{Fix incompatibilities with recent \pkg{expl3}}
     % Don't forget to update the version number and release date of
     % the package declaration in the implementation!
 
@@ -634,7 +635,7 @@
 \begin{MacroCode}{class}
 \RequirePackage{expl3,l3keys2e,xparse,xstring,etoolbox}
 \ProvidesExplClass{skrapport}%
-    {2017/01/08}{0.12g}{stylish report document class}
+    {2017/09/14}{0.12h}{stylish report document class}
 \end{MacroCode}
 
     \subsection{Messages}

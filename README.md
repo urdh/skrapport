@@ -4,7 +4,7 @@
 ```
 %% skrapport Skånings rapportklass
 %%
-%% Copyright (C) 2012-2016 by Simon Sigurdhsson <sigurdhsson@gmail.com>
+%% Copyright (C) 2012-2017 by Simon Sigurdhsson <sigurdhsson@gmail.com>
 %%
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3
@@ -30,7 +30,7 @@
 %%  * skrapport-size11pt.clo
 %%  * skrapport-size12pt.clo
 
-This is version 0.12g of the skrapport document class, intended for simple
+This is version 0.12h of the skrapport document class, intended for simple
 reports submitted by the author at Chalmers University of Technology.
 
 The following files are enclosed.
