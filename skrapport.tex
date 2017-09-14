@@ -1410,16 +1410,18 @@
 \end{MacroCode}
     \begin{macro*}{\@starttoc}[1]
         {Table of contents extension}
+    \changes{0.12h}{Replaced use of deprecated \cs{c_job_name_tl}
+                    with \cs{c_sys_jobname_str}}
 \begin{MacroCode}{class}
         \RenewDocumentCommand\@starttoc{m}{
             \group_begin:
             \dim_zero:N\parskip
-            \file_if_exist:nT{\c_job_name_tl.##1}{
-                \file_input:n{\c_job_name_tl.##1}
+            \file_if_exist:nT{\c_sys_jobname_str.##1}{
+                \file_input:n{\c_sys_jobname_str.##1}
             }
             \if@filesw
                 \iow_new:c{tf@##1}
-                \iow_open:cn{tf@##1}{\c_job_name_tl.##1}
+                \iow_open:cn{tf@##1}{\c_sys_jobname_str.##1}
             \fi
             \@nobreakfalse
             \group_end:
