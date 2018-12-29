@@ -2597,7 +2597,7 @@
         #2
         \hbox_set:Nn\l_tmpa_box{{\skip_horizontal:n{#1}#4}}
         \dim_set:Nn\hangindent{#1+\box_wd:N\l_tmpa_box}
-        \noindent\box_use_clear:N\l_tmpa_box
+        \noindent\box_use_drop:N\l_tmpa_box
         \interlinepenalty\@M % !!!
         #3
     \group_end:
@@ -3335,7 +3335,7 @@
         \global\@minipagefalse % !!!
         \hbox_to_wd:nn{\hsize}{
             \hfil
-            \box_use_clear:N\l_tmpa_box
+            \box_use_drop:N\l_tmpa_box
             \hfil
         }
     }
