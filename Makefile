@@ -35,18 +35,26 @@ install: all
 	install -m 0644 README $(TEXMFHOME)/doc/latex/skrapport/README
 	-mktexlsr
 
-skrapport.tar.gz: all
-	mkdir -p           skrapport
-	cp README          skrapport/README
-	cp skrapport.pdf   skrapport/skrapport.pdf
-	mkdir -p           skrapport/source
-	cp Makefile        skrapport/source/Makefile
-	cp skrapport.tex   skrapport/source/skrapport.tex
-	mkdir -p           skrapport/latex
-	cp skrapport-*.sty skrapport/latex/
-	cp skrapport-*.clo skrapport/latex/
-	cp skrapport.cls   skrapport/latex/skrapport.cls
-	tar -czf $@ skrapport
+skrapport.tds.zip: all
+	mkdir -p skrapport/tex/latex/skrapport
+	cp skrapport-*.sty skrapport/tex/latex/skrapport/
+	cp skrapport-*.clo skrapport/tex/latex/skrapport/
+	cp skrapport.cls skrapport/tex/latex/skrapport/skrapport.cls
+	mkdir -p skrapport/doc/latex/skrapport
+	cp skrapport.pdf skrapport/doc/latex/skrapport/skrapport.pdf
+	mkdir -p skrapport/source/latex/skrapport
+	cp skrapport.tex skrapport/source/latex/skrapport/skrapport.tex
+	cp README skrapport/doc/latex/skrapport/README
+	cd skrapport && zip -r ../skrapport.tds.zip *
+	rm -rf skrapport
+
+skrapport.tar.gz: all skrapport.tds.zip
+	mkdir -p skrapport
+	cp skrapport.tex skrapport/skrapport.tex
+	cp skrapport.pdf skrapport/skrapport.pdf
+	cp README skrapport/README
+	cp Makefile skrapport/Makefile
+	tar -czf $@ skrapport skrapport.tds.zip
 	rm -rf skrapport
 
 dist: skrapport.tar.gz
