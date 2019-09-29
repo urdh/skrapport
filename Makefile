@@ -1,3 +1,13 @@
+ZIP_NOATTRS :=
+ifeq ($(shell uname -s),Darwin)
+	ZIP_NOATTRS += -X
+endif
+
+TAR_NOATTRS :=
+ifeq ($(shell uname -s),Darwin)
+	TAR_NOATTRS += --disable-copyfile
+endif
+
 TEXMFHOME ?= $(shell kpsewhich -var-value TEXMFHOME)
 .PHONY: all clean distclean install dist test clean-test
 all: skrapport.tex skrapport.pdf skrapport.cls README
@@ -45,7 +55,7 @@ skrapport.tds.zip: all
 	mkdir -p skrapport/source/latex/skrapport
 	cp skrapport.tex skrapport/source/latex/skrapport/skrapport.tex
 	cp README skrapport/doc/latex/skrapport/README
-	cd skrapport && zip -r ../skrapport.tds.zip *
+	cd skrapport && zip $(ZIP_NOATTRS) -r ../skrapport.tds.zip *
 	rm -rf skrapport
 
 skrapport.tar.gz: all skrapport.tds.zip
@@ -54,7 +64,7 @@ skrapport.tar.gz: all skrapport.tds.zip
 	cp skrapport.pdf skrapport/skrapport.pdf
 	cp README skrapport/README
 	cp Makefile skrapport/Makefile
-	tar -czf $@ skrapport skrapport.tds.zip
+	tar $(TAR_NOATTRS) -czf $@ skrapport skrapport.tds.zip
 	rm -rf skrapport
 
 dist: skrapport.tar.gz
