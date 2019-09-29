@@ -43,7 +43,7 @@ after_success:
 deploy:
   provider: releases
   api_key:
-    secure: euhP+4c1aSJ/Pkf1kqQA05Xs4Z0pdJSKSd+4Ww6h5Px0QiUGkGQPsymYuA3tFiR+VrKz57dUy6ZHNQPOVJ6tgAxvsA5lwoSKnAZbW5LPJ6b9307TVAFJ0LHf5oWzPVzb2W54QmxJiBcP+8sFPX2EeyRtd7qY0SeJ1cSyyj4Q8Qs=
+    secure: Dula9vylc1xOORTrtOVVuVBXBhHGzOXt9eoqaPvFBQEh1q2+GDVouNdrjp1xPE/dMAl3nD05zL3f+AcyK0WgQZL4ROkKdCstS9wCeNS0ieErBSe9LU3IZjim6bxR4uwWIPHL7jI1RSxCqrKvMHbtkYgwsGbaZX3teZFRKtLfbMg=
   file: skrapport.tar.gz
   skip_cleanup: true
   on:
