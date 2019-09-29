@@ -30,7 +30,7 @@
 %%  * skrapport-size11pt.clo
 %%  * skrapport-size12pt.clo
 
-This is version 0.12i of the skrapport document class, intended for simple
+This is version 0.12j of the skrapport document class, intended for simple
 reports submitted by the author at Chalmers University of Technology.
 
 The following files are enclosed.
