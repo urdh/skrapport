@@ -128,6 +128,7 @@
     \changes{0.12g}{Track \pkg{expl3} changes (thanks to Joseph Wright)}
     \changes{0.12h}{Fix incompatibilities with recent \pkg{expl3}}
     \changes{0.12i}{Track \pkg{expl3} changes (thanks to Joseph Wright)}
+    \changes{0.12j}{Track \pkg{expl3} changes (thanks to Phelype Oleinik)}
     % Don't forget to update the version number and release date of
     % the package declaration in the implementation!
 
@@ -2228,7 +2229,7 @@
     separating them with commas.
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_email_list:{
-    \int_compare:nT{\clist_count:N\g__skrapport_author_clist>\c_zero}{
+    \int_compare:nT{\clist_count:N\g__skrapport_author_clist>\c_zero_int}{
         \clist_use:Nnnn\g__skrapport_email_clist{\\}{\\}{\\}
     }
 }
@@ -3130,7 +3131,7 @@
 \begin{MacroCode}{class}
 \cs_new:Nn\__skrapport_emphstyle:{
     \itshape
-    \dim_compare:nF{\fontdimen\c_one\font>\c_zero_dim}{\bfseries}
+    \dim_compare:nF{\fontdimen\c_one_int\font>\c_zero_dim}{\bfseries}
 }
 \end{MacroCode}
     \end{macro*}
