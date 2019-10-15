@@ -129,6 +129,7 @@
     \changes{0.12h}{Fix incompatibilities with recent \pkg{expl3}}
     \changes{0.12i}{Track \pkg{expl3} changes (thanks to Joseph Wright)}
     \changes{0.12j}{Track \pkg{expl3} changes (thanks to Phelype Oleinik). Replaces \pkg{opensans} option \opt{osfigures} with \opt{oldstyle}}
+    \changes{0.12k}{Don't try to generate \texttt{c}-variant macros from \texttt{n}-variant base forms}
     % Don't forget to update the version number and release date of
     % the package declaration in the implementation!
 
@@ -2649,24 +2650,28 @@
     \paragraph{Generic sectioning macros}
     We will now set up a generic sectioning macro. First, we need
     version of the above macros that expand their arguments.
-    \begin{macro*}{\__skrapport_pre_section:c}
+    \begin{macro*}{\__skrapport_pre_section:v}
+    \changes{0.12k}{Argument specification changed from \texttt{c} to \texttt{v}}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_pre_section:n{c}
+\cs_generate_variant:Nn\__skrapport_pre_section:n{v}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_post_section:c}
+    \begin{macro*}{\__skrapport_post_section:v}
+        \changes{0.12k}{Argument specification changed from \texttt{c} to \texttt{v}}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_post_section:n{c}
+\cs_generate_variant:Nn\__skrapport_post_section:n{v}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_section_star:ccn}
+    \begin{macro*}{\__skrapport_section_star:vvn}
+        \changes{0.12k}{Argument specification changed from \texttt{ccn} to \texttt{vvn}}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_section_star:nnn{ccn}
+\cs_generate_variant:Nn\__skrapport_section_star:nnn{vvn}
 \end{MacroCode}
     \end{macro*}
-    \begin{macro*}{\__skrapport_section_nostar:nnccnn}
+    \begin{macro*}{\__skrapport_section_nostar:nnvvnn}
+        \changes{0.12k}{Argument specification changed from \texttt{nnccnn} to \texttt{nnvvnn}}
 \begin{MacroCode}{class}
-\cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnccnn}
+\cs_generate_variant:Nn\__skrapport_section_nostar:nnnnnn{nnvvnn}
 \end{MacroCode}
     \end{macro*}
 
@@ -2684,22 +2689,22 @@
         {Section title text}
 \begin{MacroCode}{class}
 \cs_set:Nn\__skrapport_generic_section:nnnnn{
-    \__skrapport_pre_section:c{c__skrapport_#1_pre_skip}
+    \__skrapport_pre_section:v{c__skrapport_#1_pre_skip}
     \IfBooleanTF#3{
-        \__skrapport_section_star:ccn
+        \__skrapport_section_star:vvn
             {c__skrapport_#1_indent_dim}
             {__skrapport_#1_style:}
             {#5}
     }{
         \IfNoValueTF{#4}{
-            \__skrapport_section_nostar:nnccnn
+            \__skrapport_section_nostar:nnvvnn
                 {#1}{#2}
                 {c__skrapport_#1_indent_dim}
                 {__skrapport_#1_style:}
                 {#5}
                 {#5}
         }{
-            \__skrapport_section_nostar:nnccnn
+            \__skrapport_section_nostar:nnvvnn
                 {#1}{#2}
                 {c__skrapport_#1_indent_dim}
                 {__skrapport_#1_style:}
@@ -2707,7 +2712,7 @@
                 {#4}
         }
     }
-    \__skrapport_post_section:c{c__skrapport_#1_post_skip}
+    \__skrapport_post_section:v{c__skrapport_#1_post_skip}
 }
 \end{MacroCode}
     \end{macro}
