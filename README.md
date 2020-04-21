@@ -1,6 +1,6 @@
-[![Travis CI](https://img.shields.io/travis/urdh/skrapport/master.svg)](http://travis-ci.org/urdh/skrapport)
-[![CTAN: Version](https://img.shields.io/ctan/v/skrapport.svg)](http://www.ctan.org/pkg/skrapport)
-[![CTAN: License](https://img.shields.io/ctan/l/skrapport.svg)](http://www.ctan.org/pkg/skrapport)
+[![Travis CI](https://img.shields.io/travis/urdh/skrapport/master)](http://travis-ci.org/urdh/skrapport)
+[![CTAN: Version](https://img.shields.io/ctan/v/skrapport)](http://www.ctan.org/pkg/skrapport)
+[![CTAN: License](https://img.shields.io/ctan/l/skrapport)](http://www.ctan.org/pkg/skrapport)
 ```
 %% skrapport Skånings rapportklass
 %%
