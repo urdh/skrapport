@@ -1,4 +1,4 @@
-[![Travis CI](https://img.shields.io/travis/urdh/skrapport/master)](http://travis-ci.org/urdh/skrapport)
+[![Github CI](https://img.shields.io/github/actions/workflow/status/urdh/skrapport/continuous-integration.yml)](https://github.com/urdh/skrapport/actions/workflows/continuous-integration.yml)
 [![CTAN: Version](https://img.shields.io/ctan/v/skrapport)](http://www.ctan.org/pkg/skrapport)
 [![CTAN: License](https://img.shields.io/ctan/l/skrapport)](http://www.ctan.org/pkg/skrapport)
 ```
