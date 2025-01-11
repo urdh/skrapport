@@ -58,13 +58,12 @@ skrapport.tds.zip: all
 	cd skrapport && zip $(ZIP_NOATTRS) -r ../skrapport.tds.zip *
 	rm -rf skrapport
 
-skrapport.tar.gz: all skrapport.tds.zip
+skrapport.tar.gz: all
 	mkdir -p skrapport
 	cp skrapport.tex skrapport/skrapport.tex
 	cp skrapport.pdf skrapport/skrapport.pdf
 	cp README skrapport/README
 	cp Makefile skrapport/Makefile
-	tar $(TAR_NOATTRS) -czf $@ skrapport skrapport.tds.zip
 	rm -rf skrapport
 
 dist: skrapport.tar.gz
