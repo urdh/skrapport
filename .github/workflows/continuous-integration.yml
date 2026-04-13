@@ -9,10 +9,10 @@ jobs:
   continuous-integration:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: teatimeguest/setup-texlive-action@v3
+      - uses: actions/checkout@v6
+      - uses: zauguin/install-texlive@v4
         with:
-          version: 2024
+          texlive_version: 2026
           packages: >-
             scheme-basic
             collection-latexrecommended
@@ -49,14 +49,13 @@ jobs:
             isomath
             kpfonts
             siunitx
-      - run: sudo apt-get install -y libncurses5
       - run: make dist
       - run: make test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: manual
           path: skrapport.pdf
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: bundle
           path: skrapport.tar.gz

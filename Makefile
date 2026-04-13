@@ -64,6 +64,7 @@ skrapport.tar.gz: all
 	cp skrapport.pdf skrapport/skrapport.pdf
 	cp README skrapport/README
 	cp Makefile skrapport/Makefile
+	tar $(TAR_NOATTRS) -czf $@ skrapport
 	rm -rf skrapport
 
 dist: skrapport.tar.gz

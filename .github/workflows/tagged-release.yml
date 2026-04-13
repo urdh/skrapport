@@ -13,10 +13,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: bundle
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: skrapport.tar.gz
@@ -26,7 +26,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: bundle
       - uses: paolobrasolin/ctan-submit-action@v1
@@ -38,4 +38,7 @@ jobs:
             version: ${{ github.ref_name }}
             uploader: Simon Sigurdhsson
             email: Sigurdhsson@gmail.com
+            home: https://projects.sigurdhsson.org/skrapport/
+            bugtracker: ${{ github.server_url }}/${{ github.repository }}/issues
+            repository: ${{ github.repositoryUrl }}
             update: "true"
