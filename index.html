@@ -4,15 +4,68 @@
     <title>skrapport</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, maximum-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <style>
+        @import url(/fonts/alike.min.css);
+        @import "/normalize.min.css";
+        body {
+            width: 32em;
+            margin: 7.5em auto;
+            font-family: 'Alike', 'Baskerville', serif;
+            background-color: #fafafa;
+            color: #222;
+            text-align: justify;
+        }
+        h1 {
+            color: #840000;
+            text-align: center;
+            font-weight: normal;
+        }
+        h2 {
+            color: #444;
+            text-align: left;
+            font-weight: normal;
+        }
+        h1, h2 {
+            font-kerning: normal;
+        }
+        p {
+            font-kerning: normal;
+            font-variant-ligatures: common-ligatures;
+        }
+        header h2 {
+            font-size: 1em;
+            font-style: italic;
+            text-align: center;
+            margin: -1em auto 2em auto;
+        }
+        a {
+            color: #9f1111;
+            text-decoration: none;
+            text-shadow: 1px 1px 1px #eee;
+        }
+        a:hover {
+            color: #ee4444;
+        }
+        pre, tt, code {
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+        }
+        footer {
+            text-align: center;
+            font-size: smaller;
+            font-style: italic;
+            margin-top: 3em;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>skrapport</h1>
         <h2>An improved report class</h2>
     </header>
-    <p><small>Other LaTeX packages I maintain include <a href="http://github.com/urdh/chs-msc-thesis">chs-msc-thesis</a>, <a href="http://projects.sigurdhsson.org/skmath">skmath</a>, <a href="http://projects.sigurdhsson.org/skdoc">skdoc</a> and <a href="http://github.com/urdh/download">download</a>.</a></small></p>
+    <p><small>Other LaTeX packages I maintain include <a href="http://projects.sigurdhsson.org/skmath">skmath</a>, <a href="http://projects.sigurdhsson.org/skdoc">skdoc</a> and <a href="http://github.com/urdh/download">download</a>.</a></small></p>
     <p>The <code>skrapport</code> document class is an attempt to provide a good-looking, compact alternative to the standard article class. It is designed to be fully compatible with the article class, meaning you should be able to simply replace the <code>\documentclass</code> declaration in the preamble of your documents should you decide to use this class instead.</p>
     <p>Most notably it defines the <code>\maketitle</code> command to typeset your title in a more compact manner. As shown by the image below, the title and author name is left-justified, immediately followed by the abstract (if available). Note also that section titles aren&rsquo;t boldface by default (although there is an option controlling this).</p>
     <p><img src="media/skrapport-1.png" alt="The title of the document is left-adjusted along with the author name. The abstract is typeset alongside its title, providing a compact overview of the document. Notably, titles are not boldfaced." /></p>
@@ -22,6 +75,5 @@
     <footer>
         <p>This <a href="http://projects.sigurdhsson.org/">project</a> by <a href="http://sigurdhsson.org/">me</a> is hosted by <a href="http://github.com/urdh/skrapport">Github</a>.</p>
     </footer>
-    <a href="https://github.com/urdh/skrapport"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github.png" alt="Fork me on GitHub"></a>
 </body>
 </html>

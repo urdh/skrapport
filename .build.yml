@@ -1,0 +1,12 @@
+image: alpine/latest
+packages:
+  - hut
+oauth: pages.sr.ht/PAGES:RW
+sources:
+  - https://github.com/urdh/skrapport#gh-pages
+
+tasks:
+  - package: |
+      tar -C skrapport -czf pages.tar.gz index.html media
+  - upload: |
+      hut pages publish -d projects.sigurdhsson.org -s skrapport pages.tar.gz
